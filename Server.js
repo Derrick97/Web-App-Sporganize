@@ -48,7 +48,7 @@ app.get('/', (req, res) => {
 
 app.get('/Login', (req, res) => {
     res.render('Login');
-})
+});
 
 app.post('/Login', (req, res) => {
     const info = login_info.filter((login) => {
@@ -63,7 +63,7 @@ app.post('/Login', (req, res) => {
 
 app.get('/GroupChat', (req, res) => {
     res.render('GroupChatPage');
-})
+});
 
 app.get('/Events', (req, res) => {
     res.render('EventsPage', {events: events});
@@ -81,20 +81,9 @@ app.get('/Settings', (req, res) => {
     res.render('SettingsPage');
 });
 
-app.get('/ChangeStatus/:id',(req,res) =>{
-    const event = events.filter((event)=> {
-        return event.id == req.params.id;
-    })[0]
-
-    res.render('ChangeStatus',{
-        eventID: event.id,
-        eventName: event.name,
-        eventStatus: event.status,
-        eventDay: event.day,
-        eventLocation: event.location,
-        eventDate: event.date,
-    })
-});
+app.get('/CreateTeam', (req, res) => {
+    res.render('CreateTeam');
+})
 
 
 // app.get('/:name', (req, res) => {
