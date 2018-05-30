@@ -1,0 +1,45 @@
+CREATE TABLE UserDetails (
+	UserId int,
+	FName varchar(255),
+	SName varchar(255),
+	Gender enum('male', 'female', 'other'),
+	Email varchar(255),
+	MobileNo int,
+	PasswordHash varchar(255)
+);
+
+CREATE TABLE TeamMembers (
+	UserId int,
+	TeamId int,
+	AccessLevel enum('admin', 'manager', 'user')
+);
+
+CREATE TABLE TeamEvents (
+	TeamId int,
+	EventId int
+);
+
+CREATE TABLE TeamAccessCode (
+	AccessCode varchar(255),
+	TeamId int
+);
+
+CREATE TABLE EventPhotos (
+	EventId int,
+	Photo bytea
+);
+
+CREATE TABLE EventDetails (
+	EventId int,
+	EventName varchar(255),
+	StartTime time,
+	Date date,
+	Duration int,
+	Location varchar(255)
+);
+
+CREATE TABLE EventUsers (
+	EventId int,
+	UserId int,
+	Status enum('going', 'rejected' 'noreply')
+);
