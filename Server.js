@@ -81,6 +81,21 @@ app.get('/Settings', (req, res) => {
     res.render('SettingsPage');
 });
 
+app.get('/ChangeStatus/:id',(req,res) =>{
+    const event = events.filter((event)=> {
+        return event.id == req.params.id;
+    })[0]
+
+    res.render('ChangeStatus',{
+        eventID: event.id,
+        eventName: event.name,
+        eventStatus: event.status,
+        eventDay: event.day,
+        eventLocation: event.location,
+        eventDate: event.date,
+    })
+});
+
 
 // app.get('/:name', (req, res) => {
 //     res.render('Login', { name: req.params.name })
