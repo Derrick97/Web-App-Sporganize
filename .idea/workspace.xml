@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="b01f6d77-362e-4aab-9a4c-6ae64c4e613d" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Server.js" beforeDir="false" afterPath="$PROJECT_DIR$/Server.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/EventsPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/EventsPage.ejs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/GroupChatPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/GroupChatPage.ejs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/Login.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/Login.ejs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/PhotosPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/PhotosPage.ejs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/SettingsPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/SettingsPage.ejs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/TeamsPage.html" beforeDir="false" afterPath="$PROJECT_DIR$/views/TeamsPage.ejs" afterDir="false" />
-    </list>
+    <list default="true" id="b01f6d77-362e-4aab-9a4c-6ae64c4e613d" name="Default" comment="" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -89,8 +80,8 @@
       <file leaf-file-name="TeamsPage.ejs" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/views/TeamsPage.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="285">
-              <caret line="19" column="34" selection-start-line="19" selection-start-column="34" selection-end-line="19" selection-end-column="34" />
+            <state relative-caret-position="150">
+              <caret line="10" column="6" lean-forward="true" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="6" />
             </state>
           </provider>
         </entry>
@@ -233,15 +224,15 @@
       <workItem from="1527544975262" duration="529000" />
       <workItem from="1527546540240" duration="13176000" />
       <workItem from="1527692367707" duration="1014000" />
-      <workItem from="1527693485777" duration="1347000" />
+      <workItem from="1527693485777" duration="1982000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="27979000" />
+    <option name="totallyTimeSpent" value="28614000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="361" y="56" width="1400" height="1000" extended-state="0" />
+    <frame x="361" y="56" width="1400" height="1000" extended-state="1" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24964234" />
@@ -491,8 +482,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/views/TeamsPage.ejs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="34" selection-start-line="19" selection-start-column="34" selection-end-line="19" selection-end-column="34" />
+        <state relative-caret-position="150">
+          <caret line="10" column="6" lean-forward="true" selection-start-line="10" selection-start-column="6" selection-end-line="10" selection-end-column="6" />
         </state>
       </provider>
     </entry>
