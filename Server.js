@@ -34,6 +34,26 @@ app.post('/Login',(req, res) => {
     }
 });
 
+app.get('/GroupChat',(req,res) => {
+    res.render('GroupChatPage');
+})
+
+app.get('/Events',(req, res) => {
+    res.render('EventsPage');
+});
+
+app.get('/Photos',(req, res) => {
+    res.render('PhotosPage');
+});
+
+app.get('/Teams',(req, res) => {
+    res.render('TeamsPage');
+});
+
+app.get('/Settings',(req, res) => {
+    res.render('SettingsPage');
+});
+
 
 
 // app.get('/:name', (req, res) => {
