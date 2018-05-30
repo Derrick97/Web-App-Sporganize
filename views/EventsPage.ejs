@@ -42,7 +42,7 @@
         }
 
         .main {
-            margin-left: 300px; /* Same as the width of the sidenav */
+            margin-left: 200px; /* Same as the width of the sidenav */
         }
 
         @media screen and (max-height: 450px) {
@@ -75,6 +75,7 @@
                     <h4 class="list-group-item-text"><%= event.day %> <%= event.date %></h4>
                     <h4 class="list-group-item-text"><%= event.location %></h4>
                     <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
+                    <a href="/ChangeStatus/<%= event.id%>" class="btn btn-info" role="button">Link Button</a>
                 </a>
                 <% }) %>
             </div>
