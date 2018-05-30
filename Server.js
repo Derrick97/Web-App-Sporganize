@@ -48,7 +48,7 @@ app.get('/', (req, res) => {
 
 app.get('/Login', (req, res) => {
     res.render('Login');
-})
+});
 
 app.post('/Login', (req, res) => {
     const info = login_info.filter((login) => {
@@ -63,7 +63,7 @@ app.post('/Login', (req, res) => {
 
 app.get('/GroupChat', (req, res) => {
     res.render('GroupChatPage');
-})
+});
 
 app.get('/Events', (req, res) => {
     res.render('EventsPage', {events: events});
@@ -80,6 +80,10 @@ app.get('/Teams', (req, res) => {
 app.get('/Settings', (req, res) => {
     res.render('SettingsPage');
 });
+
+app.get('/CreateTeam', (req, res) => {
+    res.render('CreateTeam');
+})
 
 
 // app.get('/:name', (req, res) => {
