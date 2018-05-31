@@ -13,7 +13,6 @@ module.exports = {
     }
   ],
 
-
   /**
    * Deployment section
    * http://pm2.keymetrics.io/docs/usage/deployment/
@@ -25,6 +24,7 @@ module.exports = {
       ref: 'origin/master',
       repo: 'git@gitlab.doc.ic.ac.uk:g1727116/WebApps.git',
       path: '/var/www/sporganise-dev',
+      "ssh_options": "StrictHostKeyChecking=no",
       'post-deploy': 'npm install && pm2 reload ecosystem.config.js --env dev'
       env: {
         NODE_ENV: 'dev'
