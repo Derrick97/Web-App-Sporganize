@@ -4,17 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>Teams</title>
 </head>
 <body>
-<h1>My Teams</h1>
-<div>
-    <h1><%=teamName%></h1>
-    <h1><%=teamType%></h1>
+<h1 style="text-align: center">My Teams</h1>
+
+<div id="accordion" style="padding-bottom:100px">
+    <div class="card">
+        <div class="card-header" style="background-color: #818181">
+            <a class="collapsed card-link btn-block" data-toggle="collapse" href="#collapseOne"
+               style="font-size:20px; color:black; padding-left:5px">
+                <span class="fa fa-caret-right"></span> Groups created
+            </a>
+        </div>
+        <div id="collapseOne" class="collapse">
+            <div class="card-body">
+                <div class="list-group">
+                    <% events.forEach((event) => { %>
+                    <a class="list-group-item">
+                        <h2 class="list-group-item-heading"><%= event.name %></h2>
+                        <h4 class="list-group-item-text"><%= event.day %> <%= event.date %></h4>
+                        <h4 class="list-group-item-text"><%= event.location %></h4>
+                        <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
+                    </a>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="collapsed card-header" style="background-color: #818181">
+            <a class="collapsed card-link btn-block" data-toggle="collapse" href="#collapseTwo"
+               style="font-size:20px; color:black; padding-left:5px">
+                <span class="fa fa-caret-right"></span> Groups joined
+            </a>
+        </div>
+        <div id="collapseTwo" class="collapse">
+            <div class="card-body">
+                <div class="list-group">
+                    <% events.forEach((event) => { %>
+                    <a class="list-group-item">
+                        <h2 class="list-group-item-heading"><%= event.name %></h2>
+                        <h4 class="list-group-item-text"><%= event.day %> <%= event.date %></h4>
+                        <h4 class="list-group-item-text"><%= event.location %></h4>
+                        <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
+                    </a>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<nav class="navbar navbar-fixed-bottom" style="background-color:grey">
+
+
+
+<nav class="navbar navbar-default navbar-fixed-bottom" style="background-color:grey">
     <div class="container-fluid">
         <ul class="nav nav-tabs nav-justified">
             <li><a href="/GroupChat" style="color:black"><h1>GroupChat</h1></a></li>
@@ -25,5 +72,7 @@
         </ul>
     </div>
 </nav>
+
+
 </body>
 </html>
