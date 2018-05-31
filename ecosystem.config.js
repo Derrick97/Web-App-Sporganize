@@ -25,7 +25,7 @@ module.exports = {
       repo: 'git@gitlab.doc.ic.ac.uk:g1727116/WebApps.git',
       path: '/var/www/sporganise-dev',
       "ssh_options": "StrictHostKeyChecking=no",
-      'post-deploy': 'npm install && pm2 reload ecosystem.config.js --env dev'
+      'post-deploy': 'npm install && pm2 reload ecosystem.config.js --env dev',
       env: {
         NODE_ENV: 'dev'
       }
