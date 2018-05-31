@@ -62,7 +62,11 @@ app.post('/login/:email', (req, res) => {
         return login.email == req.body.email;
     })[0]
     if (info.pwd == req.body.pwd) {
-        res.render('MainPage');
+        if(info.eventsID.length>0){
+            res.render('EventsPage', {events: events});
+        } else {
+            res.render('MainPage');
+        }
     } else {
         res.render('LoginFailPage');
     }
