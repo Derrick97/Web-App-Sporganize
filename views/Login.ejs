@@ -28,7 +28,7 @@
 
 <div class="container">
     <h3>Already has an account?</h3>
-    <form id="Login_Area" class="form-horizontal" action="/Login" method="post">
+    <form id="Login_Area" class="form-horizontal" method="post" >
         <div class="form-group">
             <label class="control-label col-sm-2" for="email">Email:</label>
             <div class="col-sm-10">
@@ -50,10 +50,16 @@
         <!--</div>-->
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-default" >Submit</button>
+                    <button type="submit" class="btn btn-default" onclick="getUsername()">Submit</button>
             </div>
         </div>
     </form>
+    <script>
+        function getUsername(){
+            let form = document.getElementById("Login_Area");
+            return form.action = "/login/"+document.getElementById("email").value;
+        }
+    </script>
 </div>
 </body>
 </html>

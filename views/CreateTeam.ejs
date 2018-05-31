@@ -21,53 +21,56 @@
     <p>Wow~ Fantastic!</p>
 </div>
 
-<div class="form-group">
-    <label for="teamname">Now, give your team a name:</label>
-    <input type="text" class="form-control" id="teamname">
-</div>
-<div class="form-group">
-    <label for="type">What's the type of your team?:</label>
-    <select class="form-control" id="type">
-        <option>Basketball</option>
-        <option>Football</option>
-        <option>Tennis</option>
-        <option>Volleyball</option>
-    </select>
-</div>
-<div class="checkbox">
-    <label><input type="checkbox" value="">Do you want your team to be public?</label>
-</div>
-<h1>Notice: Your team has
-    <mark>limited</mark>
-    number of team members (up to 20)!
-</h1>
+<form action="/Teams" method="post" id="CreateNewTeam">
+    <div class="form-group">
+        <label for="teamname">Now, give your team a name:</label>
+        <input type="text" class="form-control" id="teamname" name="teamname">
+    </div>
+    <div class="form-group">
+        <label for="teamtype">What's the type of your team?:</label>
+        <select class="form-control" id="teamtype" name="teamtype">
+            <option>Basketball</option>
+            <option>Football</option>
+            <option>Tennis</option>
+            <option>Volleyball</option>
+        </select>
+    </div>
+    <div class="checkbox">
+        <label><input type="checkbox" value="">Do you want your team to be public?</label>
+    </div>
+    <h1>Notice: Your team has
+        <mark>limited</mark>
+        number of team members (up to 20)!
+    </h1>
 
-<div class="form-group">
-    <button type="submit" class="btn btn-default" data-toggle="modal" data-target="#myModal" onclick="myFunction()">Submit</button>
-</div>
-<!-- Modal -->
-<div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
+    <div class="form-group">
+        <button type="submit" class="btn btn-default" data-toggle="modal" data-target="#myModal"
+                onclick="getTeamName()">Submit
+        </button>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
 
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Modal Header</h4>
-            </div>
-            <div class="modal-body">
-                Are you sure to create your <p style="display:inline" id="teamname2"></p> team?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" style="float:left">yes</button>
-                <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right">no</button>
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure to create your <p style="display:inline" id="teamname2"></p> team?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="float:left">yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right">no</button>
+                </div>
             </div>
         </div>
-
     </div>
-</div>
+</form>
 <script>
-    function myFunction() {
+    function getTeamName() {
         document.getElementById("teamname2").innerHTML = document.getElementById("teamname").value;
     }
 </script>

@@ -4,12 +4,14 @@ const login_info = [
     {
         id: 1,
         email: 'jr2216@ic.ac.uk',
-        pwd: '1234567'
+        pwd: '1234567',
+        eventsID: [1,2,3]
     },
     {
         id: 2,
         email: 'cz1616@ic.ac.uk',
-        pwd: 'zhangchi'
+        pwd: 'zhangchi',
+        eventsID: [2,3]
     }
 ];
 
@@ -42,6 +44,10 @@ const events = [
 
 app.set('view engine', 'ejs');
 
+ let bodyParser = require('body-parser');
+ app.use(bodyParser.json());
+ app.use(bodyParser.urlencoded({extended:true}));
+
 app.get('/', (req, res) => {
     res.render('Login')
 });
@@ -50,11 +56,11 @@ app.get('/Login', (req, res) => {
     res.render('Login');
 });
 
-app.post('/Login', (req, res) => {
+app.post('/login/:email', (req, res) => {
     const info = login_info.filter((login) => {
-        return login.email == req.params.email;
-    });
-    if (info.pwd == req.params.pwd) {
+        return login.email == req.body.email;
+    })[0]
+    if (info.pwd == req.body.pwd) {
         res.render('MainPage');
     } else {
         res.render('LoginFailPage');
@@ -76,6 +82,14 @@ app.get('/Photos', (req, res) => {
 app.get('/Teams', (req, res) => {
     res.render('TeamsPage');
 });
+
+app.post('/Teams', (req, res) => {
+    res.render('TeamsPage',
+        {
+            teamName:req.body.teamname,
+            teamType:req.body.teamtype,
+        })
+})
 
 app.get('/Settings', (req, res) => {
     res.render('SettingsPage');
