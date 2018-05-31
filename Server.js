@@ -1,3 +1,4 @@
+"use strict";
 const express = require('express')
 const app = express()
 const login_info = [
@@ -84,7 +85,7 @@ app.get('/Photos', (req, res) => {
 });
 
 app.get('/Teams', (req, res) => {
-    res.render('TeamsPage',{teamName:"ucl", teamType:"basketball"});
+    res.render('TeamsPage', {events: events});
 });
 
 app.post('/Teams', (req, res) => {
