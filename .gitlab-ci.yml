@@ -1,4 +1,4 @@
-image: node:latest
+image: keymetrics/pm2:latest-jessie
 
 cache:
   paths:
@@ -17,7 +17,6 @@ pack:
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
   script:
-    - npm install -g pm2
     - pm2 deploy ecosystem.config.js dev
   only:
     - master
