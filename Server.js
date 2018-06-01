@@ -124,18 +124,18 @@ app.get('/Events/:email', (req, res) => {
     res.render('EventsPage', {events: events, emailAdd:req.params.email,});
 });
 
-app.get('/Events/:teamname', (req, res) => {
+app.get('/Events/:email/:teamname', (req, res) => {
     if (req.params.teamname == 'TeamA') {
-        res.render('EventsPage', {events: events1});
+        res.render('EventsPage', {events: events1, emailAdd:req.params.email,});
     } else  if (req.params.teamname == 'TeamB') {
-        res.render('EventsPage', {events: events2});
+        res.render('EventsPage', {events: events2, emailAdd:req.params.email,});
     } else  if (req.params.teamname == 'TeamC') {
-        res.render('EventsPage', {events: events3});
+        res.render('EventsPage', {events: events3, emailAdd:req.params.email,});
     }
 });
 
-app.get('/Photos', (req, res) => {
-    res.render('PhotosPage');
+app.get('/Photos/:email', (req, res) => {
+    res.render('PhotosPage',{emailAdd:req.params.email});
 });
 
 app.get('/Teams/:email', (req, res) => {
