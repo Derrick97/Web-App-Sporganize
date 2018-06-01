@@ -1,5 +1,5 @@
 {
-  "name": "web_app",
+  "name": "Sporganise",
   "version": "1.0.0",
   "description": "",
   "main": "Server.js",
@@ -7,8 +7,8 @@
     "body-parser": "^1.18.3",
     "ejs": "^2.6.1",
     "express": "^4.16.3",
-    "express-ws": "^3.0.0",
-    "pg": "^7.4.3"
+    "pg": "^7.4.3",
+    "ws": "^5.2.0"
   },
   "devDependencies": {},
   "scripts": {
