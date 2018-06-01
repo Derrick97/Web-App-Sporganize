@@ -8,7 +8,7 @@ module.exports = {
       'name'  : 'Sporganise',
       'script': 'Server.js',
       'env': {
-        'NODE_ENV': 'dev'
+        'NODE_ENV': 'dev',
         'PGHOST': process.env.PGHOST_DEV,
         'PGPORT': process.env.PGPORT_DEV,
         'PGDATABASE': process.env.PGDATABASE_DEV,
