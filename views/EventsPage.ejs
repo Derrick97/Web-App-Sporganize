@@ -59,40 +59,82 @@
 <body>
 <div class="sidenav">
     <a class="active" href="/Events">All Events</a>
-    <a href="/Events/TeamA">Team A</a >
+    <a href="/Events/TeamA">Team A</a>
     <a href="/Events/TeamB">Team B</a>
     <a href="/Events/TeamC">Team C</a>
 </div>
 <div class="main">
-        <h1 style="text-align: center">Events</h1>
-    <% if (events.length == 0) { %>
-        <h2 style="text-align: center">You don't have any events!</h2>
-    <% } else { %>
-    <div class="row" style="text-align:center">
-        <div class="col-lg-12">
-            <div class="list-group">
-                <% events.forEach((event) => { %>
-                <a class="list-group-item">
-                    <h2 class="list-group-item-heading"><%= event.name %></h2>
-                    <h4 class="list-group-item-text"><%= event.day %> <%= event.date %></h4>
-                    <h4 class="list-group-item-text"><%= event.location %></h4>
-                    <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
-                    <a href="/ChangeStatus/<%= event.id %>" class="btn btn-info">Change Status</a>
+    <h1 style="text-align: center">Events</h1>
+
+    <div id="accordion" style="padding-bottom:100px">
+        <div class="card">
+            <div class="card-header" style="background-color: #818181">
+                <a class="collapsed card-link btn-block" data-toggle="collapse" href="#collapseOne"
+                   style="font-size:20px; color:black; padding-left:5px">
+                    <span class="fa fa-caret-right"></span> Upcoming Events
                 </a>
-                <% }) %>
+            </div>
+            <div id="collapseOne" class="collapse in">
+                <div class="card-body">
+                    <div class="list-group" style="text-align:center">
+                        <% if (eventsupcoming.length == 0) { %>
+                        <h2 style="text-align: center">You don't have any upcoming event!</h2>
+                        <% } else { %>
+                        <% eventsupcoming.forEach((event) => { %>
+                        <a class="list-group-item">
+                            <h2 class="list-group-item-heading"><%= event.name %></h2>
+                            <h4 class="list-group-item-text"><%= event.day %> <%= event.date %></h4>
+                            <h4 class="list-group-item-text"><%= event.location %></h4>
+                            <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
+                            <a href="/ChangeStatus/<%= event.id %>" class="btn btn-info">Change Status</a>
+                        </a>
+                        <% }) %>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="collapsed card-header" style="background-color: #818181">
+                <a class="collapsed card-link btn-block" data-toggle="collapse" href="#collapseTwo"
+                   style="font-size:20px; color:black; padding-left:5px">
+                    <span class="fa fa-caret-right"></span> Previous Events
+                </a>
+            </div>
+            <div id="collapseTwo" class="collapse">
+                <div class="card-body">
+                    <div class="list-group" style="text-align:center">
+                        <% if (eventsupcoming.length == 0) { %>
+                        <h2 style="text-align: center">You don't have any previous event!</h2>
+                        <% } else { %>
+                        <% eventsprevious.forEach((event) => { %>
+                        
+                        <a class="list-group-item">
+                            <h2 class="list-group-item-heading"><%= event.name %></h2>
+                            <h4 class="list-group-item-text"><%= event.day %> <%= event.date %></h4>
+                            <h4 class="list-group-item-text"><%= event.location %></h4>
+                            <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
+
+                        </a>
+
+                        <% }) %>
+                        <% } %>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <% } %>
+
+
 </div>
 <nav class="navbar navbar-fixed-bottom" style="background-color:grey">
     <div class="container-fluid">
         <ul class="nav nav-tabs nav-justified">
-            <li><a href="/GroupChatList/<%=emailAdd%>" style="color:black"><h1>GroupChat</h1></a></li>
+            <li><a href="/GroupChatList/<%= emailAdd %>" style="color:black"><h1>GroupChat</h1></a></li>
             <li class="active"><a href="#" style="color:black"><h1>Events</h1></a></li>
-            <li><a href="/Photos/<%=emailAdd%>" style="color:black"><h1>Photos</h1></a></li>
-            <li><a href="/Teams/<%=emailAdd%>" style="color:black"><h1>My Teams</h1></a></li>
-            <li><a href="/Settings/<%=emailAdd%>" style="color:black"><h1>Settings</h1></a></li>
+            <li><a href="/Photos/<%= emailAdd %>" style="color:black"><h1>Photos</h1></a></li>
+            <li><a href="/Teams/<%= emailAdd %>" style="color:black"><h1>My Teams</h1></a></li>
+            <li><a href="/Settings/<%= emailAdd %>" style="color:black"><h1>Settings</h1></a></li>
         </ul>
     </div>
 </nav>
