@@ -6,13 +6,15 @@ const login_info = [
         id: 1,
         email: 'jr2216@ic.ac.uk',
         pwd: '1234567',
-        eventsID: [1,2,3]
+        eventsID: [1,2,3],
+        groupID: [21,22,23],
     },
     {
         id: 2,
         email: 'cz1616@ic.ac.uk',
         pwd: 'zhangchi',
-        eventsID: [2,3]
+        eventsID: [2,3],
+        groupID: [16,17],
     }
 ];
 
@@ -99,7 +101,8 @@ app.post('/login/:email', (req, res) => {
     })[0]
     if (info.pwd == req.body.pwd) {
         if(info.eventsID.length>0){
-            res.render('EventsPage', {events: events});
+            //Not all events, should be queried from DB.
+            res.render('EventsPage', {events: events,emailAdd:info.email});
         } else {
             res.render('MainPage');
         }
@@ -108,12 +111,17 @@ app.post('/login/:email', (req, res) => {
     }
 });
 
-app.get('/GroupChat', (req, res) => {
-    res.render('GroupChatPage');
+app.get('/GroupChat/:email/:teamID', (req, res) => {
+    res.render('GroupChatPage',
+        {
+            groupID: req.params.teamID,
+            groupName: "Some Name Queried From DB.",
+            emailAdd: req.params.email,
+        });
 });
 
-app.get('/Events', (req, res) => {
-    res.render('EventsPage', {events: events});
+app.get('/Events/:email', (req, res) => {
+    res.render('EventsPage', {events: events, emailAdd:req.params.email,});
 });
 
 app.get('/Events/:teamname', (req, res) => {
@@ -130,20 +138,30 @@ app.get('/Photos', (req, res) => {
     res.render('PhotosPage');
 });
 
-app.get('/Teams', (req, res) => {
-    res.render('TeamsPage', {events: events});
+app.get('/Teams/:email', (req, res) => {
+    const user = login_info.filter((user)=> {
+        return user.email == req.params.email;
+    })[0];
+    const groupID = user.groupID;
+    res.render('TeamsPage', {events: events, emailAdd:req.params.email,groupID:groupID});
 });
 
-app.post('/Teams', (req, res) => {
+app.post('/Teams/:email', (req, res) => {
+    const user = login_info.filter((user)=> {
+        return user.email == req.params.email;
+    })[0];
+    const groupID = user.groupID;
     res.render('TeamsPage',
         {
+            groupID:groupID,
+            events:events,
             teamName:req.body.teamname,
             teamType:req.body.teamtype,
         })
 })
 
-app.get('/Settings', (req, res) => {
-    res.render('SettingsPage');
+app.get('/Settings/:email', (req, res) => {
+    res.render('SettingsPage',{emailAdd: req.params.email});
 });
 
 app.get('/CreateTeam', (req, res) => {
@@ -154,7 +172,6 @@ app.get('/ChangeStatus/:id',(req,res) =>{
     const event = events.filter((event)=> {
         return event.id == req.params.id;
     })[0]
-
     res.render('ChangeStatus',{
         eventID: event.id,
         eventName: event.name,
@@ -164,6 +181,14 @@ app.get('/ChangeStatus/:id',(req,res) =>{
         eventDate: event.date,
     })
 });
+
+app.get('/GroupChatList/:email',(req, res) =>{
+    const user = login_info.filter((user)=> {
+        return user.email == req.params.email;
+    })[0];
+    const groupID = user.groupID;
+    res.render('GroupChatList',{emailAdd:req.params.email, groupID: groupID});
+})
 
 // app.get('/:name', (req, res) => {
 //     res.render('Login', { name: req.params.name })

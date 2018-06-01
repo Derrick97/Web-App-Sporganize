@@ -23,12 +23,9 @@
         <div id="collapseOne" class="collapse">
             <div class="card-body">
                 <div class="list-group">
-                    <% events.forEach((event) => { %>
+                    <% groupID.forEach((id) => { %>
                     <a class="list-group-item">
-                        <h2 class="list-group-item-heading"><%= event.name %></h2>
-                        <h4 class="list-group-item-text"><%= event.day %> <%= event.date %></h4>
-                        <h4 class="list-group-item-text"><%= event.location %></h4>
-                        <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
+                        <h2 class="list-group-item-heading"><%= id %></h2>
                     </a>
                     <% }) %>
                 </div>
@@ -45,12 +42,9 @@
         <div id="collapseTwo" class="collapse">
             <div class="card-body">
                 <div class="list-group">
-                    <% events.forEach((event) => { %>
+                    <% groupID.forEach((id) => { %>
                     <a class="list-group-item">
-                        <h2 class="list-group-item-heading"><%= event.name %></h2>
-                        <h4 class="list-group-item-text"><%= event.day %> <%= event.date %></h4>
-                        <h4 class="list-group-item-text"><%= event.location %></h4>
-                        <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
+                        <h2 class="list-group-item-heading"><%= id %></h2>
                     </a>
                     <% }) %>
                 </div>
@@ -64,11 +58,11 @@
 <nav class="navbar navbar-default navbar-fixed-bottom" style="background-color:grey">
     <div class="container-fluid">
         <ul class="nav nav-tabs nav-justified">
-            <li><a href="/GroupChat" style="color:black"><h1>GroupChat</h1></a></li>
-            <li><a href="/Events" style="color:black"><h1>Events</h1></a></li>
-            <li><a href="/Photos" style="color:black"><h1>Photos</h1></a></li>
+            <li><a href="/GroupChatList/<%=emailAdd%>" style="color:black"><h1>GroupChat</h1></a></li>
+            <li><a href="/Events/<%=emailAdd%>" style="color:black"><h1>Events</h1></a></li>
+            <li><a href="/Photos/<%=emailAdd%>" style="color:black"><h1>Photos</h1></a></li>
             <li class="active"><a href="#" style="color:black"><h1>My Teams</h1></a></li>
-            <li><a href="/Settings" style="color:black"><h1>Settings</h1></a></li>
+            <li><a href="/Settings/<%=emailAdd%>" style="color:black"><h1>Settings</h1></a></li>
         </ul>
     </div>
 </nav>

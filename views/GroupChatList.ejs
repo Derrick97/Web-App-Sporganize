@@ -6,14 +6,30 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <title>GroupChat</title>
+    <title>Chat List</title>
 </head>
 <body>
-<h1>GroupChat</h1>
-<nav class="navbar navbar-fixed-bottom" style="background-color:grey">
+<div class="main">
+    <h1>Teams Information</h1>
+    <div class="row" style="text-align:center">
+        <div class="col-lg-12">
+            <div class="list-group">
+                <% groupID.forEach((id) => { %>
+                <a class="list-group-item">
+                    <h2 class="list-group-item-heading">
+                        <a href="/GroupChat/<%=emailAdd%>/<%=id%>">Group No.<%= id %></a>
+                    </h2>
+                </a>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="navbar navbar-default navbar-fixed-bottom" style="background-color:grey">
     <div class="container-fluid">
         <ul class="nav nav-tabs nav-justified">
-            <li class="active"><a href="/GroupChatList/<%=emailAdd%>" style="color:black"><h1>GroupChat</h1></a></li>
+            <li class="active"><a href="#" style="color:black"><h1>GroupChat</h1></a></li>
             <li><a href="/Events/<%=emailAdd%>" style="color:black"><h1>Events</h1></a></li>
             <li><a href="/Photos/<%=emailAdd%>" style="color:black"><h1>Photos</h1></a></li>
             <li><a href="/Teams/<%=emailAdd%>" style="color:black"><h1>My Teams</h1></a></li>
@@ -21,5 +37,6 @@
         </ul>
     </div>
 </nav>
+
 </body>
 </html>
