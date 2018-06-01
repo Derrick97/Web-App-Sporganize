@@ -2,12 +2,13 @@
 const express = require('express')
 const app = express()
 
+const server = require('http').createServer(app)
+
 const { Pool } = require('pg')
 const pool = new Pool()
 
-console.log(process.env)
-
-const expressWs = require('express-ws')(app);
+const WebSocket = require('ws')
+const wss = new WebSocket.Server({ server })
 
 const login_info = [
     {
@@ -142,7 +143,6 @@ app.get('/Events/:email', async (req, res) => {
                 'status': ''
             }
         })
-        console.log(db_events)
     } catch(e) {
         res.status(500).send(e.stack)
         return
@@ -150,6 +150,37 @@ app.get('/Events/:email', async (req, res) => {
 
     res.render('EventsPage', {events: db_events, emailAdd:req.params.email,});
 });
+
+
+wss.on('connection', (ws) => {
+    ws.on('open', () => {
+        console.log('ws opened')
+    })
+
+    ws.on('close', () => {
+        console.log('ws closed')
+    })
+
+    ws.on('error', (e) => {
+        console.log(e)
+    })
+
+    ws.on('message', async (data) => {
+        const json = JSON.parse(data)
+        const query = {
+            text: 'INSERT INTO events (eventname, starttime, duration, location) \
+                   VALUES ($1, $2, $3, $4)',
+            values: [json.eventname, json.starttime, json.duration, json.location]
+        }
+
+        try {
+            const resp = await pool.query(query)
+        } catch(e) {
+            console.log(e.stack)
+        }
+    })
+})
+
 
 app.get('/Events/:email/:teamname', (req, res) => {
     if (req.params.teamname == 'TeamA') {
@@ -222,6 +253,6 @@ app.get('/GroupChatList/:email',(req, res) =>{
 //     res.render('Login', { name: req.params.name })
 // })
 
-app.listen(8080, () => {
+server.listen(8080, () => {
     console.log("Running on port 8080")
 })

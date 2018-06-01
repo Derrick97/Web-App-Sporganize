@@ -55,6 +55,30 @@
             }
         }
     </style>
+
+    <script>
+        function addEvent() {
+            const extractval = (id) => {
+                const val = document.getElementById(id).value
+                document.getElementById(id).value = ""
+                return val
+            }
+
+            const json = {
+                'eventname': extractval('eventname'),
+                'starttime': extractval('starttime'),
+                'duration': extractval('duration'),
+                'location': extractval('location')
+            }
+
+            const ws = new WebSocket('ws://' + location.host + "/")
+
+            ws.onopen = () => {
+                ws.send(JSON.stringify(json))
+                location.reload()
+            }
+        }
+    </script>
 </head>
 <body>
 <div class="sidenav">
@@ -80,6 +104,13 @@
                     <a href="/ChangeStatus/<%= event.id %>" class="btn btn-info">Change Status</a>
                 </a>
                 <% }) %>
+                <a class ="list-group-item">
+                    Event name: <input type="text" id="eventname"><br/><br/>
+                    Event start time: <input type="text" id="starttime"><br/><br/>
+                    Event duration: <input type="text" id="duration"><br/><br/>
+                    Event location: <input type="text" id="location"><br/><br/>
+                    <button type="button" onclick="addEvent()">Add event</button>
+                </a>
             </div>
         </div>
     </div>
