@@ -16,7 +16,6 @@ pack:
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
   script:
-    - pm2 deploy dev setup --force
     - pm2 deploy dev --force
   only:
     - master
