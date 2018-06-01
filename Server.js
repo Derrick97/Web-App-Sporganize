@@ -53,14 +53,7 @@ const events = [
         location: 'Imperial Sports Ground',
         status: 'You Declined'
     },
-    {
-        id: 3,
-        name: 'Training',
-        day: 'Friday',
-        date: '25rd May 10:00am',
-        location: 'Imperial Sports Ground',
-        status: 'Unknown'
-    }
+
 ]
 
 const eventsempty = [
@@ -99,6 +92,36 @@ const events3 = [
     }
 ]
 
+const eventsprevious = [
+    {
+        id: 1,
+        name: 'match VS UCL',
+        day: 'Wednesday',
+        date: '23rd May 2:00pm',
+        location: 'UCL Sports Ground',
+        status: 'You Attended'
+    },
+    {
+        id: 2,
+        name: 'match VS LSE',
+        day: 'Thursday',
+        date: '24rd May 4:00pm',
+        location: 'Imperial Sports Ground',
+        status: 'You Declined'
+    }
+]
+
+const eventsupcoming = [
+    {
+        id: 3,
+        name: 'Training',
+        day: 'Friday',
+        date: '25rd May 10:00am',
+        location: 'Imperial Sports Ground',
+        status: 'Unknown'
+    }
+]
+
 app.set('view engine', 'ejs');
 
  let bodyParser = require('body-parser');
@@ -120,7 +143,7 @@ app.post('/login/:email', (req, res) => {
     if (info.pwd == req.body.pwd) {
         if(info.eventsID.length>0){
             //Not all events, should be queried from DB.
-            res.render('EventsPage', {events: events,emailAdd:info.email});
+            res.render('EventsPage', {eventsprevious: eventsprevious, eventsupcoming: eventsupcoming, emailAdd:info.email});
         } else {
             res.render('MainPage');
         }
@@ -139,7 +162,7 @@ app.get('/GroupChat/:email/:teamID', (req, res) => {
 });
 
 app.get('/Events/:email', (req, res) => {
-    res.render('EventsPage', {events: events, emailAdd:req.params.email,});
+    res.render('EventsPage', {eventsprevious: eventsprevious, eventsupcoming: eventsupcoming, emailAdd:req.params.email,});
 });
 
 app.get('/Events/:email/:teamname', (req, res) => {
