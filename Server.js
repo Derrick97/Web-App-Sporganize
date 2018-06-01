@@ -1,6 +1,12 @@
 "use strict";
 const express = require('express')
 const app = express()
+
+const { Pool } = require('pg')
+const pool = new Pool()
+
+const expressWs = require('express-ws')(app);
+
 const login_info = [
     {
         id: 1,
@@ -83,9 +89,9 @@ const events3 = [
 
 app.set('view engine', 'ejs');
 
- let bodyParser = require('body-parser');
- app.use(bodyParser.json());
- app.use(bodyParser.urlencoded({extended:true}));
+let bodyParser = require('body-parser');
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended:true}));
 
 app.get('/', (req, res) => {
     res.render('Login')
@@ -120,8 +126,27 @@ app.get('/GroupChat/:email/:teamID', (req, res) => {
         });
 });
 
-app.get('/Events/:email', (req, res) => {
-    res.render('EventsPage', {events: events, emailAdd:req.params.email,});
+app.get('/Events/:email', async (req, res) => {
+    let db_events = {}
+    try {
+        const resp = await pool.query('SELECT * FROM events')
+        db_events = resp.rows.map(ev => {
+            return {
+                'id': ev.eventid,
+                'name': ev.eventname,
+                'date': ev.starttime,
+                'day': '',
+                'location': ev.location,
+                'status': ''
+            }
+        })
+        console.log(db_events)
+    } catch(e) {
+        res.status(500).send(e.stack)
+        return
+    }
+
+    res.render('EventsPage', {events: db_events, emailAdd:req.params.email,});
 });
 
 app.get('/Events/:teamname', (req, res) => {
@@ -143,7 +168,8 @@ app.get('/Teams/:email', (req, res) => {
         return user.email == req.params.email;
     })[0];
     const groupID = user.groupID;
-    res.render('TeamsPage', {events: events, emailAdd:req.params.email,groupID:groupID});
+
+    res.render('TeamsPage', {events: {}, emailAdd:req.params.email,groupID:groupID});
 });
 
 app.post('/Teams/:email', (req, res) => {
