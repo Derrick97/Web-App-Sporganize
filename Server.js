@@ -5,6 +5,8 @@ const app = express()
 const { Pool } = require('pg')
 const pool = new Pool()
 
+console.log(process.env)
+
 const expressWs = require('express-ws')(app);
 
 const login_info = [

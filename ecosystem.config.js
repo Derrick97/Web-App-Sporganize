@@ -9,6 +9,12 @@ module.exports = {
       'script': 'Server.js',
       'env': {
         'NODE_ENV': 'dev'
+        'PGHOST': process.env.PGHOST_DEV,
+        'PGPORT': process.env.PGPORT_DEV,
+        'PGDATABASE': process.env.PGDATABASE_DEV,
+        'PGUSER': process.env.PGUSER_DEV,
+        'PGPASSWORD': process.env.PGPASSWORD_DEV
+
       },
       'env_production': {
         'NODE_ENV': 'production'
