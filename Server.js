@@ -43,6 +43,42 @@ const events = [
     }
 ]
 
+const eventsempty = [
+]
+
+const events1 = [
+    {
+        id: 1,
+        name: 'match VS UCL',
+        day: 'Wednesday',
+        date: '23rd May 2:00pm',
+        location: 'UCL Sports Ground',
+        status: 'You Attended'
+    }
+]
+
+const events2 = [
+    {
+        id: 2,
+        name: 'match VS LSE',
+        day: 'Thursday',
+        date: '24rd May 4:00pm',
+        location: 'Imperial Sports Ground',
+        status: 'You Declined'
+    }
+]
+
+const events3 = [
+    {
+        id: 3,
+        name: 'Training',
+        day: 'Friday',
+        date: '25rd May 10:00am',
+        location: 'Imperial Sports Ground',
+        status: 'Unknown'
+    }
+]
+
 app.set('view engine', 'ejs');
 
  let bodyParser = require('body-parser');
@@ -78,6 +114,16 @@ app.get('/GroupChat', (req, res) => {
 
 app.get('/Events', (req, res) => {
     res.render('EventsPage', {events: events});
+});
+
+app.get('/Events/:teamname', (req, res) => {
+    if (req.params.teamname == 'TeamA') {
+        res.render('EventsPage', {events: events1});
+    } else  if (req.params.teamname == 'TeamB') {
+        res.render('EventsPage', {events: events2});
+    } else  if (req.params.teamname == 'TeamC') {
+        res.render('EventsPage', {events: events3});
+    }
 });
 
 app.get('/Photos', (req, res) => {
