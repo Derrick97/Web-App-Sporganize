@@ -18,6 +18,24 @@ const login_info = [
     }
 ];
 
+const accessControl = [
+    {
+        id: 1,
+        groupID: 21,
+        accessLevel: 1,
+    },
+    {
+        id: 1,
+        groupID: 22,
+        accessLevel: 2,
+    },
+    {
+        id: 1,
+        groupID: 23,
+        accessLevel: 2,
+    }
+]
+
 const events = [
     {
         id: 1,
@@ -142,18 +160,29 @@ app.get('/Teams/:email', (req, res) => {
     const user = login_info.filter((user)=> {
         return user.email == req.params.email;
     })[0];
-    const groupID = user.groupID;
-    res.render('TeamsPage', {events: events, emailAdd:req.params.email,groupID:groupID});
+    const createGroupID = [21];
+    const joinGroupID = [22, 23];
+    //The two attribute above should be queried from database.
+    res.render('TeamsPage', {
+        events: events,
+        emailAdd:req.params.email,
+        createGroupID: createGroupID,
+        joinGroupID: joinGroupID,});
 });
 
 app.post('/Teams/:email', (req, res) => {
     const user = login_info.filter((user)=> {
         return user.email == req.params.email;
     })[0];
-    const groupID = user.groupID;
+    const createGroupID = [21];
+    const joinGroupID = [22, 23];
+    //The two attribute above should be queried from database.
+    //In post method, the teamname and team type in req.body should be sent to database first, and then queried
+    // from database to get the latest info of all teams.
     res.render('TeamsPage',
         {
-            groupID:groupID,
+            createGroupID: createGroupID,
+            joinGroupID: joinGroupID,
             events:events,
             teamName:req.body.teamname,
             teamType:req.body.teamtype,
