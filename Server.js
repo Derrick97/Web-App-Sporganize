@@ -183,6 +183,7 @@ app.post('/Teams/:email', (req, res) => {
         {
             createGroupID: createGroupID,
             joinGroupID: joinGroupID,
+            emailAdd:req.params.email,
             events:events,
             teamName:req.body.teamname,
             teamType:req.body.teamtype,
@@ -193,8 +194,8 @@ app.get('/Settings/:email', (req, res) => {
     res.render('SettingsPage',{emailAdd: req.params.email});
 });
 
-app.get('/CreateTeam', (req, res) => {
-    res.render('CreateTeam');
+app.get('/CreateTeam/:email', (req, res) => {
+    res.render('CreateTeam', {emailAdd: req.params.email});
 })
 
 app.get('/ChangeStatus/:id',(req,res) =>{
