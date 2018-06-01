@@ -18,6 +18,24 @@ const login_info = [
     }
 ];
 
+const accessControl = [
+    {
+        id: 1,
+        groupID: 21,
+        accessLevel: 1,
+    },
+    {
+        id: 1,
+        groupID: 22,
+        accessLevel: 2,
+    },
+    {
+        id: 1,
+        groupID: 23,
+        accessLevel: 2,
+    }
+]
+
 const events = [
     {
         id: 1,
@@ -149,34 +167,46 @@ app.get('/Events/:email', (req, res) => {
 
 app.get('/Events/:email/:teamname', (req, res) => {
     if (req.params.teamname == 'TeamA') {
-        res.render('EventsPage', {events: events1});
+        res.render('EventsPage', {events: events1, emailAdd:req.params.email,});
     } else  if (req.params.teamname == 'TeamB') {
-        res.render('EventsPage', {events: events2});
+        res.render('EventsPage', {events: events2, emailAdd:req.params.email,});
     } else  if (req.params.teamname == 'TeamC') {
-        res.render('EventsPage', {events: events3});
+        res.render('EventsPage', {events: events3, emailAdd:req.params.email,});
     }
 });
 
-app.get('/Photos', (req, res) => {
-    res.render('PhotosPage');
+app.get('/Photos/:email', (req, res) => {
+    res.render('PhotosPage',{emailAdd:req.params.email});
 });
 
 app.get('/Teams/:email', (req, res) => {
     const user = login_info.filter((user)=> {
         return user.email == req.params.email;
     })[0];
-    const groupID = user.groupID;
-    res.render('TeamsPage', {events: events, emailAdd:req.params.email,groupID:groupID});
+    const createGroupID = [21];
+    const joinGroupID = [22, 23];
+    //The two attribute above should be queried from database.
+    res.render('TeamsPage', {
+        events: events,
+        emailAdd:req.params.email,
+        createGroupID: createGroupID,
+        joinGroupID: joinGroupID,});
 });
 
 app.post('/Teams/:email', (req, res) => {
     const user = login_info.filter((user)=> {
         return user.email == req.params.email;
     })[0];
-    const groupID = user.groupID;
+    const createGroupID = [21];
+    const joinGroupID = [22, 23];
+    //The two attribute above should be queried from database.
+    //In post method, the teamname and team type in req.body should be sent to database first, and then queried
+    // from database to get the latest info of all teams.
     res.render('TeamsPage',
         {
-            groupID:groupID,
+            createGroupID: createGroupID,
+            joinGroupID: joinGroupID,
+            emailAdd:req.params.email,
             events:events,
             teamName:req.body.teamname,
             teamType:req.body.teamtype,
@@ -187,8 +217,8 @@ app.get('/Settings/:email', (req, res) => {
     res.render('SettingsPage',{emailAdd: req.params.email});
 });
 
-app.get('/CreateTeam', (req, res) => {
-    res.render('CreateTeam');
+app.get('/CreateTeam/:email', (req, res) => {
+    res.render('CreateTeam', {emailAdd: req.params.email});
 })
 
 app.get('/ChangeStatus/:id',(req,res) =>{
