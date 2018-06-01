@@ -1,10 +1,5 @@
-# This file is a template, and might need editing before it works on your project.
-# Official framework image. Look for the different tagged releases at:
-# https://hub.docker.com/r/library/node/tags/
-image: node:latest
+image: keymetrics/pm2:latest-jessie
 
-# This folder is cached between builds
-# http://docs.gitlab.com/ce/ci/yaml/README.html#cache
 cache:
   paths:
   - node_modules/
@@ -17,9 +12,10 @@ test:
 
 pack:
   stage: deploy
+  before_script:
+    - eval $(ssh-agent -s)
+    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
   script:
-    - npm install
-    - npm pack
-  artifacts:
-    paths:
-    - ./*.tgz
+    - pm2 deploy dev
+  only:
+    - master
