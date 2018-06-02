@@ -8,7 +8,7 @@ module.exports = {
       'name'  : 'Sporganise',
       'script': 'Server.js',
       'env': {
-        'NODE_ENV': 'dev'
+        'NODE_ENV': 'dev',
       },
       'env_production': {
         'NODE_ENV': 'production'

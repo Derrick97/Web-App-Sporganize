@@ -4,7 +4,7 @@ CREATE TABLE UserDetails (
 	SName varchar(255),
 	Gender enum('male', 'female', 'other'),
 	Email varchar(255),
-	MobileNo int,
+	MobileNo varchar(255),
 	PasswordHash varchar(255)
 );
 

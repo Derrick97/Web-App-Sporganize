@@ -55,6 +55,30 @@
             }
         }
     </style>
+
+    <script>
+        function addEvent() {
+            const extractval = (id) => {
+                const val = document.getElementById(id).value
+                document.getElementById(id).value = ""
+                return val
+            }
+
+            const json = {
+                'eventname': extractval('eventname'),
+                'starttime': extractval('starttime'),
+                'duration': extractval('duration'),
+                'location': extractval('location')
+            }
+
+            const ws = new WebSocket('ws://' + location.host + "/")
+
+            ws.onopen = () => {
+                ws.send(JSON.stringify(json))
+                location.reload()
+            }
+        }
+    </script>
 </head>
 <body>
 <div class="sidenav">
@@ -100,27 +124,14 @@
                    style="font-size:20px; color:black; padding-left:5px">
                     <span class="fa fa-caret-right"></span> Previous Events
                 </a>
-            </div>
-            <div id="collapseTwo" class="collapse">
-                <div class="card-body">
-                    <div class="list-group" style="text-align:center">
-                        <% if (eventsupcoming.length == 0) { %>
-                        <h2 style="text-align: center">You don't have any previous event!</h2>
-                        <% } else { %>
-                        <% eventsprevious.forEach((event) => { %>
-                        
-                        <a class="list-group-item">
-                            <h2 class="list-group-item-heading"><%= event.name %></h2>
-                            <h4 class="list-group-item-text"><%= event.day %> <%= event.date %></h4>
-                            <h4 class="list-group-item-text"><%= event.location %></h4>
-                            <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
-
-                        </a>
-
-                        <% }) %>
-                        <% } %>
-                    </div>
-                </div>
+                <% }) %>
+                <a class ="list-group-item">
+                    Event name: <input type="text" id="eventname"><br/><br/>
+                    Event start time: <input type="text" id="starttime"><br/><br/>
+                    Event duration: <input type="text" id="duration"><br/><br/>
+                    Event location: <input type="text" id="location"><br/><br/>
+                    <button type="button" onclick="addEvent()">Add event</button>
+                </a>
             </div>
         </div>
     </div>
