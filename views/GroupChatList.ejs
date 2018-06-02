@@ -8,32 +8,79 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>Chat List</title>
 </head>
+<style>
+    body {
+        font-family: "Lato", sans-serif;
+    }
+
+    .sidenav {
+        height: 100%;
+        width: 200px;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        padding-top: 20px;
+    }
+
+    .sidenav a {
+        padding: 6px 6px 6px 32px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+    }
+
+    .sidenav a:hover {
+        color: #f1f1f1;
+    }
+
+    .sidenav a.active {
+        background-color: ghostwhite;
+        color: black;
+    }
+
+    .main {
+        margin-left: 200px; /* Same as the width of the sidenav */
+    }
+
+    @media screen and (max-height: 450px) {
+        .sidenav {
+            padding-top: 15px;
+        }
+
+        .sidenav a {
+            font-size: 18px;
+        }
+    }
+</style>
 <body>
+
+<div class="sidenav">
+    <% groupID.forEach((id) => { %>
+    <% if (activeid == id) {%>
+    <a class="active" href="/GroupChatList/<%= emailAdd %>/<%= id %>" id="<%= id%>">Group No.<%= id %></a>
+    <% } else {%>
+    <a href="/GroupChatList/<%= emailAdd %>/<%= id %>" id="<%= id%>">Group No.<%= id %></a>
+    <%}%>
+    <% }) %>
+
+</div>
+
 <div class="main">
     <h1>Teams Information</h1>
-    <div class="row" style="text-align:center">
-        <div class="col-lg-12">
-            <div class="list-group">
-                <% groupID.forEach((id) => { %>
-                      <li class="list-group-item">
-                          <h2>
-                              <a href="/GroupChat/<%=emailAdd%>/<%=id%>">Group No.<%= id %></a>
-                          </h2>
-                      </li>
-                <% }) %>
-            </div>
-        </div>
-    </div>
 </div>
 
 <nav class="navbar navbar-default navbar-fixed-bottom" style="background-color:grey">
     <div class="container-fluid">
         <ul class="nav nav-tabs nav-justified">
             <li class="active"><a href="#" style="color:black"><h1>GroupChat</h1></a></li>
-            <li><a href="/Events/<%=emailAdd%>" style="color:black"><h1>Events</h1></a></li>
-            <li><a href="/Photos/<%=emailAdd%>" style="color:black"><h1>Photos</h1></a></li>
-            <li><a href="/Teams/<%=emailAdd%>" style="color:black"><h1>My Teams</h1></a></li>
-            <li><a href="/Settings/<%=emailAdd%>" style="color:black"><h1>Settings</h1></a></li>
+            <li><a href="/Events/<%= emailAdd %>" style="color:black"><h1>Events</h1></a></li>
+            <li><a href="/Photos/<%= emailAdd %>" style="color:black"><h1>Photos</h1></a></li>
+            <li><a href="/Teams/<%= emailAdd %>" style="color:black"><h1>My Teams</h1></a></li>
+            <li><a href="/Settings/<%= emailAdd %>" style="color:black"><h1>Settings</h1></a></li>
         </ul>
     </div>
 </nav>
