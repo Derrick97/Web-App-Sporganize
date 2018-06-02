@@ -22,6 +22,24 @@ const login_info = [
     }
 ];
 
+const accessControl = [
+    {
+        id: 1,
+        groupID: 21,
+        accessLevel: 1,
+    },
+    {
+        id: 1,
+        groupID: 22,
+        accessLevel: 2,
+    },
+    {
+        id: 1,
+        groupID: 23,
+        accessLevel: 2,
+    }
+]
+
 const events = [
     {
         id: 1,
@@ -48,6 +66,37 @@ const events = [
         status: 'Unknown'
     }
 ]
+
+const eventsprevious = [
+    {
+        id: 1,
+        name: 'match VS UCL',
+        day: 'Wednesday',
+        date: '23rd May 2:00pm',
+        location: 'UCL Sports Ground',
+        status: 'You Attended'
+    },
+    {
+        id: 2,
+        name: 'match VS LSE',
+        day: 'Thursday',
+        date: '24rd May 4:00pm',
+        location: 'Imperial Sports Ground',
+        status: 'You Declined'
+    }
+]
+
+const eventsupcoming = [
+    {
+        id: 3,
+        name: 'Training',
+        day: 'Friday',
+        date: '25rd May 10:00am',
+        location: 'Imperial Sports Ground',
+        status: 'Unknown'
+    }
+]
+
 
 const eventsempty = [
 ]
@@ -106,7 +155,7 @@ app.post('/login/:email', (req, res) => {
     if (info.pwd == req.body.pwd) {
         if(info.eventsID.length>0){
             //Not all events, should be queried from DB.
-            res.render('EventsPage', {events: events,emailAdd:info.email});
+            res.render('EventsPage', {eventsprevious: eventsprevious, eventsupcoming: eventsupcoming, emailAdd: info.email});
         } else {
             res.render('MainPage');
         }
@@ -149,11 +198,11 @@ app.get('/Events/:email', async (req, res) => {
 
 app.get('/Events/:email/:teamname', (req, res) => {
     if (req.params.teamname == 'TeamA') {
-        res.render('EventsPage', {events: events1, emailAdd:req.params.email,});
+        res.render('EventsPage', {eventsprevious: events1, eventsupcoming: eventsempty, emailAdd:req.params.email,});
     } else  if (req.params.teamname == 'TeamB') {
-        res.render('EventsPage', {events: events2, emailAdd:req.params.email,});
+        res.render('EventsPage', {eventsprevious: events2, eventsupcoming: eventsempty, emailAdd:req.params.email,});
     } else  if (req.params.teamname == 'TeamC') {
-        res.render('EventsPage', {events: events3, emailAdd:req.params.email,});
+        res.render('EventsPage', {eventsprevious: eventsempty, eventsupcoming: events3, emailAdd:req.params.email,});
     }
 });
 
@@ -165,19 +214,31 @@ app.get('/Teams/:email', (req, res) => {
     const user = login_info.filter((user)=> {
         return user.email == req.params.email;
     })[0];
-    const groupID = user.groupID;
+    const createGroupID = [21];
+    const joinGroupID = [22, 23];
+    //The two attribute above should be queried from database.
+    res.render('TeamsPage', {
+        events: events,
+        emailAdd:req.params.email,
+        createGroupID: createGroupID,
+        joinGroupID: joinGroupID,});
 
-    res.render('TeamsPage', {events: {}, emailAdd:req.params.email,groupID:groupID});
 });
 
 app.post('/Teams/:email', (req, res) => {
     const user = login_info.filter((user)=> {
         return user.email == req.params.email;
     })[0];
-    const groupID = user.groupID;
+    const createGroupID = [21];
+    const joinGroupID = [22, 23];
+    //The two attribute above should be queried from database.
+    //In post method, the teamname and team type in req.body should be sent to database first, and then queried
+    // from database to get the latest info of all teams.
     res.render('TeamsPage',
         {
-            groupID:groupID,
+            createGroupID: createGroupID,
+            joinGroupID: joinGroupID,
+            emailAdd:req.params.email,
             events:events,
             teamName:req.body.teamname,
             teamType:req.body.teamtype,
