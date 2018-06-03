@@ -109,7 +109,9 @@
                         <h4 class="list-group-item-text"><%= event.day %> <%= event.date %></h4>
                         <h4 class="list-group-item-text"><%= event.location %></h4>
                         <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
-                        <a href="/ChangeStatus/<%= event.id %>" class="btn btn-info">Change Status</a>
+                        <a href="" class="btn btn-info">Accept</a>
+                        <a href="" class="btn btn-info">Decline</a>
+                        <a href="/ChangeStatus/<%= event.id %>" class="btn btn-info">View Details</a>
                     </div>
                     <% }) %>
                     <% } %>
@@ -134,6 +136,7 @@
                         <h4 class="list-group-item-text"><%= event.day %> <%= event.date %></h4>
                         <h4 class="list-group-item-text"><%= event.location %></h4>
                         <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
+                        <a href="/ChangeStatus/<%= event.id %>" class="btn btn-info">View Details</a>
                     </div>
                     <% }) %>
                     <% } %>
