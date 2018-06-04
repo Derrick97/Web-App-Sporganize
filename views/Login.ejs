@@ -12,23 +12,86 @@
             background-color: #f45838;
             color: #fff;
         }
+        /* Container holding the image and the text */
+        .containimage {
+            position: relative;
+            text-align: center;
+            color: white;
+        }
+        /* Centered text */
+        .centered {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        /* index */
     </style>
 </head>
 <body>
+<div class="containimage">
+<img src="http://www.sportq.com/img/pc_index_hd.jpg" height="300px" width="100%">
+    <div class="centered">
+        <p style="font-size: 100px">Sporganize</p>
+        <p> The best solution of managing sport events.</p>
 
-<div class="jumbotron text-center">
-    <h1>Sporganize</h1>
-    <p> The best solution of managing sport events.</p>
+    </div>
 </div>
 
 <div class="container">
-    <h3>No account yet? Easy Registration here.</h3>
-
+    <h3>No account yet? Easy <a href="" data-toggle="modal" data-target="#myModal">Registration</a> here.</h3>
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="text-align: center">Registration</h4>
+                </div>
+                <div class="modal-body" align="center">
+                    <div>
+                        <label class="control-label">Email:</label><br>
+                        <input class="placeholder-no-fix" type="text" maxlength="12" placeholder="example@gmail.com" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" autofocus />
+                    </div>
+                    <div>
+                        <label class="control-label">Password:</label><br>
+                        <input type="text" maxlength="12" placeholder="Password" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" autofocus />
+                    </div>
+                    <div>
+                        <label class="control-label">First Name:</label><br>
+                        <input type="text" maxlength="12" placeholder="First Name" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" autofocus />
+                    </div>
+                    <div>
+                        <label class="control-label">Surname:</label><br>
+                        <input type="text" maxlength="12" placeholder="Surname" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" autofocus />
+                    </div>
+                    <div>
+                        <label class="control-label">Gender:</label><br>
+                        <input type="text" maxlength="12" placeholder="Email" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" autofocus />
+                    </div>
+                    <div>
+                        <label class="control-label">Birthday:</label><br>
+                        <input type="text" maxlength="12" placeholder="Email" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" autofocus />
+                    </div>
+                    <div>
+                        <label class="control-label">Mobile Number:</label><br>
+                        <input type="text" maxlength="12" placeholder="Mobile Number" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" autofocus />
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div align="center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Register Now</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <div class="container">
     <h3>Already has an account?</h3>
-    <form id="Login_Area" class="form-horizontal" method="post" >
+    <form id="Login_Area" class="form-horizontal" method="post">
         <div class="form-group">
             <label class="control-label col-sm-2" for="email">Email:</label>
             <div class="col-sm-10">

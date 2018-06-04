@@ -55,7 +55,30 @@
 
 <div>
     <a href="/CreateTeam/<%=emailAdd %>" class="btn btn-info">Create a new team!</a>
-    <a href="#" class="btn btn-info">Join a team via code.</a>
+    <a href="" class="btn btn-info" data-toggle="modal" data-target="#myModal">Join a team via code.</a>
+</div>
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" style="text-align: center">Join a team</h4>
+            </div>
+            <div class="modal-body" align="center">
+                <div>
+                    <label class="control-label">Invitation code:</label><br>
+                    <input class="placeholder-no-fix" type="text" maxlength="12" placeholder="Invitation code" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" autofocus />
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div align="center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Join</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <nav class="navbar navbar-default navbar-fixed-bottom" style="background-color:grey">
