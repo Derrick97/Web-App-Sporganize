@@ -111,7 +111,7 @@
                         <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
                         <a href="" class="btn btn-info">Accept</a>
                         <a href="" class="btn btn-info">Decline</a>
-                        <a href="/ChangeStatus/<%= event.id %>" class="btn btn-info">View Details</a>
+                        <a href="/ViewDetails/<%= event.id %>" class="btn btn-info">View Details</a>
                     </div>
                     <% }) %>
                     <% } %>
@@ -136,7 +136,7 @@
                         <h4 class="list-group-item-text"><%= event.day %> <%= event.date %></h4>
                         <h4 class="list-group-item-text"><%= event.location %></h4>
                         <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
-                        <a href="/ChangeStatus/<%= event.id %>" class="btn btn-info">View Details</a>
+                        <a href="/ViewDetails/<%= event.id %>" class="btn btn-info">View Details</a>
                     </div>
                     <% }) %>
                     <% } %>
@@ -155,7 +155,7 @@
 <nav class="navbar navbar-fixed-bottom" style="background-color:grey">
     <div class="container-fluid">
         <ul class="nav nav-tabs nav-justified">
-            <li><a href="/GroupChatList/<%= emailAdd %>" style="color:black"><h1>GroupChat</h1></a></li>
+            <li><a href="/GroupChatPage/<%= emailAdd %>" style="color:black"><h1>GroupChat</h1></a></li>
             <li class="active"><a href="#" style="color:black"><h1>Events</h1></a></li>
             <li><a href="/Photos/<%= emailAdd %>" style="color:black"><h1>Photos</h1></a></li>
             <li><a href="/Teams/<%= emailAdd %>" style="color:black"><h1>My Teams</h1></a></li>

@@ -61,9 +61,9 @@
 <div class="sidenav">
     <% groupID.forEach((id) => { %>
     <% if (activeid == id) {%>
-    <a class="active" href="/GroupChatList/<%= emailAdd %>/<%= id %>" id="<%= id%>">Group No.<%= id %></a>
+    <a class="active" href="/GroupChatPage/<%= emailAdd %>/<%= id %>" id="<%= id%>">Group No.<%= id %></a>
     <% } else {%>
-    <a href="/GroupChatList/<%= emailAdd %>/<%= id %>" id="<%= id%>">Group No.<%= id %></a>
+    <a href="/GroupChatPage/<%= emailAdd %>/<%= id %>" id="<%= id%>">Group No.<%= id %></a>
     <%}%>
     <% }) %>
 </div>
