@@ -33,7 +33,7 @@
 <img src="http://www.sportq.com/img/pc_index_hd.jpg" height="300px" width="100%">
     <div class="centered">
         <p style="font-size: 100px">Sporganize</p>
-        <p> The best solution of managing sport events.</p>
+        <h4> The best solution of managing sport events.</h4>
 
     </div>
 </div>
@@ -52,31 +52,34 @@
                 <div class="modal-body" align="center">
                     <div>
                         <label class="control-label">Email:</label><br>
-                        <input class="placeholder-no-fix" type="text" maxlength="12" placeholder="example@gmail.com" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" autofocus />
+                        <input class="placeholder-no-fix" type="text" maxlength="100" placeholder="example@gmail.com" id="UserEmail" name="useremail" />
                     </div>
                     <div>
                         <label class="control-label">Password:</label><br>
-                        <input type="text" maxlength="12" placeholder="Password" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" autofocus />
+                        <input type="text" maxlength="16" autocomplete="off" placeholder="Password" id="Password" name="password" onkeyup="value=value.replace(/[^0-9A-Za-z_]/g,'')" />
+                    </div>
+                    <div>
+                        <label class="control-label">Confirm Password:</label><br>
+                        <input type="text" maxlength="16" autocomplete="off" placeholder="Confirm Password" id="CPassword" name="cpassword" onkeyup="value=value.replace(/[^0-9A-Za-z_]/g,'')" />
                     </div>
                     <div>
                         <label class="control-label">First Name:</label><br>
-                        <input type="text" maxlength="12" placeholder="First Name" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" autofocus />
+                        <input type="text" maxlength="30" placeholder="First Name" id="FirstName" name="firstname" onkeyup="value=value.replace(/[^[A-Za-z]/ig,'')" />
                     </div>
                     <div>
                         <label class="control-label">Surname:</label><br>
-                        <input type="text" maxlength="12" placeholder="Surname" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" autofocus />
+                        <input type="text" maxlength="30" placeholder="Surname" id="Surname" name="surname" onkeyup="value=value.replace(/[^[A-Za-z]/i,'')" />
                     </div>
                     <div>
                         <label class="control-label">Gender:</label><br>
-                        <input type="text" maxlength="12" placeholder="Email" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" autofocus />
-                    </div>
-                    <div>
-                        <label class="control-label">Birthday:</label><br>
-                        <input type="text" maxlength="12" placeholder="Email" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" autofocus />
+                        <select name="sex">
+                            <option value="1">male</option>
+                            <option value="2">female</option>
+                        </select>
                     </div>
                     <div>
                         <label class="control-label">Mobile Number:</label><br>
-                        <input type="text" maxlength="12" placeholder="Mobile Number" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" autofocus />
+                        <input type="text" maxlength="16" placeholder="Mobile Number" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\d]/g,'')" />
                     </div>
                 </div>
                 <div class="modal-footer">
