@@ -217,8 +217,8 @@ app.post('/login/:email', (req, res) => {
 });
 
 
-app.get('/GroupChatList/:email/:teamID', (req, res) => {
-    res.render('GroupChatList',
+app.get('/GroupChatPage/:email/:teamID', (req, res) => {
+    res.render('GroupChatPage',
         {
             groupID: [21, 22, 23],
             activeid: req.params.teamID,
@@ -227,12 +227,12 @@ app.get('/GroupChatList/:email/:teamID', (req, res) => {
         });
 });
 
-app.get('/GroupChatList/:email', (req, res) => {
+app.get('/GroupChatPage/:email', (req, res) => {
     const user = login_info.filter((user) => {
         return user.email == req.params.email;
     })[0];
     const groupID = user.groupID;
-    res.render('GroupChatList', {emailAdd: req.params.email, groupID: groupID, activeid: groupID[0]});
+    res.render('GroupChatPage', {emailAdd: req.params.email, groupID: groupID, activeid: groupID[0]});
 })
 
 app.get('/Events/:email', async (req, res) => {
@@ -354,11 +354,11 @@ app.get('/CreateTeam', (req, res) => {
     res.render('CreateTeam');
 })
 
-app.get('/ChangeStatus/:id', (req, res) => {
+app.get('/ViewDetails/:id', (req, res) => {
     const event = events.filter((event) => {
         return event.id == req.params.id;
     })[0]
-    res.render('ChangeStatus', {
+    res.render('ViewDetails', {
         eventID: event.id,
         eventName: event.name,
         eventStatus: event.status,
