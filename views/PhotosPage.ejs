@@ -7,9 +7,74 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>Photos</title>
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+        }
+
+        .sidenav {
+            height: 100%;
+            width: 200px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            padding-top: 20px;
+        }
+
+        .sidenav a {
+            padding: 6px 6px 6px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+        }
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav a.active {
+            background-color: ghostwhite;
+            color: black;
+        }
+
+        .main {
+            margin-left: 200px; /* Same as the width of the sidenav */
+        }
+
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
+
+            .sidenav a {
+                font-size: 18px;
+            }
+        }
+    </style>
 </head>
 <body>
 <h1>Photos</h1>
+
+<div class="container">
+        <input type="button" value="Upload" onclick="location.href = '/Upload/<%=emailAdd%>'">
+</div>
+
+
+<div class="sidenav">
+    <a class="active" href="/Photos/<%= emailAdd %>">All Events</a>
+    <% eventsID.forEach((eventID) => { %>
+    <% if (activeID == eventID) {%>
+    <a class="active" href="/Photos/<%= emailAdd %>/<%= eventID %>" >Event No.<%= eventID %></a>
+    <% } else {%>
+    <a href="/Photos/<%= emailAdd %>/<%= eventID %>" >Event No.<%= eventID %></a>
+    <%}%>
+    <% }) %>
+</div>
+
 <nav class="navbar navbar-fixed-bottom" style="background-color:grey">
     <div class="container-fluid">
         <ul class="nav nav-tabs nav-justified">

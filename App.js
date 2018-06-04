@@ -134,6 +134,14 @@ const events3 = [
     }
 ]
 
+function queryUser(email){
+    const user_info = login_info.filter((login) => {
+        return login.email == email;
+    })[0];
+    return user_info;
+}
+
+
 app.set('view engine', 'ejs');
 
 let bodyParser = require('body-parser');
@@ -149,9 +157,7 @@ app.get('/Login', (req, res) => {
 });
 
 app.post('/login/:email', (req, res) => {
-    const info = login_info.filter((login) => {
-        return login.email == req.body.email;
-    })[0]
+    const info = queryUser(req.params.email);
     if (info.pwd == req.body.pwd) {
         if(info.eventsID.length>0){
             //Not all events, should be queried from DB.
@@ -217,7 +223,24 @@ app.get('/Events/:email/:teamname', (req, res) => {
 });
 
 app.get('/Photos/:email', (req, res) => {
-    res.render('PhotosPage',{emailAdd:req.params.email});
+    const user = queryUser(req.params.email);
+    res.render('PhotosPage',
+        {
+            emailAdd:req.params.email,
+            eventsID:user.eventsID,
+            activeID:-1,
+        });
+});
+
+app.get('/Photos/:email/:eventID', (req, res) => {
+    const user = queryUser(req.params.email);
+    res.render('PhotosPage',
+        {
+            emailAdd:req.params.email,
+            eventID:req.params.eventID,
+            eventsID:user.eventsID,
+            activeID:req.params.eventID,
+        });
 });
 
 app.get('/Teams/:email', (req, res) => {
@@ -274,6 +297,12 @@ app.get('/ChangeStatus/:id',(req,res) =>{
         eventDay: event.day,
         eventLocation: event.location,
         eventDate: event.date,
+    })
+});
+
+app.get('/Upload/:email',(req, res) => {
+    res.render('UploadPhotos', {
+        emailAdd: req.params.email,
     })
 });
 
