@@ -23,9 +23,10 @@
         <div id="collapseOne" class="collapse">
             <div class="card-body">
                 <div class="list-group">
-                    <% createGroupID.forEach((id) => { %>
-                    <a href="/GroupChatPage/<%= emailAdd %>/<%= id %>" class="list-group-item">
-                        <h2 class="list-group-item-heading"><%= id %></h2>
+                    <% teamsc.forEach((teamc) => { %>
+                    <a href="/GroupChatPage/<%= emailAdd %>/<%= teamc.id %>" class="list-group-item">
+                        <h2 class="list-group-item-heading"><%= teamc.icon %>  <%= teamc.name %></h2>
+                        <h5><%= teamc.type %> team</h5>
                     </a>
                     <% }) %>
                 </div>
@@ -42,9 +43,10 @@
         <div id="collapseTwo" class="collapse">
             <div class="card-body">
                 <div class="list-group">
-                    <% joinGroupID.forEach((id) => { %>
-                    <a href="/GroupChatPage/<%= emailAdd %>/<%= id %>" class="list-group-item">
-                        <h2 class="list-group-item-heading"><%= id %></h2>
+                    <% teams.forEach((team) => { %>
+                    <a href="/GroupChatPage/<%= emailAdd %>/<%= team.id %>" class="list-group-item">
+                        <h2 class="list-group-item-heading"><%= team.icon %>  <%= team.name %></h2>
+                        <h5><%= team.type %> team</h5>
                     </a>
                     <% }) %>
                 </div>
