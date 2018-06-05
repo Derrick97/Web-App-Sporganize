@@ -24,7 +24,7 @@
             <div class="card-body">
                 <div class="list-group">
                     <% createGroupID.forEach((id) => { %>
-                    <a class="list-group-item">
+                    <a href="/GroupChatPage/<%= emailAdd %>/<%= id %>" class="list-group-item">
                         <h2 class="list-group-item-heading"><%= id %></h2>
                     </a>
                     <% }) %>
@@ -43,7 +43,7 @@
             <div class="card-body">
                 <div class="list-group">
                     <% joinGroupID.forEach((id) => { %>
-                    <a class="list-group-item">
+                    <a href="/GroupChatPage/<%= emailAdd %>/<%= id %>" class="list-group-item">
                         <h2 class="list-group-item-heading"><%= id %></h2>
                     </a>
                     <% }) %>
