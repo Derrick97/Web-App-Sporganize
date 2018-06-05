@@ -148,6 +148,48 @@ const groups = [
     }
 ]
 
+const teams = [
+    {
+        id: 16,
+        name: "IC Team",
+        type: "basketball",
+        icon: ""
+    },
+    {
+        id: 17,
+        name: "LSE Sports",
+        type: "football",
+        icon: ""
+    },
+    {
+        id: 21,
+        name: "KCL Team",
+        type: "Tennis",
+        icon: ""
+    },
+    {
+        id: 22,
+        name: "LSE Sports",
+        type: "volleyball",
+        icon: ""
+    },
+    {
+        id: 23,
+        name: "Cambridge Sports",
+        type: "football",
+        icon: ""
+    }
+]
+
+const teamsc = [
+    {
+        id: 19,
+        name: "IC Sports Team",
+        type: "football",
+        icon: ""
+    },
+]
+
 const eventsempty = []
 
 const events1 = [
@@ -329,6 +371,8 @@ app.get('/Teams/:email', (req, res) => {
         emailAdd: req.params.email,
         createGroupID: createGroupID,
         joinGroupID: joinGroupID,
+        teams : teams,
+        teamsc : teamsc
     });
 
 });
