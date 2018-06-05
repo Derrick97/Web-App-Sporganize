@@ -354,9 +354,9 @@ app.get('/CreateTeam', (req, res) => {
     res.render('CreateTeam');
 })
 
-app.get('/ViewDetails/:id', (req, res) => {
+app.get('/ViewDetails/:eventID', (req, res) => {
     const event = events.filter((event) => {
-        return event.id == req.params.id;
+        return event.id == req.params.eventID;
     })[0]
     res.render('ViewDetails', {
         eventID: event.id,
@@ -365,6 +365,9 @@ app.get('/ViewDetails/:id', (req, res) => {
         eventDay: event.day,
         eventLocation: event.location,
         eventDate: event.date,
+        acceptedList: ["John", "Michael","Oscar", "Derick"],
+        rejectList: ["Anson","Conner","Hera"],
+        noreplyList: ["Tim", "Ben", "Austin", "Jenny"],
     })
 });
 

@@ -1,22 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-        <title>Change Status</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>Change Status</title>
 </head>
+<style>
+
+</style>
 <body>
 <div class="container">
     <div class="jumbotron">
         <h1><%= eventName %></h1>
-        <p><%= eventDay%>, <%= eventDate%></p>
-        <p><%= eventLocation%></p>
+        <p><%= eventDay %>, <%= eventDate %></p>
+        <p><%= eventLocation %></p>
     </div>
     <button>Accept</button>
     <button>Decline</button>
+    <p></p>
+</div>
+<div class="container text-center">
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="jumbotron">
+                <h3>Accepted List</h3>
+                <% acceptedList.forEach((name) =>{ %>
+                <p><%= name %></p>
+                <% }) %>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="jumbotron">
+                <h3>Rejected List</h3>
+                <% rejectList.forEach((name) =>{ %>
+                <p><%= name %></p>
+                <% }) %>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="jumbotron">
+                <h3>Nonreply</h3>
+                <% noreplyList.forEach((name) =>{ %>
+                <p><%= name %></p>
+                <% }) %>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>
