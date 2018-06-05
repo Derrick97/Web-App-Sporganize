@@ -19,6 +19,13 @@ const login_info = [
         pwd: 'zhangchi',
         eventsID: [2, 3],
         groupID: [16, 17],
+    },
+    {
+        id: 2,
+        email: 'example@ic.ac.uk',
+        pwd: '123456',
+        eventsID: [],
+        groupID: [],
     }
 ];
 
@@ -201,7 +208,7 @@ app.get('/Login', (req, res) => {
 app.post('/login/:email', (req, res) => {
     const info = queryUser(req.params.email);
     if (info.pwd == req.body.pwd) {
-        if (info.eventsID.length > 0) {
+        if (info.groupID.length > 0) {
             //Not all events, should be queried from DB.
             res.render('EventsPage', {
                 eventsprevious: eventsprevious,
@@ -209,7 +216,7 @@ app.post('/login/:email', (req, res) => {
                 emailAdd: info.email
             });
         } else {
-            res.render('MainPage');
+            res.render('MainPage', {emailAdd: info.email});
         }
     } else {
         res.render('LoginFailPage');
@@ -350,8 +357,8 @@ app.get('/Settings/:email', (req, res) => {
     res.render('SettingsPage', {emailAdd: req.params.email});
 });
 
-app.get('/CreateTeam', (req, res) => {
-    res.render('CreateTeam');
+app.get('/CreateTeam/:email', (req, res) => {
+    res.render('CreateTeam', {emailAdd: req.params.email});
 })
 
 app.get('/ViewDetails/:email/:eventID', (req, res) => {
