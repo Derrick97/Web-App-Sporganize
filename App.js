@@ -354,11 +354,12 @@ app.get('/CreateTeam', (req, res) => {
     res.render('CreateTeam');
 })
 
-app.get('/ViewDetails/:eventID', (req, res) => {
+app.get('/ViewDetails/:email/:eventID', (req, res) => {
     const event = events.filter((event) => {
         return event.id == req.params.eventID;
     })[0]
     res.render('ViewDetails', {
+        emailAdd: req.params.email,
         eventID: event.id,
         eventName: event.name,
         eventStatus: event.status,

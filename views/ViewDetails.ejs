@@ -18,9 +18,21 @@
         <p><%= eventDay %>, <%= eventDate %></p>
         <p><%= eventLocation %></p>
     </div>
-    <button>Accept</button>
-    <button>Decline</button>
+    <form id="reply" action="/GroupChatPage/<%=emailAdd%>">
+        <!--Actually the action should be the Event page, but that page has some unfixed problem now,
+        to make the page testable, I redirected to the groupchat page temporarily.-->
+    <button onclick="confirmAccepted()">Accept</button>
+    <button onclick="confirmDeclined()">Decline</button>
     <p></p>
+    </form>
+    <script>
+        function confirmAccepted() {
+            alert("You have accepted the event!")
+        }
+        function confirmDeclined() {
+            alert("You have declined the event!")
+        }
+    </script>
 </div>
 <div class="container text-center">
     <div class="row">
