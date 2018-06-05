@@ -359,6 +359,7 @@ app.get('/ViewDetails/:email/:eventID', (req, res) => {
         return event.id == req.params.eventID;
     })[0]
     res.render('ViewDetails', {
+        isCreator: true,//Also need to be queried.
         emailAdd: req.params.email,
         eventID: event.id,
         eventName: event.name,

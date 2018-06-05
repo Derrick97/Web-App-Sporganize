@@ -33,6 +33,39 @@
             alert("You have declined the event!")
         }
     </script>
+
+    <form>
+        <%if (isCreator){%>
+        <button data-toggle="modal" data-target="#details-modal">Change details of the event.</button>
+        <%}%>
+        <div id="details-modal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Change Details of <%=eventName%></h4>
+                    </div>
+                    <div class="modal-body">
+                        <div>
+                            <label class="control-label">Event Name</label><br>
+                            <input class="placeholder-no-fix" type="text" maxlength="100" placeholder="<%=eventName%>" />
+                        </div>
+                        <div>
+                            <label class="control-label">Event Location</label><br>
+                            <input class="placeholder-no-fix" type="text" maxlength="100" placeholder="<%=eventLocation%>"  />
+                        </div>
+                        <div>
+                            <label class="control-label">Event Date</label><br>
+                            <input class="placeholder-no-fix" type="text" maxlength="100" placeholder="<%=eventDate%>" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 </div>
 <div class="container text-center">
     <div class="row">
