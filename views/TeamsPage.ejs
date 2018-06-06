@@ -10,9 +10,10 @@
     <title>Teams</title>
 </head>
 <body>
+<div  style="padding-bottom:100px">
 <h1 style="text-align: center">My Teams</h1>
 
-<div id="accordion" style="padding-bottom:100px">
+<div id="accordion">
     <div class="card">
         <div class="card-header" style="background-color: #818181">
             <a class="collapsed card-link btn-block" data-toggle="collapse" href="#collapseOne"
@@ -22,7 +23,7 @@
         </div>
         <div id="collapseOne" class="collapse">
             <div class="card-body">
-                <div class="list-group">
+                <div>
                     <% teamsc.forEach((teamc) => { %>
                     <a href="/TeamDetails/<%= emailAdd %>/<%= teamc.id %>" class="list-group-item">
                         <h2 class="list-group-item-heading"><%= teamc.icon %>  <%= teamc.name %></h2>
@@ -42,7 +43,7 @@
         </div>
         <div id="collapseTwo" class="collapse">
             <div class="card-body">
-                <div class="list-group">
+                <div>
                     <% teams.forEach((team) => { %>
                     <a href="/TeamDetails/<%= emailAdd %>/<%= team.id %>" class="list-group-item">
                         <h2 class="list-group-item-heading"><%= team.icon %>  <%= team.name %></h2>
@@ -55,9 +56,9 @@
     </div>
 </div>
 
-<div>
-    <a href="/CreateTeam/<%=emailAdd %>" class="btn btn-info">Create a new team!</a>
-    <a href="" class="btn btn-info" data-toggle="modal" data-target="#myModal">Join a team via code.</a>
+<div style="position: fixed; bottom: 100px; width: 100%">
+    <a href="/CreateTeam/<%=emailAdd %>" class="btn btn-info col-sm-6" style="height: 100px; font-size: 40px" >Create a new team</a>
+    <a href="" class="btn btn-info col-sm-6" data-toggle="modal" data-target="#myModal" style="height: 100px; text-align: center; font-size: 40px">Join a team via code</a>
 </div>
 
 <div class="modal fade" id="myModal" role="dialog">
@@ -82,7 +83,7 @@
         </div>
     </div>
 </div>
-
+</div>
 <nav class="navbar navbar-default navbar-fixed-bottom" style="background-color:grey">
     <div class="container-fluid">
         <ul class="nav nav-tabs nav-justified">
