@@ -124,26 +124,31 @@ const groups = [
     {
         id: 16,
         name: "IC Team",
+        creator: "John",
         eventsID: [1, 2],
     },
     {
         id: 17,
         name: "LSE Sports",
+        creator: "Anson",
         eventsID: [],
     },
     {
         id: 21,
         name: "KCL Team",
+        creator: "Derick",
         eventsID: [3],
     },
     {
         id: 22,
         name: "LSE Sports",
+        creator: "Amy",
         eventsID: [4, 5],
     },
     {
         id: 23,
         name: "Cambridge Sports",
+        creator: "Tim",
         eventsID: [],
     }
 ]
@@ -430,5 +435,16 @@ app.get('/Upload/:email/:eventID', (req, res) => {
         eventID: req.params.eventID,
     })
 });
+
+app.get('/TeamDetails/:email/:teamID', (req, res) => {
+    const team = teams.filter((team)=>{
+        return team.id == req.params.teamID;
+    })[0]
+    res.render('TeamDetails',{
+        team:team,
+        emailAdd:req.params.email,
+        
+    })
+})
 
 module.exports = app;

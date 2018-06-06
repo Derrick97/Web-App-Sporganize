@@ -24,7 +24,7 @@
             <div class="card-body">
                 <div class="list-group">
                     <% teamsc.forEach((teamc) => { %>
-                    <a href="/GroupChatPage/<%= emailAdd %>/<%= teamc.id %>" class="list-group-item">
+                    <a href="/TeamDetails/<%= emailAdd %>/<%= teamc.id %>" class="list-group-item">
                         <h2 class="list-group-item-heading"><%= teamc.icon %>  <%= teamc.name %></h2>
                         <h5><%= teamc.type %> team</h5>
                     </a>
@@ -44,7 +44,7 @@
             <div class="card-body">
                 <div class="list-group">
                     <% teams.forEach((team) => { %>
-                    <a href="/GroupChatPage/<%= emailAdd %>/<%= team.id %>" class="list-group-item">
+                    <a href="/TeamDetails/<%= emailAdd %>/<%= team.id %>" class="list-group-item">
                         <h2 class="list-group-item-heading"><%= team.icon %>  <%= team.name %></h2>
                         <h5><%= team.type %> team</h5>
                     </a>

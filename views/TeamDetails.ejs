@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>Team Details</title>
+</head>
+<body>
+
+<div class="main">
+    <h1>Team Details</h1>
+    <div class="container">
+        <div class="jumbotron">
+            <h1><%= team.name %></h1>
+            <p>Creator: <%= team.creator %></p>
+            <p>Team Code: <%= team.id+10000%></p>
+            <p><%=team.type%> team</p>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <a href="/Teams/<%=emailAdd%>" class="btn btn-info" role="button">Go back</a>
+</div>
+
+</body>
+</html>
