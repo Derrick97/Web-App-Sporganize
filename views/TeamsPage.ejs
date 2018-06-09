@@ -25,7 +25,9 @@
             type: 'POST',
             url: '/joinTeam',
             data: json,
-            success: window.fresh,
+            Success: function(data){
+                alert(data.msg)
+            },
             dataType: "json",
         })
     }
