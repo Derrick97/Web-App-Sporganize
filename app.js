@@ -276,7 +276,7 @@ app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
     let declined_list
     let noreply_list
     try {
-        event = await db.getEventForEventId(req.params.event_id)
+        event = await db.getEventForEventIDWithStatus(req.params.event_id, req.user.id)
         access_level = await db.getAccessLevelForUserIDAndTeamID(req.user.id, event.team_id)
         accepted_list = await db.getAllUsersFromEventsWithStatus(event.id, 'confirmed')
         declined_list = await db.getAllUsersFromEventsWithStatus(event.id, 'rejected')

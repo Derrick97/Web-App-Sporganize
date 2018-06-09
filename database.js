@@ -126,6 +126,15 @@ module.exports = {
         return events_with_access_level_and_status.rows
     },
 
+    getEventForEventIDWithStatus: async function(event_id, user_id){
+        const query = ['SELECT *',
+            'FROM sporganize.events JOIN sporganize.users_events ON events.id = users_events.event_id',
+            'WHERE events.id = $1 AND users_events.user_id = $2'].join(' ')
+        const event = await pool.query(query, [event_id, user_id])
+        // console.log(event.length)
+         return event.rows[0]
+    },
+
     getEventForEventId: async function(id) {
         const query = 'SELECT * FROM sporganize.events WHERE id = $1'
         const events = await pool.query(query, [id])

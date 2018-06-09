@@ -8,6 +8,22 @@
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
         <title>Change Status</title>
 </head>
+<script>
+    function changeStatus(new_status, event_id) {
+        const json = {
+            'event_id': event_id,
+            'status': new_status,
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/changeStatus',
+            data: json,
+            success: window.location.reload(),
+            dataType: "json",
+        })
+    }
+</script>
 <body>
 <div class="container">
     <div class="jumbotron">
@@ -18,17 +34,20 @@
     <form id="reply" action="/EventsPage" style="display: inline">
         <!--Actually the action should be the Event page, but that page has some unfixed problem now,
         to make the page testable, I redirected to the groupchat page temporarily.-->
-        <button onclick="confirmAccepted()">Accept</button>
-        <button onclick="confirmDeclined()">Decline</button>
+        <% if (event.status == 'noreply'){ %>
+        <a href="" class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
+        <a href="" class="btn btn-info" onclick="changeStatus('rejected', <%= event.id %>)">Decline</a>
+        <% } %>
+        <% if (event.status == 'confirmed'){ %>
+        <a class="btn btn-info disabled">Accept</a>
+        <a class="btn btn-info" onclick="changeStatus('rejected', <%= event.id %>)">Decline</a>
+        <% } %>
+        <% if (event.status == 'rejected'){ %>
+        <a class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
+        <a class="btn btn-info disabled">Decline</a>
+        <% } %>
+        <h2>Current Status: <%= event.status%></h2>
     </form>
-    <script>
-        function confirmAccepted() {
-            alert("You have accepted the event!")
-        }
-        function confirmDeclined() {
-            alert("You have declined the event!")
-        }
-    </script>
     <%if (access_level != 'user'){%>
     <button data-toggle="modal" data-target="#details-modal">Change details of the event.</button>
     <%}%>
