@@ -66,24 +66,24 @@
         <div class="col-sm-4">
             <div class="jumbotron">
                 <h3>Accepted List</h3>
-                <% acceptedList.forEach((name) =>{ %>
-                <p><%= name %></p>
+                <% acceptedList.forEach((person) =>{ %>
+                <p><%= person.forename %> <%= person.surname %></p>
                 <% }) %>
             </div>
         </div>
         <div class="col-sm-4">
             <div class="jumbotron">
                 <h3>Rejected List</h3>
-                <% rejectList.forEach((name) =>{ %>
-                <p><%= name %></p>
+                <% rejectList.forEach((person) =>{ %>
+                <p><%= person.forename %> <%= person.surname %></p>
                 <% }) %>
             </div>
         </div>
         <div class="col-sm-4">
             <div class="jumbotron">
                 <h3>Nonreply</h3>
-                <% noreplyList.forEach((name) =>{ %>
-                <p><%= name %></p>
+                <% noreplyList.forEach((person) =>{ %>
+                <p><%= person.forename %> <%= person.surname %></p>
                 <% }) %>
             </div>
         </div>

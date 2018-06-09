@@ -32,6 +32,20 @@ module.exports = {
         return users.rows[0]
     },
 
+    getAllUsersFromEventsWithStatus: async function(event_id, status) {
+        const query = ['SELECT * FROM sporganize.users_events ',
+            'JOIN sporganize.users ON users.id = users_events.user_id',
+        'WHERE users_events.event_id = $1 AND users_events.status = $2'].join(' ')
+        const users = await pool.query(query, [event_id, status])
+        return users.rows
+    },
+
+    getAllUsersIDForTeam: async function(id){
+        const query = 'SELECT sporganize.users_teams.user_id FROM sporganize.users_teams WHERE team_id = $1'
+        const users = await pool.query(query, [id])
+        return users.rows
+    },
+
 
     /* Team retrieval */
     getTeamForId: async function(id) {
@@ -94,6 +108,24 @@ module.exports = {
         return events
     },
 
+    getAllEventsForUserIdWithAccessLevelAndStatus: async function(id) {
+        const query = ['SELECT * ',
+        'FROM sporganize.events JOIN sporganize.users_teams ON events.team_id = users_teams.team_id',
+            'JOIN sporganize.users_events ON users_events.event_id = events.id AND users_events.user_id = users_teams.user_id',
+        'WHERE users_teams.user_id = $1'].join(' ')
+        const events_with_access_level_and_status = await pool.query(query, [id])
+        return events_with_access_level_and_status.rows
+    },
+
+    getAllEventsForTeamIdWithAccessLevelAndStatus: async function(team_id, user_id) {
+        const query = ['SELECT * ',
+            'FROM sporganize.events JOIN sporganize.users_teams ON events.team_id = users_teams.team_id ',
+            'JOIN sporganize.users_events ON users_events.event_id = events.id AND users_events.user_id = users_teams.user_id',
+            'WHERE users_teams.team_id = $1 AND users_teams.user_id = $2'].join(' ')
+        const events_with_access_level_and_status = await pool.query(query, [team_id, user_id])
+        return events_with_access_level_and_status.rows
+    },
+
     getEventForEventId: async function(id) {
         const query = 'SELECT * FROM sporganize.events WHERE id = $1'
         const events = await pool.query(query, [id])
@@ -128,8 +160,11 @@ module.exports = {
         if (team == -1) {
             return false
         }
-
         await this.addUserToTeamWithAccessLevel(id, team, 'user')
+        const all_events_for_team = await this.getEventsForTeamId(team)
+        for(let i=0; i<all_events_for_team.length;i++){
+            await this.addUserToEventWithStatus(id,all_events_for_team[i].id,'noreply')
+        }
     },
 
     createJoinCodeForTeamId: async function(code, id) {
@@ -169,9 +204,28 @@ module.exports = {
         return resp.rows[0].id
     },
 
-    createEvent: async function(team_id, name, timestamp, duration, location) {
+    createEvent: async function(creator_user_id, team_id, name, timestamp, duration, location) {
         const query = ['INSERT INTO sporganize.events (team_id, name, timestamp, duration, location)',
                        'VALUES ($1, $2, $3, $4, $5)'].join(' ')
         await pool.query(query, [team_id, name, timestamp, duration, location])
+        const allEvents = await this.getAllEventsForUserId(creator_user_id)
+        const current_event_id = allEvents[allEvents.length-1].id
+        const all_users_for_current_event = await this.getAllUsersIDForTeam(team_id)
+        for(let i = 0; i<all_users_for_current_event.length; i++){
+            await this.addUserToEventWithStatus(all_users_for_current_event[i].user_id, current_event_id, 'noreply')
+        }
+    },
+
+    addUserToEventWithStatus: async function(user_id, event_id, status) {
+        const query = ['INSERT INTO sporganize.users_events (user_id, event_id, status)',
+            'VALUES ($1, $2, $3)'].join(' ')
+        await pool.query(query, [user_id, event_id, status])
+    },
+
+    changeEventStatusForUserID: async function(user_id, event_id, status){
+        const query = ['UPDATE sporganize.users_events',
+        'SET status = $3 WHERE users_events.user_id = $1 AND users_events.event_id = $2'].join(' ')
+        await pool.query(query, [user_id, event_id, status])
     }
+
 }
