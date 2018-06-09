@@ -27,6 +27,7 @@
 <body>
 <div class="container">
     <div class="jumbotron">
+        <a href="/Events"><h4><span class="glyphicon glyphicon-arrow-left"></span>Go Back</h4></a>
         <h1><%= event.name %></h1>
         <p><%= event.date %></p>
         <p><%= event.location %></p>
@@ -47,6 +48,7 @@
         <a class="btn btn-info disabled">Decline</a>
         <% } %>
         <h2>Current Status: <%= event.status%></h2>
+
     </form>
     <%if (access_level != 'user'){%>
     <button data-toggle="modal" data-target="#details-modal">Change details of the event.</button>
