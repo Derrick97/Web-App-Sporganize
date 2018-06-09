@@ -171,6 +171,9 @@
                         <a href="" class="btn btn-info">Decline</a>
                         <!--Need to implement delete event, can delete anytime before upcoming-->
                         <a href="/ViewDetails/<%= event.id %>" class="btn btn-info">View Details</a>
+                        <%if (event.access_level != 'user'){%>
+                        <a href="" class="btn btn-info">Delete</a>
+                        <%}%>
                     </div>
                     <% }) %>
                     <% } %>

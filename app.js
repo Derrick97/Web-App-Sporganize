@@ -203,14 +203,15 @@ app.get('/Events', ensureAuthenticated, async (req, res) => {
     let eventsupcoming
     let teams
     try {
-        const events = await db.getAllEventsForUserId(req.user.id)
+        const events = await db.getAllEventsForUserIdWithAccessLevel(req.user.id)
         render_events = events.map(ev => {
             return {
                 'id': ev.id,
                 'name': ev.name,
                 'date': ev.timestamp,
                 'location': ev.location,
-                'status': ''
+                'status': '',
+                'access_level': ev.access_level,
             }
         })
         const now = new Date()
@@ -234,14 +235,15 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
     let render_events
     let current_team
     try {
-        const events = await db.getEventsForTeamId(req.params.teamid)
+        const events = await db.getAllEventsForTeamIdWithAccessLevel(req.params.teamid, req.user.id)
         render_events = events.map(ev => {
             return {
                 'id': ev.id,
                 'name': ev.name,
                 'date': ev.timestamp,
                 'location': ev.location,
-                'status': ''
+                'status': '',
+                'access_level': ev.access_level,
             }
         })
         const now = new Date()

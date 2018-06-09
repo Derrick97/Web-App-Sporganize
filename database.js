@@ -94,6 +94,22 @@ module.exports = {
         return events
     },
 
+    getAllEventsForUserIdWithAccessLevel: async function(id) {
+        const query = ['SELECT * ',
+        'FROM sporganize.events JOIN sporganize.users_teams ON events.team_id = users_teams.team_id ',
+        'WHERE users_teams.user_id = $1'].join(' ')
+        const events_with_access_level = await pool.query(query, [id])
+        return events_with_access_level.rows
+    },
+
+    getAllEventsForTeamIdWithAccessLevel: async function(team_id, user_id) {
+        const query = ['SELECT * ',
+            'FROM sporganize.events JOIN sporganize.users_teams ON events.team_id = users_teams.team_id ',
+            'WHERE users_teams.team_id = $1 AND users_teams.user_id = $2'].join(' ')
+        const events_with_access_level = await pool.query(query, [team_id, user_id])
+        return events_with_access_level.rows
+    },
+
     getEventForEventId: async function(id) {
         const query = 'SELECT * FROM sporganize.events WHERE id = $1'
         const events = await pool.query(query, [id])
