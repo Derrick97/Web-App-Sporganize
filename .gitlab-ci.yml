@@ -1,4 +1,4 @@
-image: keymetrics/pm2:latest-jessie
+image: keymetrics/pm2:8-jessie
 
 cache:
   paths:
