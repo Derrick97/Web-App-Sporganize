@@ -6,7 +6,7 @@ module.exports = {
   'apps': [
     {
       'name'  : 'Sporganise',
-      'script': 'Server.js',
+      'script': 'server.js',
       'env': {
         'NODE_ENV': 'dev',
       },

@@ -6,6 +6,35 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <title>Welcome to Sporganize.</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+        }
+        /* Container holding the image and the text */
+        .containimage {
+            position: relative;
+      height: 100%;
+            color: white;
+        }
+        /* Centered text */
+        .centered {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        .down {
+            position: absolute;
+            top: 75%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+        /* index */
+    </style>
     <script>
         $(document).ready(function(){
             // Add smooth scrolling to all links
@@ -31,41 +60,49 @@
                 } // End if
             });
         });
+
+        function register() {
+            const extractval = (id) => {
+                const val = document.getElementById(id).value
+                document.getElementById(id).value = ""
+                return val
+            }
+
+            const extractvalfromselect = (id) => {
+                const select = document.getElementById(id);
+                const val = select.options[select.selectedIndex].innerHTML;
+                return val
+            }
+
+            const json = {
+                'email': extractval('UserEmail'),
+                'password': extractval('Password'),
+                'forename': extractval('Forename'),
+                'surname': extractval('Surname'),
+                'gender' : extractvalfromselect('Gender'),
+                'mobile': extractval('Mobile'),
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '/register',
+                data: json,
+                success: alert('register with email:' + json.email.toString() + '\nforname:' + json.forename.toString() +
+                    '\nsurname:' + json.surname.toString() + '\ngender:' + json.gender.toString() +
+                    '\nmobile:' + json.mobile.toString()),
+                dataType: "json"
+            });
+        }
     </script>
-    <title>Welcome to Sporganize.</title>
-    <style>
-        body, html {
-            height: 100%;
-            margin: 0;
-        }
-        /* Container holding the image and the text */
-        .containimage {
-            color: white;
-            position: relative;
-            height:100%
-        }
-        /* Centered text */
-        .centered {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
-        .down {
-            position: absolute;
-            top: 75%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
-        /* index */
-    </style>
 </head>
 <body>
-
+<% if (message) { %>
+<script>
+    window.alert('login fail!')
+</script>
+<% } %>
 <div class="containimage">
-<img src="https://s22.postimg.cc/r0d3q5km9/146674590746074236.jpg" height="100%" width="100%">
+    <img src="https://s22.postimg.cc/r0d3q5km9/146674590746074236.jpg" height="100%" width="100%">
     <div class="centered">
         <p style="font-size: 100px">Sporganize</p>
         <h4> The best solution of managing sport events.</h4>
@@ -102,8 +139,8 @@
                         <input type="text" maxlength="16" autocomplete="off" placeholder="Confirm Password" id="CPassword" name="cpassword" onkeyup="value=value.replace(/[^0-9A-Za-z_]/g,'')" />
                     </div>
                     <div>
-                        <label class="control-label">First Name:</label><br>
-                        <input type="text" maxlength="30" placeholder="First Name" id="FirstName" name="firstname" onkeyup="value=value.replace(/[^[A-Za-z]/ig,'')" />
+                        <label class="control-label">Forename:</label><br>
+                        <input type="text" maxlength="30" placeholder="Forename" id="Forename" name="forename" onkeyup="value=value.replace(/[^[A-Za-z]/ig,'')" />
                     </div>
                     <div>
                         <label class="control-label">Surname:</label><br>
@@ -111,19 +148,19 @@
                     </div>
                     <div>
                         <label class="control-label">Gender:</label><br>
-                        <select name="sex">
+                        <select name="sex" id="Gender">
                             <option value="1">male</option>
                             <option value="2">female</option>
                         </select>
                     </div>
                     <div>
                         <label class="control-label">Mobile Number:</label><br>
-                        <input type="text" maxlength="16" placeholder="Mobile Number" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\d]/g,'')" />
+                        <input type="text" maxlength="16" placeholder="Mobile Number" id="Mobile" name="mobile" onkeyup="value=value.replace(/[^\d]/g,'')" />
                     </div>
                 </div>
                 <div class="modal-footer">
                     <div align="center">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Register Now</button>
+                    <button type="button" onclick="register()" class="btn btn-default" data-dismiss="modal">Register Now</button>
                     </div>
                 </div>
             </div>
@@ -143,28 +180,22 @@
         <div class="form-group">
             <label class="control-label col-sm-2" for="pwd">Password:</label>
             <div class="col-sm-10">
-                <input type="password" class="form-control" id="pwd" name="pwd" placeholder="Enter password">
+                <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
             </div>
         </div>
         <!--<div class="form-group">-->
-        <!--<div class="col-sm-offset-2 col-sm-10">-->
-        <!--<div class="checkbox">-->
-        <!--<label><input type="checkbox"> Remember me</label>-->
-        <!--</div>-->
-        <!--</div>-->
+            <!--<div class="col-sm-offset-2 col-sm-10">-->
+                <!--<div class="checkbox">-->
+                    <!--<label><input type="checkbox"> Remember me</label>-->
+                <!--</div>-->
+            <!--</div>-->
         <!--</div>-->
         <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
-                <button type="submit" class="btn btn-default" onclick="getUsername()">Log in</button>
+                    <button type="submit" class="btn btn-default">Login</button>
             </div>
         </div>
     </form>
-    <script>
-        function getUsername(){
-            let form = document.getElementById("Login_Area");
-            return form.action = "/login/"+document.getElementById("email").value;
-        }
-    </script>
 </div>
 </div>
 </body>

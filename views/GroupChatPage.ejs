@@ -8,6 +8,13 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>Chat List</title>
 </head>
+<script >
+    function changeActive(newid){
+        let select_item_id = $("#sidenav").find(".active").attr('id')
+        document.getElementById(select_item_id).className = ''
+        document.getElementById(newid).className = 'active'
+    }
+</script>
 <style>
     body {
         font-family: "Lato", sans-serif;
@@ -31,6 +38,7 @@
         font-size: 25px;
         color: #818181;
         display: block;
+        word-break: break-all;
     }
 
     .sidenav a:hover {
@@ -58,27 +66,30 @@
 </style>
 <body>
 
-<div class="sidenav">
-    <% groupID.forEach((id) => { %>
-    <% if (activeid == id) {%>
-    <a class="active" href="/GroupChatPage/<%= emailAdd %>/<%= id %>" id="<%= id%>">Team No.<%= id %></a>
+<div class="sidenav" id="sidenav">
+    <% teams.forEach((team) => { %>
+    <% if (team.id == teams[0].id) {%>
+    <a href="#" class="active" onclick="changeActive(<%= team.id%>)" id="<%= team.id%>"><%= team.name%></a>
     <% } else {%>
-    <a href="/GroupChatPage/<%= emailAdd %>/<%= id %>" id="<%= id%>">Team No.<%= id %></a>
-    <%}%>
+    <a href="#" onclick="changeActive(<%= team.id%>)" id="<%= team.id%>"><%= team.name%></a>
+    <% } %>
     <% }) %>
 </div>
 
 <div class="main">
+<div id="haha">
+    <h1>group chat</h1>
+</div>
 </div>
 
 <nav class="navbar navbar-default navbar-fixed-bottom" style="background-color:grey">
     <div class="container-fluid">
         <ul class="nav nav-tabs nav-justified">
-            <li class="active"><a href="#" style="color:black"><h1>GroupChat</h1></a></li>
-            <li><a href="/Events/<%= emailAdd %>" style="color:black"><h1>Events</h1></a></li>
-            <li><a href="/Photos/<%= emailAdd %>" style="color:black"><h1>Photos</h1></a></li>
-            <li><a href="/Teams/<%= emailAdd %>" style="color:black"><h1>My Teams</h1></a></li>
-            <li><a href="/Settings/<%= emailAdd %>" style="color:black"><h1>Settings</h1></a></li>
+            <li class="active"><a href="" style="color:black"><h1>GroupChat</h1></a></li>
+            <li><a href="/Events/" style="color:black"><h1>Events</h1></a></li>
+            <li><a href="/Photos/" style="color:black"><h1>Photos</h1></a></li>
+            <li><a href="/Teams/" style="color:black"><h1>My Teams</h1></a></li>
+            <li><a href="/Settings/" style="color:black"><h1>Settings</h1></a></li>
         </ul>
     </div>
 </nav>

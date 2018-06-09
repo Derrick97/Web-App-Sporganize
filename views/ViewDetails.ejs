@@ -1,28 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <title>Change Status</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        <title>Change Status</title>
 </head>
-<style>
-
-</style>
 <body>
 <div class="container">
     <div class="jumbotron">
-        <h1><%= eventName %></h1>
-        <p><%= eventDay %>, <%= eventDate %></p>
-        <p><%= eventLocation %></p>
+        <h1><%= event.name %></h1>
+        <p><%= event.date %></p>
+        <p><%= event.location %></p>
     </div>
-    <form id="reply" action="/GroupChatPage/<%=emailAdd%>" style="display: inline">
+    <form id="reply" action="/EventsPage" style="display: inline">
         <!--Actually the action should be the Event page, but that page has some unfixed problem now,
         to make the page testable, I redirected to the groupchat page temporarily.-->
-    <button onclick="confirmAccepted()">Accept</button>
-    <button onclick="confirmDeclined()">Decline</button>
+        <button onclick="confirmAccepted()">Accept</button>
+        <button onclick="confirmDeclined()">Decline</button>
     </form>
     <script>
         function confirmAccepted() {
@@ -32,36 +29,36 @@
             alert("You have declined the event!")
         }
     </script>
-        <%if (isCreator){%>
-        <button data-toggle="modal" data-target="#details-modal">Change details of the event.</button>
-        <%}%>
-        <div id="details-modal" class="modal fade" role="dialog">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        <h4 class="modal-title">Change Details of <%=eventName%></h4>
+    <%if (access_level != 'user'){%>
+    <button data-toggle="modal" data-target="#details-modal">Change details of the event.</button>
+    <%}%>
+    <div id="details-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Change Details of <%= event.name %></h4>
+                </div>
+                <div class="modal-body">
+                    <div>
+                        <label class="control-label">Event Name</label><br>
+                        <input class="placeholder-no-fix" type="text" maxlength="100" placeholder="<%= event.name%>" />
                     </div>
-                    <div class="modal-body">
-                        <div>
-                            <label class="control-label">Event Name</label><br>
-                            <input class="placeholder-no-fix" type="text" maxlength="100" placeholder="<%=eventName%>" />
-                        </div>
-                        <div>
-                            <label class="control-label">Event Location</label><br>
-                            <input class="placeholder-no-fix" type="text" maxlength="100" placeholder="<%=eventLocation%>"  />
-                        </div>
-                        <div>
-                            <label class="control-label">Event Date</label><br>
-                            <input class="placeholder-no-fix" type="text" maxlength="100" placeholder="<%=eventDate%>" />
-                        </div>
+                    <div>
+                        <label class="control-label">Event Location</label><br>
+                        <input class="placeholder-no-fix" type="text" maxlength="100" placeholder="<%= event.location %>"  />
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="float: left">Change</button>
+                    <div>
+                        <label class="control-label">Event Date</label><br>
+                        <input class="placeholder-no-fix" type="text" maxlength="100" placeholder="<%= event.date %>" />
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="float: left">Change</button>
                 </div>
             </div>
         </div>
+    </div>
 </div>
 
 <div class="container text-center">

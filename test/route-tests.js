@@ -1,12 +1,12 @@
 const assert = require('assert')
 const request = require('supertest')
 
-const app = require('../App.js')
+const app = require('../app.js')
 
-describe('GET /', function() {
+describe('GET /login', function() {
   it('responds with 200 and HTML page', function(done) {
     request(app)
-      .get('/')
+      .get('/login')
       .set('Accept', 'text/html')
       .expect(200, done);
   });

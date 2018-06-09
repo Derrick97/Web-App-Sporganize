@@ -21,37 +21,48 @@
     <p>Wow~ Fantastic!</p>
 </div>
 
-<form action="/Teams/<%=emailAdd%>" method="post" id="CreateNewTeam">
-    <div class="form-group">
-        <label for="teamname">Now, give your team a name:</label>
-        <input type="text" class="form-control" id="teamname" name="teamname">
-    </div>
-    <div class="form-group">
-        <label for="teamtype">What's the type of your team?:</label>
-        <select class="form-control" id="teamtype" name="teamtype">
-            <option>Basketball</option>
-            <option>Football</option>
-            <option>Tennis</option>
-            <option>Volleyball</option>
-        </select>
-    </div>
-    <div class="checkbox">
-        <label><input type="checkbox" value="">Do you want your team to be public?</label>
-    </div>
-    <h1>Notice: Your team has
-        <mark>limited</mark>
-        number of team members (up to 20)!
-    </h1>
+<!--team name input-->
+<div>
+    <label for="teamname">Now, give your team a name:</label>
+    <input type="text" class="form-control" id="teamname" name="teamname">
+</div>
 
-    <div>
-        <p>upload your team icon:</p>
+<!--team type input-->
+<div>
+    <label for="teamtype">What's the type of your team?:</label>
+    <select class="form-control" id="teamtype" name="teamtype">
+        <option>Basketball</option>
+        <option>Football</option>
+        <option>Tennis</option>
+        <option>Volleyball</option>
+    </select>
+</div>
+
+<!--team description input-->
+<div>
+    <label for="description">Description:</label>
+    <textarea class="form-control" rows="5" id="description"></textarea>
+</div>
+<div class="checkbox">
+    <label><input type="checkbox" value="">Do you want your team to be public?</label>
+</div>
+
+<!--notice-->
+<h1>Notice: Your team has
+    <mark>limited</mark>
+    number of team members (up to 20)!
+</h1>
+
+<!--team icon input-->
+<div>
+    <p>upload your team icon:</p>
     <input type="file" onchange="previewFile()"><br>
     <img src="" height="400">
     <script>
         function previewFile() {
             let preview = document.querySelector('img');
-            let file    = document.querySelector('input[type=file]').files[0];
-            let reader  = new FileReader();
+            let file = document.querySelector('input[type=file]').files[0];
+            let reader = new FileReader();
 
             reader.addEventListener("load", function () {
                 preview.src = reader.result;
@@ -61,13 +72,14 @@
             }
         }
     </script>
-    </div>
+</div>
+<a href='/groupchat'>redirect</a>
 
-    <div class="form-group">
-        <button type="submit" class="btn btn-default" data-toggle="modal" data-target="#myModal"
-                onclick="getTeamName()">Submit
-        </button>
-    </div>
+<div>
+    <button type="submit" class="btn btn-default" data-toggle="modal" data-target="#myModal"
+            onclick="getTeamName()">Create
+    </button>
+
     <!-- Modal -->
     <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog">
@@ -79,20 +91,65 @@
                     <h4 class="modal-title">Modal Header</h4>
                 </div>
                 <div class="modal-body">
-                    Are you sure to create your <p style="display:inline" id="teamname2"></p> team?
+                    Are you sure to create your <p style="display:inline" id="teamname_display"></p> team?
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="float:left">yes</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="float:left"
+                            onclick="createTeam()">yes
+                    </button>
                     <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right">no</button>
                 </div>
             </div>
         </div>
     </div>
-</form>
+</div>
+
 <script>
     function getTeamName() {
-        document.getElementById("teamname2").innerHTML = document.getElementById("teamname").value;
+        document.getElementById("teamname_display").innerHTML = document.getElementById("teamname").value;
     }
+
+    function createTeam() {
+        const extractval = (id) => {
+            const val = document.getElementById(id).value
+            document.getElementById(id).value = ""
+            return val
+        }
+
+        const extractvalfromselect = (id) => {
+            const select = document.getElementById(id);
+            return select.options[select.selectedIndex].innerHTML;
+        }
+
+        const json = {
+            'name': extractval('teamname'),
+            'type': extractvalfromselect('teamtype'),
+            'description': extractval('description')
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/createTeam',
+            data: json,
+            success: function(data){
+                if (data == "success"){
+                    window.location.href = '/groupchat'
+                    console.log("yeah!")
+                } else {
+                    console.log("error")
+                }
+            },
+            dataType: "json",
+        })
+
+    }
+    // function redirect(url, method) {
+    //     createTeam();
+    //     let form = document.createElement('form');
+    //     form.method = method;
+    //     form.action = url;
+    //     form.submit();
+    // }
 </script>
 </body>
 </html>

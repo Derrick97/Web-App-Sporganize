@@ -5,8 +5,10 @@ CREATE TYPE sporganize.access_level AS ENUM ('admin', 'manager', 'user');
 CREATE TYPE sporganize.attendance_status AS ENUM ('confirmed', 'rejected', 'noreply');
 
 CREATE TABLE sporganize.teams (
-    id   serial PRIMARY KEY,
-    name text CHECK (length(name) < 256)
+    id          serial PRIMARY KEY,
+    name        text CHECK (length(name) < 256)         NOT NULL,
+    description text CHECK (length(description) < 1000) NOT NULL,
+    type        text CHECK (length(type) < 256)         NOT NULL
 );
 
 CREATE TABLE sporganize.users (
@@ -43,7 +45,14 @@ CREATE TABLE sporganize.users_events (
 );
 
 CREATE TABLE sporganize.photos (
-    id       int PRIMARY KEY,
+    id       serial PRIMARY KEY,
     event_id int REFERENCES sporganize.events (id) ON DELETE CASCADE NOT NULL,
     photo    bytea                                                   NOT NULL
+);
+
+CREATE TABLE sporganize.join_codes (
+    id      serial PRIMARY KEY,
+    team_id int REFERENCES sporganize.teams (id) ON DELETE CASCADE NOT NULL,
+    code    text CHECK(length(code) < 30)                          NOT NULL,
+    expires timestamp                                              NOT NULL
 );
