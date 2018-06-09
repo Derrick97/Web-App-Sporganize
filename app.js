@@ -203,14 +203,14 @@ app.get('/Events', ensureAuthenticated, async (req, res) => {
     let eventsupcoming
     let teams
     try {
-        const events = await db.getAllEventsForUserIdWithAccessLevel(req.user.id)
+        const events = await db.getAllEventsForUserIdWithAccessLevelAndStatus(req.user.id)
         render_events = events.map(ev => {
             return {
                 'id': ev.id,
                 'name': ev.name,
                 'date': ev.timestamp,
                 'location': ev.location,
-                'status': '',
+                'status': ev.status,
                 'access_level': ev.access_level,
             }
         })
@@ -235,14 +235,14 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
     let render_events
     let current_team
     try {
-        const events = await db.getAllEventsForTeamIdWithAccessLevel(req.params.teamid, req.user.id)
+        const events = await db.getAllEventsForTeamIdWithAccessLevelAndStatus(req.params.teamid, req.user.id)
         render_events = events.map(ev => {
             return {
                 'id': ev.id,
                 'name': ev.name,
                 'date': ev.timestamp,
                 'location': ev.location,
-                'status': '',
+                'status': ev.status,
                 'access_level': ev.access_level,
             }
         })
@@ -261,27 +261,48 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
 
 app.post('/addEvent', ensureAuthenticated, async (req, res) => {
     try {
-        await db.createEvent(req.body.teamid, req.body.eventname, req.body.starttime, req.body.duration, req.body.location)
+        await db.createEvent(req.user.id, req.body.teamid, req.body.eventname, req.body.starttime, req.body.duration, req.body.location)
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+
+})
+
+app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
+    let event
+    let access_level
+    let accepted_list
+    let declined_list
+    let noreply_list
+    try {
+        event = await db.getEventForEventId(req.params.event_id)
+        access_level = await db.getAccessLevelForUserIDAndTeamID(req.user.id, event.team_id)
+        accepted_list = await db.getAllUsersFromEventsWithStatus(event.id, 'confirmed')
+        declined_list = await db.getAllUsersFromEventsWithStatus(event.id, 'rejected')
+        noreply_list = await db.getAllUsersFromEventsWithStatus(event.id, 'noreply')
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+    res.render('ViewDetails',
+        {
+            event: event,
+            access_level: access_level,
+            acceptedList: accepted_list,
+            rejectList: declined_list,
+            noreplyList: noreply_list,
+        })
+    })
+
+app.post('/changeStatus', ensureAuthenticated, async (req, res) => {
+    try {
+        await db.changeEventStatusForUserID(req.user.id, req.body.event_id, req.body.status)
     } catch (e) {
         res.status(500).send(e.stack)
         return
     }
 })
-
-app.get('/ViewDetails/:eventid', ensureAuthenticated, async (req, res) => {
-    let event
-    let access_level
-    try {
-        event = await db.getEventForEventId(req.params.eventid)
-        access_level = await db.getAccessLevelForUserIDAndTeamID(req.user.id, event.teamid)
-    } catch (e) {
-        res.status(500).send(e.stack)
-        return
-    }
-    res.render('ViewDetails', {event: event, access_level: access_level})
-    })
-
-
 
 
 

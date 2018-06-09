@@ -8,6 +8,27 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>Welcome, <%= forename%></title>
 </head>
+<script>
+    function joinGroup() {
+        const extractval = (id) => {
+            const val = document.getElementById(id).value
+            document.getElementById(id).value = ""
+            return val
+        }
+
+        const json = {
+            'code': extractval('code'),
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/joinTeam',
+            data: json,
+            success: window.location.href = '/groupchat',
+            dataType: "json",
+        })
+    }
+</script>
 <body>
 
 <div class="jumbotron text-center">
@@ -22,10 +43,11 @@
     </div>
     <div class="panel panel-default">
         <div class="panel-body" >
-            <a href="" data-toggle="modal" data-target="#myModal" > Search a team by code. </a>
+            <a data-toggle="modal" data-target="#myModal" > Search a team by code. </a>
         </div>
 
     </div>
+
     <div class="modal fade" id="myModal" role="dialog">
         <div class="modal-dialog">
             <!-- Modal content-->
@@ -37,17 +59,20 @@
                 <div class="modal-body" align="center">
                     <div>
                         <label class="control-label">Invitation code:</label><br>
-                        <input class="placeholder-no-fix" type="text" maxlength="12" placeholder="Invitation code" id="UserEmail" name="useremail" onkeyup="value=value.replace(/[^\w\.\/]/ig,'')" autofocus />
+                        <input class="placeholder-no-fix" type="text" maxlength="50" placeholder="Invitation code"
+                               id="code" name="code"/>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <div align="center">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Join</button>
+                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="joinGroup()">Join
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 </body>
 </html>

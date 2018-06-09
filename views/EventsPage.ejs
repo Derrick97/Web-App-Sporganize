@@ -99,6 +99,21 @@
                 icon.className = 'fa fa-caret-down'
             }
         }
+
+        function changeStatus(new_status, event_id) {
+            const json = {
+                'event_id': event_id,
+                'status': new_status,
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: '/changeStatus',
+                data: json,
+                success: window.location.reload(),
+                dataType: "json",
+            })
+        }
     </script>
 </head>
 <body>
@@ -112,9 +127,9 @@
     <a href="/Events" id="allevents">All Events</a>
     <% teams.forEach((team) => { %>
     <% if (active_id == team.id) { %>
-    <a class="active" href="/Events/<%= team.id%>" id="<%= team.id%>"><%= team.name%></a>
+    <a class="active" href="/Events/<%= team.id %>" id="<%= team.id %>"><%= team.name %></a>
     <% }  else { %>
-    <a href="/Events/<%= team.id%>" id="<%= team.id%>"><%= team.name%></a>
+    <a href="/Events/<%= team.id %>" id="<%= team.id %>"><%= team.name %></a>
     <% } %>
     <% }) %>
     <% } %>
@@ -134,13 +149,15 @@
                 <h4 class="modal-title">Add event for <%= current_team_name %></h4>
             </div>
             <div class="modal-body">
-                    Event name: <input type="text" id="eventname"><br/><br/>
-                    Event start time: <input type="text" id="starttime"><br/><br/>
-                    Event duration: <input type="text" id="duration"><br/><br/>
-                    Event location: <input type="text" id="location">
+                Event name: <input type="text" id="eventname"><br/><br/>
+                Event start time: <input type="text" id="starttime"><br/><br/>
+                Event duration: <input type="text" id="duration"><br/><br/>
+                Event location: <input type="text" id="location">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" style="float: left" onclick="addEvent(<%= active_id %>)">Add event</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal" style="float: left"
+                        onclick="addEvent(<%= active_id %>)">Add event
+                </button>
             </div>
         </div>
     </div>
@@ -167,13 +184,22 @@
                         <h4 class="list-group-item-text"><%= event.date %></h4>
                         <h4 class="list-group-item-text"><%= event.location %></h4>
                         <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
-                        <a href="" class="btn btn-info">Accept</a>
-                        <a href="" class="btn btn-info">Decline</a>
-                        <!--Need to implement delete event, can delete anytime before upcoming-->
+                        <% if (event.status == 'noreply'){ %>
+                        <a href="" class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
+                        <a href="" class="btn btn-info" onclick="changeStatus('rejected', <%= event.id %>)">Decline</a>
+                        <% } %>
+                        <% if (event.status == 'confirmed'){ %>
+                        <a class="btn btn-info disabled">Accept</a>
+                        <a class="btn btn-info" onclick="changeStatus('rejected', <%= event.id %>)">Decline</a>
+                        <% } %>
+                        <% if (event.status == 'rejected'){ %>
+                        <a class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
+                        <a class="btn btn-info disabled">Decline</a>
+                        <% } %>
                         <a href="/ViewDetails/<%= event.id %>" class="btn btn-info">View Details</a>
-                        <%if (event.access_level != 'user'){%>
+                        <% if (event.access_level != 'user'){ %>
                         <a href="" class="btn btn-info">Delete</a>
-                        <%}%>
+                        <% } %>
                     </div>
                     <% }) %>
                     <% } %>
