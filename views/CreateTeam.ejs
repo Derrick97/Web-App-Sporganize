@@ -131,15 +131,14 @@
             type: 'POST',
             url: '/createTeam',
             data: json,
+            dataType: "json",
             success: function(data){
-                if (data == "success"){
-                    window.location.href = '/groupchat'
-                    console.log("yeah!")
+                if (data.redirect){
+                    window.location.href = data.redirect
                 } else {
                     console.log("error")
                 }
             },
-            dataType: "json",
         })
 
     }

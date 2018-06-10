@@ -144,7 +144,7 @@ app.post('/createTeam', ensureAuthenticated, async (req, res) => {
         teamid = await db.createTeam(req.body.name, req.body.type,
             req.body.description)
         await db.addUserToTeamWithAccessLevel(req.user.id, teamid, 'admin')
-        return res.redirect('/groupchat')
+        return res.send('{ "redirect": "/groupchat" }')
     } catch (e) {
         res.status(500).send(e.stack)
     }
