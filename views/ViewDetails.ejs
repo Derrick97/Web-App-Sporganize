@@ -23,13 +23,88 @@
             dataType: "json",
         })
     }
+    
+    function enableTextbox(checkbox_id, textbox_id) {
+        const checkbox = document.getElementById(checkbox_id)
+        const textbox = document.getElementById(textbox_id)
+        textbox.disabled = !checkbox.checked;
+    }
+
+    function restoreInput(checkbox, textbox_id){
+        checkbox.checked = false
+        document.getElementById(textbox_id).disabled = true
+    }
+
+    function updateDetails(event_id, event_name, event_location, event_date) {
+        const extractval = (id) => {
+            const val = document.getElementById(id).value
+            document.getElementById(id).value = ""
+            return val
+        }
+
+        let newName
+        const nameBox = document.getElementById('nameBox')
+        if(nameBox.checked){
+            newName = extractval('nameTextbox')
+        } else {
+            newName = event_name
+        }
+
+        let newLocation
+        const locationBox = document.getElementById('locationBox')
+        if(locationBox.checked){
+            newLocation = extractval('locationTextbox')
+        } else {
+            newLocation = event_location
+        }
+
+        let newDate
+        const dateBox = document.getElementById('dateBox')
+        if(dateBox.checked){
+            newDate = extractval('dateTextbox')
+        } else {
+            newDate = parseDate(new Date(event_date))
+        }
+
+        const json = {
+            'name': newName,
+            'location': newLocation,
+            'date': newDate,
+            'event_id': event_id,
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/updateDetails',
+            data: json,
+            success: function (data) {
+                if(data.status == 'success'){
+                    alert("Update event details successfully.")
+                    window.location.reload()
+                } else {
+                    console.log('Error when updating event details.')
+                }
+            },
+            dataType: "json",
+        })
+    }
+
+    function parseDate(date) {
+        let year = date.getFullYear()
+        let month = date.getMonth()+1
+        let days = date.getDate()
+        let hours = date.getHours()
+        let minutes = date.getMinutes()
+        let seconds = date.getSeconds()
+        return year+'-'+month+'-'+days+' '+hours+':'+minutes+':'+seconds
+    }
 </script>
 <body>
 <div class="container">
     <div class="jumbotron">
         <a href="/Events"><h4><span class="glyphicon glyphicon-arrow-left"></span>Go Back</h4></a>
         <h1><%= event.name %></h1>
-        <p><%= event.date %></p>
+        <p><%= event.timestamp %></p>
         <p><%= event.location %></p>
     </div>
     <form id="reply" action="/EventsPage" style="display: inline">
@@ -61,21 +136,28 @@
                     <h4 class="modal-title">Change Details of <%= event.name %></h4>
                 </div>
                 <div class="modal-body">
+                    <div>Tick the items that you want to change and type the new info in the box.</div>
                     <div>
-                        <label class="control-label">Event Name</label><br>
-                        <input class="placeholder-no-fix" type="text" maxlength="100" placeholder="<%= event.name%>" />
+                        <label class="control-label">
+                            <input type = checkbox id = 'nameBox' onclick = "enableTextbox('nameBox', 'nameTextbox')">Event Name
+                        </label><br>
+                        <input class="placeholder-no-fix" id = 'nameTextbox' type="text" maxlength="100" placeholder="<%= event.name%>" disabled = 'disabled'/>
                     </div>
                     <div>
-                        <label class="control-label">Event Location</label><br>
-                        <input class="placeholder-no-fix" type="text" maxlength="100" placeholder="<%= event.location %>"  />
+                        <label class="control-label">
+                            <input type = checkbox id = "locationBox" onclick = "enableTextbox('locationBox', 'locationTextbox')">Event Location
+                        </label><br>
+                        <input class="placeholder-no-fix" id = 'locationTextbox' type="text" maxlength="100" placeholder="<%= event.location %>" disabled/>
                     </div>
                     <div>
-                        <label class="control-label">Event Date</label><br>
-                        <input class="placeholder-no-fix" type="text" maxlength="100" placeholder="<%= event.date %>" />
+                        <label class="control-label">
+                            <input type = checkbox id= "dateBox" onclick = "enableTextbox('dateBox', 'dateTextbox')">Event Date
+                        </label><br>
+                        <input class="placeholder-no-fix" id = 'dateTextbox' type="text" maxlength="100" placeholder="<%= event.timestamp %>" disabled/>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal" style="float: left">Change</button>
+                    <button type="button" class="btn btn-default" onclick="updateDetails('<%= event.id%>', '<%= event.name%>', '<%= event.location%>','<%= event.timestamp%>')" data-dismiss="modal" style="float: left">Change</button>
                 </div>
             </div>
         </div>

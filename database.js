@@ -251,6 +251,14 @@ module.exports = {
         const query = ['UPDATE sporganize.users_events',
         'SET status = $3 WHERE users_events.user_id = $1 AND users_events.event_id = $2'].join(' ')
         await pool.query(query, [user_id, event_id, status])
+    },
+
+    changeEventDetailsForUserID: async function(event_id, new_name, new_location, new_date){
+        const query = ['UPDATE sporganize.events',
+        'SET name = $2, location = $3, timestamp = $4',
+            'WHERE events.id = $1'
+        ].join(' ')
+        await pool.query(query, [event_id, new_name, new_location, new_date])
     }
 
 }
