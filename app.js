@@ -105,7 +105,7 @@ app.post('/register', async (req, res) => {
         const pwhash = await bcrypt.hash(req.body.password, saltRounds)
         await db.createUser(req.body.forename, req.body.surname,
             req.body.gender, req.body.email, req.body.mobile, pwhash)
-        res.redirect('/login')
+        res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
     }
@@ -303,6 +303,7 @@ app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
 app.post('/changeStatus', ensureAuthenticated, async (req, res) => {
     try {
         await db.changeEventStatusForUserID(req.user.id, req.body.event_id, req.body.status)
+        res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
         return

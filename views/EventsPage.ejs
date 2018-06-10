@@ -110,8 +110,14 @@
                 type: 'POST',
                 url: '/changeStatus',
                 data: json,
-                success: window.location.reload(),
                 dataType: "json",
+                success: function(data){
+                    if (data){
+                        window.location.reload()
+                    } else {
+                        console.log("error")
+                    }
+                },
             })
         }
     </script>
