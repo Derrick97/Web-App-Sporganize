@@ -79,7 +79,7 @@ app.get('/', (req, res) => {
 
 app.get('/login', (req, res) => {
     if (login_success) {
-    res.render('Login', {message: null});
+        res.render('Login', {message: null});
     } else {
         res.render('Login', {message: 'loginfail'});
         login_success = true
@@ -87,7 +87,7 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', passport.authenticate('local',
-        {successRedirect: '/groupchat', failureRedirect: '/loginfail'})
+    {successRedirect: '/groupchat', failureRedirect: '/loginfail'})
 )
 
 app.get('/loginfail', (req, res) => {
@@ -103,9 +103,11 @@ app.post('/logout', (req, res) => {
 app.post('/register', async (req, res) => {
     try {
         const pwhash = await bcrypt.hash(req.body.password, saltRounds)
-        await db.createUser(req.body.forename, req.body.surname,
+        const status = await db.createUser(req.body.forename, req.body.surname,
             req.body.gender, req.body.email, req.body.mobile, pwhash)
-        res.send({status: 'success'})
+        if (status.rowCount == 0) {
+            res.send({status: 'fail'})
+        } else res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
     }
@@ -169,8 +171,12 @@ app.get('/Teams', ensureAuthenticated, async (req, res) => {
 app.post('/joinTeam', ensureAuthenticated, async (req, res) => {
     try {
         let success = await db.joinTeamWithJoinCodeForUserId(req.body.code, req.user.id)
-        if(success){
-            res.json({msg: 'Success'})
+        if (success) {
+            if (success.code == '23505') {
+                res.json({msg: 'Duplicate'})
+            } else {
+                res.json({msg: 'Success', redirect: '/groupchat'})
+            }
         } else {
             res.json({msg: 'Failed'})
         }
@@ -228,7 +234,14 @@ app.get('/Events', ensureAuthenticated, async (req, res) => {
         return
     }
 
-    res.render('EventsPage', {eventsprevious: eventsprevious, eventsupcoming: eventsupcoming, teams: teams, access_level: 'user', active_id: 0, current_team_name: null});
+    res.render('EventsPage', {
+        eventsprevious: eventsprevious,
+        eventsupcoming: eventsupcoming,
+        teams: teams,
+        access_level: 'user',
+        active_id: 0,
+        current_team_name: null
+    });
 });
 
 
@@ -261,7 +274,14 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
         res.status(500).send(e.stack)
         return
     }
-    res.render('EventsPage', {eventsprevious: eventsprevious, eventsupcoming: eventsupcoming, teams:teams, access_level: access_level, active_id: req.params.teamid, current_team_name: current_team.name})
+    res.render('EventsPage', {
+        eventsprevious: eventsprevious,
+        eventsupcoming: eventsupcoming,
+        teams: teams,
+        access_level: access_level,
+        active_id: req.params.teamid,
+        current_team_name: current_team.name
+    })
 });
 
 app.post('/addEvent', ensureAuthenticated, async (req, res) => {
@@ -298,7 +318,7 @@ app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
             rejectList: declined_list,
             noreplyList: noreply_list,
         })
-    })
+})
 
 app.post('/changeStatus', ensureAuthenticated, async (req, res) => {
     try {
@@ -323,16 +343,16 @@ app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
         all_members = await db.getAllUsersInfoForTeam(req.params.team_id)
         creator = await db.getCreatorForTeamID(req.params.team_id)
         access_level = await db.getAccessLevelForUserIDAndTeamID(req.user.id, req.params.team_id)
-        expire_period = Math.ceil((join_code_info.expires- new Date()) / (1000 * 3600 * 24))
+        expire_period = Math.ceil((join_code_info.expires - new Date()) / (1000 * 3600 * 24))
     } catch (e) {
         res.status(500).send(e.stack)
         return
     }
     res.render('TeamDetails',
         {
-            team:team,
+            team: team,
             join_code_info: join_code_info,
-            team_members : all_members,
+            team_members: all_members,
             creator: creator,
             access_level: access_level,
             expire_period: expire_period,
@@ -340,8 +360,8 @@ app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
 })
 
 app.post('/updateDetails', ensureAuthenticated, async (req, res) => {
-    try{
-        await db.changeEventDetailsForUserID(req.body.event_id,req.body.name, req.body.location, req.body.date)
+    try {
+        await db.changeEventDetailsForUserID(req.body.event_id, req.body.name, req.body.location, req.body.date)
         return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
@@ -357,23 +377,6 @@ app.post('/deleteEvent', ensureAuthenticated, async (req, res) => {
         return
     }
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 app.get('/Photos/:email', ensureAuthenticated, (req, res) => {

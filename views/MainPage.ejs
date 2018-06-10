@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <title>Welcome, <%= forename%></title>
+    <title>Welcome, <%= forename %></title>
 </head>
 <script>
     function joinGroup() {
@@ -24,7 +24,14 @@
             type: 'POST',
             url: '/joinTeam',
             data: json,
-            success: window.location.href = '/groupchat',
+            success: function (data) {
+                if (data.msg == 'Success') {
+                    alert('Join success!')
+                    window.location.href = data.redirect
+                } else {
+                    alert('Wrong code!Can\'t find the team!')
+                }
+            },
             dataType: "json",
         })
     }
@@ -37,13 +44,13 @@
 </div>
 <div class="panel-group">
     <div class="panel panel-default">
-        <div class="panel-body" >
-            <a href="/createTeam"> Create a Team. </a>
+        <div class="panel-body">
+            <a href="/createTeam" style="font-size: 40px"> Create a Team </a>
         </div>
     </div>
     <div class="panel panel-default">
-        <div class="panel-body" >
-            <a data-toggle="modal" data-target="#myModal" > Search a team by code. </a>
+        <div class="panel-body">
+            <a href="" data-toggle="modal" data-target="#myModal" style="font-size: 40px"> Search a team by code </a>
         </div>
 
     </div>

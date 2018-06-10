@@ -1,16 +1,16 @@
 // Uses environment vars to auth
-const { Pool } = require('pg')
+const {Pool} = require('pg')
 pool = new Pool()
 
 module.exports = {
     /* User retrieval */
-    getAllUsersForEmail: async function(email) {
+    getAllUsersForEmail: async function (email) {
         const query = 'SELECT * FROM sporganize.users WHERE email = $1'
         const users = await pool.query(query, [email])
         return users.rows
     },
 
-    getUserForEmail: async function(email) {
+    getUserForEmail: async function (email) {
         const query = 'SELECT * FROM sporganize.users WHERE email = $1'
         const users = await pool.query(query, [email])
 
@@ -21,14 +21,14 @@ module.exports = {
         return users.rows[0]
     },
 
-    getCreatorForTeamID: async function(team_id) {
+    getCreatorForTeamID: async function (team_id) {
         const query = ['SELECT * FROM sporganize.users_teams JOIN sporganize.users ON users.id = users_teams.user_id',
             'WHERE users_teams.team_id = $1 AND users_teams.access_level = $2'].join(' ')
-        const creatorInfo = await pool.query(query, [team_id,'admin'])
+        const creatorInfo = await pool.query(query, [team_id, 'admin'])
         return creatorInfo.rows[0]
     },
 
-    getUserForId: async function(id) {
+    getUserForId: async function (id) {
         const query = 'SELECT * FROM sporganize.users WHERE id = $1'
         const users = await pool.query(query, [id])
 
@@ -39,15 +39,15 @@ module.exports = {
         return users.rows[0]
     },
 
-    getAllUsersFromEventsWithStatus: async function(event_id, status) {
+    getAllUsersFromEventsWithStatus: async function (event_id, status) {
         const query = ['SELECT * FROM sporganize.users_events ',
             'JOIN sporganize.users ON users.id = users_events.user_id',
-        'WHERE users_events.event_id = $1 AND users_events.status = $2'].join(' ')
+            'WHERE users_events.event_id = $1 AND users_events.status = $2'].join(' ')
         const users = await pool.query(query, [event_id, status])
         return users.rows
     },
 
-    getAllUsersInfoForTeam: async function(id){
+    getAllUsersInfoForTeam: async function (id) {
         const query = ['SELECT *',
             'FROM sporganize.users_teams',
             'JOIN sporganize.users ON users.id = users_teams.user_id',
@@ -57,7 +57,7 @@ module.exports = {
     },
 
     /* Team retrieval */
-    getTeamForId: async function(id) {
+    getTeamForId: async function (id) {
         const query = 'SELECT * FROM sporganize.teams WHERE id = $1'
         const teams = await pool.query(query, [id])
 
@@ -68,18 +68,18 @@ module.exports = {
         return teams.rows[0]
     },
 
-    getTeamsForUserId: async function(id) {
+    getTeamsForUserId: async function (id) {
         const query = ['SELECT sporganize.teams.*',
-                       'FROM sporganize.users',
-                       'JOIN sporganize.users_teams ON users.id = users_teams.user_id',
-                       'JOIN sporganize.teams ON users_teams.team_id = teams.id',
-                       'WHERE users.id = $1'].join(' ')
+            'FROM sporganize.users',
+            'JOIN sporganize.users_teams ON users.id = users_teams.user_id',
+            'JOIN sporganize.teams ON users_teams.team_id = teams.id',
+            'WHERE users.id = $1'].join(' ')
 
         const teams = await pool.query(query, [id])
         return teams.rows
     },
 
-    getTeamsForUserIDWithAccessLevel: async function(id) {
+    getTeamsForUserIDWithAccessLevel: async function (id) {
         const query = ['SELECT *',
             'FROM sporganize.teams',
             'JOIN sporganize.users_teams ON teams.id = users_teams.team_id',
@@ -91,16 +91,16 @@ module.exports = {
 
 
     /* Event retrieval */
-    getEventsForTeamId: async function(id) {
+    getEventsForTeamId: async function (id) {
         const query = ['SELECT sporganize.events.*',
-                       'FROM sporganize.events JOIN sporganize.teams ON events.team_id = teams.id',
-                       'WHERE teams.id = $1'].join(' ')
+            'FROM sporganize.events JOIN sporganize.teams ON events.team_id = teams.id',
+            'WHERE teams.id = $1'].join(' ')
 
         const events = await pool.query(query, [id])
         return events.rows
     },
 
-    getAllEventsForUserId: async function(id) {
+    getAllEventsForUserId: async function (id) {
         const teams = await this.getTeamsForUserId(id)
         events = []
         for (let i = 0; i < teams.length; i++) {
@@ -109,8 +109,12 @@ module.exports = {
         }
 
         events.sort((a, b) => {
-            if (a < b) { return -1 }
-            if (a > b) { return  1 }
+            if (a < b) {
+                return -1
+            }
+            if (a > b) {
+                return 1
+            }
             return 0
         })
 
@@ -118,16 +122,16 @@ module.exports = {
     },
 
 
-    getAllEventsForUserIdWithAccessLevelAndStatus: async function(id) {
+    getAllEventsForUserIdWithAccessLevelAndStatus: async function (id) {
         const query = ['SELECT * ',
-        'FROM sporganize.events JOIN sporganize.users_teams ON events.team_id = users_teams.team_id',
+            'FROM sporganize.events JOIN sporganize.users_teams ON events.team_id = users_teams.team_id',
             'JOIN sporganize.users_events ON users_events.event_id = events.id AND users_events.user_id = users_teams.user_id',
-        'WHERE users_teams.user_id = $1'].join(' ')
+            'WHERE users_teams.user_id = $1'].join(' ')
         const events_with_access_level_and_status = await pool.query(query, [id])
         return events_with_access_level_and_status.rows
     },
 
-    getAllEventsForTeamIdWithAccessLevelAndStatus: async function(team_id, user_id) {
+    getAllEventsForTeamIdWithAccessLevelAndStatus: async function (team_id, user_id) {
         const query = ['SELECT * ',
             'FROM sporganize.events JOIN sporganize.users_teams ON events.team_id = users_teams.team_id ',
             'JOIN sporganize.users_events ON users_events.event_id = events.id AND users_events.user_id = users_teams.user_id',
@@ -136,16 +140,16 @@ module.exports = {
         return events_with_access_level_and_status.rows
     },
 
-    getEventForEventIDWithStatus: async function(event_id, user_id){
+    getEventForEventIDWithStatus: async function (event_id, user_id) {
         const query = ['SELECT *',
             'FROM sporganize.events JOIN sporganize.users_events ON events.id = users_events.event_id',
             'WHERE events.id = $1 AND users_events.user_id = $2'].join(' ')
         const event = await pool.query(query, [event_id, user_id])
         // console.log(event.length)
-         return event.rows[0]
+        return event.rows[0]
     },
 
-    getEventForEventId: async function(id) {
+    getEventForEventId: async function (id) {
         const query = 'SELECT * FROM sporganize.events WHERE id = $1'
         const events = await pool.query(query, [id])
 
@@ -158,7 +162,7 @@ module.exports = {
 
     /* Team join codes */
     // Returns -1 if code is invalid
-    getTeamIdForJoinCode: async function(code) {
+    getTeamIdForJoinCode: async function (code) {
         const query = 'SELECT team_id, expires FROM sporganize.join_codes WHERE code = $1'
         const teams = await pool.query(query, [code])
 
@@ -173,28 +177,32 @@ module.exports = {
         return -1
     },
 
-    getCurrentJoinCodeForTeamID: async function(team_id){
+    getCurrentJoinCodeForTeamID: async function (team_id) {
         const query = 'SELECT * FROM sporganize.join_codes WHERE join_codes.team_id = $1'
         const join_code_info = await pool.query(query, [team_id])
         return join_code_info.rows[0]
     },
 
     // Returns true on success, false on invalid code
-    joinTeamWithJoinCodeForUserId: async function(code, id) {
+    joinTeamWithJoinCodeForUserId: async function (code, id) {
         const team = await this.getTeamIdForJoinCode(code)
         if (team == -1) {
             return false
         }
-        await this.addUserToTeamWithAccessLevel(id, team, 'user')
+        try {
+            await this.addUserToTeamWithAccessLevel(id, team, 'user')
+        } catch (e) {
+            return e
+        }
         const all_events_for_team = await this.getEventsForTeamId(team)
-        for(let i=0; i<all_events_for_team.length;i++){
-            await this.addUserToEventWithStatus(id,all_events_for_team[i].id,'noreply')
+        for (let i = 0; i < all_events_for_team.length; i++) {
+            await this.addUserToEventWithStatus(id, all_events_for_team[i].id, 'noreply')
         }
     },
 
-    createJoinCodeForTeamId: async function(code, id) {
+    createJoinCodeForTeamId: async function (code, id) {
         const query = ['INSERT INTO sporganize.join_codes (team_id, code, expires)',
-                       'VALUES ($1, $2, $3)'].join(' ')
+            'VALUES ($1, $2, $3)'].join(' ')
 
         // Set to expire 2 days in the future
         const expiry = new Date()
@@ -203,71 +211,74 @@ module.exports = {
         await pool.query(query, [id, code, expiry.toISOString()])
     },
 
-    addUserToTeamWithAccessLevel: async function(user_id, team_id, access_level) {
+    addUserToTeamWithAccessLevel: async function (user_id, team_id, access_level) {
         const query = ['INSERT INTO sporganize.users_teams (user_id, team_id, access_level)',
-                       'VALUES ($1, $2, $3)'].join(' ')
+            'VALUES ($1, $2, $3)'].join(' ')
         await pool.query(query, [user_id, team_id, access_level])
     },
 
-    getAccessLevelForUserIDAndTeamID: async function(user_id, team_id) {
+    getAccessLevelForUserIDAndTeamID: async function (user_id, team_id) {
         const query = ['SELECT * FROM sporganize.users_teams WHERE user_id = $1 AND team_id = $2'].join(' ')
         const permission = await pool.query(query, [user_id, team_id])
         return permission.rows[0].access_level
     },
 
     /* User, team, event creation */
-    createUser: async function(forename, surname, gender, email, mobile, password_hash) {
+    createUser: async function (forename, surname, gender, email, mobile, password_hash) {
         const query = ['INSERT INTO sporganize.users (forename, surname, gender, email, mobile, password_hash)',
-                       'VALUES ($1, $2, $3, $4, $5, $6)'].join(' ')
-        await pool.query(query, [forename, surname, gender, email, mobile, password_hash])
+            'SELECT $1, $2, $3, $4, $5, $6',
+            'WHERE',
+            'NOT EXISTS (',
+            'SELECT * FROM sporganize.users WHERE sporganize.users.email = $4 )'].join(' ')
+        return await pool.query(query, [forename, surname, gender, email, mobile, password_hash])
     },
 
     // Returns id of new team on successful insertion
-    createTeam: async function(name, type, description) {
+    createTeam: async function (name, type, description) {
         const query = 'INSERT INTO sporganize.teams (name, type, description) VALUES ($1, $2, $3) RETURNING id'
         const resp = await pool.query(query, [name, type, description])
         return resp.rows[0].id
     },
 
-    createEvent: async function(creator_user_id, team_id, name, timestamp, duration, location) {
+    createEvent: async function (creator_user_id, team_id, name, timestamp, duration, location) {
         const query = ['INSERT INTO sporganize.events (team_id, name, timestamp, duration, location)',
-                       'VALUES ($1, $2, $3, $4, $5)'].join(' ')
+            'VALUES ($1, $2, $3, $4, $5)'].join(' ')
         await pool.query(query, [team_id, name, timestamp, duration, location])
         const allEvents = await this.getAllEventsForUserId(creator_user_id)
         let temp = allEvents[0].id
-        for(let j=0; j<allEvents.length; j++){
-            if (temp < allEvents[j].id){
+        for (let j = 0; j < allEvents.length; j++) {
+            if (temp < allEvents[j].id) {
                 temp = allEvents[j].id
             }
         }
         const current_event_id = temp
         const all_users_for_current_event = await this.getAllUsersInfoForTeam(team_id)
-        for(let i = 0; i<all_users_for_current_event.length; i++){
+        for (let i = 0; i < all_users_for_current_event.length; i++) {
             await this.addUserToEventWithStatus(all_users_for_current_event[i].user_id, current_event_id, 'noreply')
         }
     },
 
-    addUserToEventWithStatus: async function(user_id, event_id, status) {
+    addUserToEventWithStatus: async function (user_id, event_id, status) {
         const query = ['INSERT INTO sporganize.users_events (user_id, event_id, status)',
             'VALUES ($1, $2, $3)'].join(' ')
         await pool.query(query, [user_id, event_id, status])
     },
 
-    changeEventStatusForUserID: async function(user_id, event_id, status){
+    changeEventStatusForUserID: async function (user_id, event_id, status) {
         const query = ['UPDATE sporganize.users_events',
-        'SET status = $3 WHERE users_events.user_id = $1 AND users_events.event_id = $2'].join(' ')
+            'SET status = $3 WHERE users_events.user_id = $1 AND users_events.event_id = $2'].join(' ')
         await pool.query(query, [user_id, event_id, status])
     },
 
-    changeEventDetailsForUserID: async function(event_id, new_name, new_location, new_date){
+    changeEventDetailsForUserID: async function (event_id, new_name, new_location, new_date) {
         const query = ['UPDATE sporganize.events',
-        'SET name = $2, location = $3, timestamp = $4',
+            'SET name = $2, location = $3, timestamp = $4',
             'WHERE events.id = $1'
         ].join(' ')
         await pool.query(query, [event_id, new_name, new_location, new_date])
     },
 
-    deleteEventForEventID: async function(event_id){
+    deleteEventForEventID: async function (event_id) {
         const query = 'DELETE FROM sporganize.events WHERE events.id = $1'
         await pool.query(query, [event_id])
     }

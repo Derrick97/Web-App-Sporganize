@@ -121,7 +121,9 @@
                     success: function (data) {
                         if (data.status == 'success') {
                             alert('Register success!')
+                            window.location.reload()
                         } else {
+                            alert('Register Fail! This eamil address has been used!')
                             console.log('error')
                         }
                     },
@@ -249,9 +251,7 @@
             </div>
             <div class="modal-footer">
                 <div align="center">
-                    <button type="button" onclick="register()" class="btn btn-info" data-dismiss="modal">Register
-                        Now
-                    </button>
+                    <button type="button" onclick="register()" class="btn btn-info">Register Now</button>
                 </div>
             </div>
         </div>
