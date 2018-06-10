@@ -10,20 +10,34 @@
 </head>
 <body>
 
+
 <div class="main">
     <h1>Team Details</h1>
     <div class="container">
         <div class="jumbotron">
             <h1><%= team.name %></h1>
-            <p>Creator: <%= team.creator %></p>
-            <p>Team Code: <%= team.id+10000%></p>
-            <p><%=team.type%> team</p>
+            <p>Creator: <%= creator.forename %> <%= creator.surname %></p>
+            <% if (access_level != 'user'){ %>
+            <p>Team Code: <%= join_code_info.code %></p>
+            <% if (expire_period > 0){ %>
+            <p> Expires in:<%= expire_period %> days</p>
+            <% } else { %>
+            <p> Already expired on <%=join_code_info.expires%></p>
+            <% }} %>
+            <p><%= team.type %> team</p>
         </div>
+    </div>
+
+    <div class="container">
+        <h3>Team Members</h3>
+        <% team_members.forEach((member) => { %>
+        <p> <%= member.forename %> <%= member.surname %></p>
+        <% }) %>
     </div>
 </div>
 
 <div class="container">
-    <a href="/Teams/<%=emailAdd%>" class="btn btn-info" role="button">Go back</a>
+    <a href="/Teams" class="btn btn-info" role="button">Go back</a>
 </div>
 
 </body>

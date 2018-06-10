@@ -168,7 +168,12 @@ app.get('/Teams', ensureAuthenticated, async (req, res) => {
 
 app.post('/joinTeam', ensureAuthenticated, async (req, res) => {
     try {
-        await db.joinTeamWithJoinCodeForUserId(req.body.code, req.user.id)
+        let success = await db.joinTeamWithJoinCodeForUserId(req.body.code, req.user.id)
+        if(success){
+            res.json({msg: 'Success'})
+        } else {
+            res.json({msg: 'Failed'})
+        }
     } catch (e) {
         res.status(500).send(e.stack)
         return
@@ -276,7 +281,7 @@ app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
     let declined_list
     let noreply_list
     try {
-        event = await db.getEventForEventId(req.params.event_id)
+        event = await db.getEventForEventIDWithStatus(req.params.event_id, req.user.id)
         access_level = await db.getAccessLevelForUserIDAndTeamID(req.user.id, event.team_id)
         accepted_list = await db.getAllUsersFromEventsWithStatus(event.id, 'confirmed')
         declined_list = await db.getAllUsersFromEventsWithStatus(event.id, 'rejected')
@@ -304,6 +309,34 @@ app.post('/changeStatus', ensureAuthenticated, async (req, res) => {
     }
 })
 
+app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
+    let team
+    let join_code_info
+    let all_members
+    let creator
+    let access_level
+    let expire_period
+    try {
+        team = await db.getTeamForId(req.params.team_id)
+        join_code_info = await db.getCurrentJoinCodeForTeamID(req.params.team_id);
+        all_members = await db.getAllUsersInfoForTeam(req.params.team_id)
+        creator = await db.getCreatorForTeamID(req.params.team_id)
+        access_level = await db.getAccessLevelForUserIDAndTeamID(req.user.id, req.params.team_id)
+        expire_period = Math.ceil((join_code_info.expires- new Date()) / (1000 * 3600 * 24))
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+    res.render('TeamDetails',
+        {
+            team:team,
+            join_code_info: join_code_info,
+            team_members : all_members,
+            creator: creator,
+            access_level: access_level,
+            expire_period: expire_period,
+        })
+})
 
 
 
