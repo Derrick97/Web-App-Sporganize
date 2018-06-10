@@ -114,6 +114,18 @@
                 dataType: "json",
             })
         }
+
+        function deleteEvent(event_id) {
+            const json = {'event_id':event_id,}
+
+            $.ajax({
+                type: 'POST',
+                url: '/deleteEvent',
+                data: json,
+                success: window.location.reload(),
+                dataType: "json",
+            })
+        }
     </script>
 </head>
 <body>
@@ -198,7 +210,7 @@
                         <% } %>
                         <a href="/ViewDetails/<%= event.id %>" class="btn btn-info">View Details</a>
                         <% if (event.access_level != 'user'){ %>
-                        <a href="" class="btn btn-info">Delete</a>
+                        <a onclick="deleteEvent(<%=event.id%>)" class="btn btn-info">Delete</a>
                         <% } %>
                     </div>
                     <% }) %>

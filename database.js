@@ -234,7 +234,13 @@ module.exports = {
                        'VALUES ($1, $2, $3, $4, $5)'].join(' ')
         await pool.query(query, [team_id, name, timestamp, duration, location])
         const allEvents = await this.getAllEventsForUserId(creator_user_id)
-        const current_event_id = allEvents[allEvents.length-1].id
+        let temp = allEvents[0].id
+        for(let j=0; j<allEvents.length; j++){
+            if (temp < allEvents[j].id){
+                temp = allEvents[j].id
+            }
+        }
+        const current_event_id = temp
         const all_users_for_current_event = await this.getAllUsersInfoForTeam(team_id)
         for(let i = 0; i<all_users_for_current_event.length; i++){
             await this.addUserToEventWithStatus(all_users_for_current_event[i].user_id, current_event_id, 'noreply')
@@ -259,6 +265,10 @@ module.exports = {
             'WHERE events.id = $1'
         ].join(' ')
         await pool.query(query, [event_id, new_name, new_location, new_date])
-    }
+    },
 
+    deleteEventForEventID: async function(event_id){
+        const query = 'DELETE FROM sporganize.events WHERE events.id = $1'
+        await pool.query(query, [event_id])
+    }
 }

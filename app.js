@@ -348,6 +348,14 @@ app.post('/updateDetails', ensureAuthenticated, async (req, res) => {
     }
 })
 
+app.post('/deleteEvent', ensureAuthenticated, async (req, res) => {
+    try {
+        await db.deleteEventForEventID(req.body.event_id)
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+})
 
 
 

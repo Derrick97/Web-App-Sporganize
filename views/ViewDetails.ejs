@@ -106,6 +106,7 @@
         <h1><%= event.name %></h1>
         <p><%= event.timestamp %></p>
         <p><%= event.location %></p>
+        <h2>Current Status: <%= event.status%></h2>
     </div>
     <form id="reply" action="/EventsPage" style="display: inline">
         <!--Actually the action should be the Event page, but that page has some unfixed problem now,
@@ -122,11 +123,13 @@
         <a class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
         <a class="btn btn-info disabled">Decline</a>
         <% } %>
-        <h2>Current Status: <%= event.status%></h2>
+
 
     </form>
     <%if (access_level != 'user'){%>
-    <button data-toggle="modal" data-target="#details-modal">Change details of the event.</button>
+    <button class="btn btn-info" data-toggle="modal" data-target="#details-modal">Change Event Details</button>
+    <br>
+    <br>
     <%}%>
     <div id="details-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">
