@@ -9,7 +9,7 @@
     <title>Welcome, <%= forename %></title>
 </head>
 <script>
-    function joinGroup() {
+    function joinTeam() {
         const extractval = (id) => {
             const val = document.getElementById(id).value
             document.getElementById(id).value = ""
@@ -25,11 +25,15 @@
             url: '/joinTeam',
             data: json,
             success: function (data) {
-                if (data.msg == 'Success') {
-                    alert('Join success!')
-                    window.location.href = data.redirect
+                if (data.msg) {
+                    if (data.msg == 'Success') {
+                        alert('Join success!')
+                        window.location.href = data.redirect
+                    } else {
+                        alert('Wrong code!Can\'t find the team!')
+                    }
                 } else {
-                    alert('Wrong code!Can\'t find the team!')
+                    console.log('error')
                 }
             },
             dataType: "json",
@@ -72,7 +76,7 @@
                 </div>
                 <div class="modal-footer">
                     <div align="center">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="joinGroup()">Join
+                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="joinTeam()">Join
                         </button>
                     </div>
                 </div>
