@@ -117,6 +117,7 @@
     <form id="reply" action="/EventsPage" style="display: inline">
         <!--Actually the action should be the Event page, but that page has some unfixed problem now,
         to make the page testable, I redirected to the groupchat page temporarily.-->
+        <% if (event.timestamp >= new Date()){%>
         <% if (event.status == 'noreply'){ %>
         <a href="" class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
         <a href="" class="btn btn-info" onclick="changeStatus('rejected', <%= event.id %>)">Decline</a>
@@ -128,11 +129,11 @@
         <% if (event.status == 'rejected'){ %>
         <a class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
         <a class="btn btn-info disabled">Decline</a>
-        <% } %>
+        <% } }%>
 
 
     </form>
-    <%if (access_level != 'user'){%>
+    <%if ((access_level != 'user') && (event.timestamp >= new Date())) {%>
     <button class="btn btn-info" data-toggle="modal" data-target="#details-modal">Change Event Details</button>
     <br>
     <br>
