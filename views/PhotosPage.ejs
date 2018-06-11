@@ -59,8 +59,8 @@
         }
     </style>
 </head>
-<script >
-    function changeActive(newid){
+<script>
+    function changeActive(newid) {
         let select_item_id = $("#sidenav").find(".active").attr('id')
         document.getElementById(select_item_id).className = ''
         document.getElementById(newid).className = 'active'
@@ -74,25 +74,57 @@
     <div class="container">
         <% events.forEach((event) => { %>
         <div class="container">
-            <div class="jumbotron">
-                <h3><%= event.name %></h3>
-                <p><%= event.day %>
-                    <% event.date %>
-                </p>
-                <p><%= event.location %></p>
-                <input type="button" value="Upload" onclick="location.href = '/Upload/<%= event.id%>'">
-                <input type="button" value="View All">
+            <div class="jumbotron" style="height: 260px; width: 1250px; padding-top: 10px">
+                <div style="width: 275px; word-break: break-all; float: left; padding-top: 5px">
+                    <h3><%= event.name %></h3>
+                    <p><%= event.timestamp %></p>
+                    <p><%= event.location %></p>
+                    <input type="button" value="Upload" onclick="location.href = '/Upload/<%= event.id %>'">
+                    <input type="button" value="View All">
+                </div>
+                <% if (event.id == 27) {%>
+                <div style="float: left;padding-top: 20px">
+                    <img src="http://pic25.photophoto.cn/20121104/0039038641080970_b.jpg" width="275px" height="200px">
+                </div>
+                <div style="float: left; padding-top: 20px">
+                    <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1528738181702&di=369ee301748ae5fe0831373118205ad7&imgtype=0&src=http%3A%2F%2Fs8.sinaimg.cn%2Fmw690%2F001ziT6wgy6JbKF26VN17%26690" width="275px" height="200px">
+                </div>
+                <div style="float: left; padding-top: 20px">
+                    <img src="https://photo.16pic.com/00/12/63/16pic_1263032_b.jpg" width="275px" height="200px">
+                </div>
+                <% } %>
+                <% if (event.id == 28) {%>
+                <div style="float: left; padding-top: 20px">
+                    <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1528737442357&di=9285a768b3e922b8d7ca12c356eb75c0&imgtype=0&src=http%3A%2F%2Fs10.sinaimg.cn%2Fmw690%2F005B0hVAzy6MM2JNY7Ld9%26690" width="275px" height="200px">
+                </div>
+                <div style="float: left; padding-top: 20px">
+                    <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1528737651092&di=ef8903f902e14477d0dafe4c7929f3bb&imgtype=0&src=http%3A%2F%2Fs9.sinaimg.cn%2Fmiddle%2F70144975n9aa2085a8bd8%26690" width="275px" height="200px">
+                </div>
+                <div style="float: left; padding-top: 20px">
+                    <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1528737719524&di=d07debdead8e60c3a0eee8edafbadd70&imgtype=0&src=http%3A%2F%2Fwww.sdthjt.com%2FimageRepository%2F3ed680de-984a-4b6a-9705-472d5a564f00.JPG" width="275px" height="200px">
+                </div>
+                <% } %>
+                <% if (event.id == 29) {%>
+                <div style="float: left; padding-top: 20px">
+                    <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1528737828567&di=73addfc4f3e48b2f08ea988317615f23&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2Ffaf2b2119313b07ea6ce95fd06d7912396dd8cd0.jpg" width="275px" height="200px">
+                </div>
+                <div style="float: left; padding-top: 20px">
+                    <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1528737985901&di=dd9b7f0b0219aed1915389ed01518bc4&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2Fe61190ef76c6a7ef963eb7b8f7faaf51f3de6617.jpg" width="275px" height="200px">
+                </div>
+                <div style="float: left; padding-top: 20px">
+                    <img src="https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1528738008915&di=a2a77643325d19a20c82e97f4c9f5b36&imgtype=0&src=http%3A%2F%2Fimgsrc.baidu.com%2Fimgad%2Fpic%2Fitem%2Fc995d143ad4bd113a9078bc450afa40f4afb0579.jpg" width="275px" height="200px">
+                </div>
+                <% } %>
             </div>
         </div>
         <% }) %>
     </div>
-
 </div>
 
 <div class="sidenav" id="sidenav">
     <a class="active" href="/Photos" id="allteams">All Teams</a>
     <% teams.forEach((team) => { %>
-    <a href="#" onclick="changeActive(<%= team.id%>)" id="<%= team.id%>"><%= team.name%></a>
+    <a href="#" onclick="changeActive(<%= team.id %>)" id="<%= team.id %>"><%= team.name %></a>
     <% }) %>
 </div>
 

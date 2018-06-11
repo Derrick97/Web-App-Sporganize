@@ -128,7 +128,21 @@ module.exports = {
             'JOIN sporganize.users_events ON users_events.event_id = events.id AND users_events.user_id = users_teams.user_id',
             'WHERE users_teams.user_id = $1'].join(' ')
         const events_with_access_level_and_status = await pool.query(query, [id])
-        return events_with_access_level_and_status.rows
+
+        events = []
+
+        events.push(...events_with_access_level_and_status.rows)
+
+        events.sort((a, b) => {
+            if (a.timestamp < b.timestamp) {
+                return -1
+            }
+            if (a.timestamp > b.timestamp) {
+                return 1
+            }
+            return 0
+        })
+        return events
     },
 
     getAllEventsForTeamIdWithAccessLevelAndStatus: async function (team_id, user_id) {

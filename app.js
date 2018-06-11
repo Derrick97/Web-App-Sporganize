@@ -175,7 +175,7 @@ app.post('/joinTeam', ensureAuthenticated, async (req, res) => {
             if (success.code == '23505') {
                 res.json({msg: 'Duplicate'})
             } else {
-                res.json({msg: 'Success', redirect: '/groupchat'})
+                res.json({msg: 'Success', redirect: "/groupchat"})
             }
         } else {
             res.json({msg: 'Failed'})

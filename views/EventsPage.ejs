@@ -111,8 +111,8 @@
                 url: '/changeStatus',
                 data: json,
                 dataType: "json",
-                success: function(data){
-                    if (data){
+                success: function (data) {
+                    if (data) {
                         window.location.reload()
                     } else {
                         console.log("error")
@@ -122,7 +122,7 @@
         }
 
         function deleteEvent(event_id) {
-            const json = {'event_id':event_id,}
+            const json = {'event_id': event_id,}
 
             $.ajax({
                 type: 'POST',
@@ -201,7 +201,19 @@
                         <h2 class="list-group-item-heading"><%= event.name %></h2>
                         <h4 class="list-group-item-text"><%= event.date %></h4>
                         <h4 class="list-group-item-text"><%= event.location %></h4>
+                        <% if (event.id == 30) { %>
+
                         <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
+
+                        <% } else { %>
+
+                        <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
+
+                        <% } %>
+                        <% if (event.id == 30) { %>
+
+                        <% } else { %>
+
                         <% if (event.status == 'noreply'){ %>
                         <a href="" class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
                         <a href="" class="btn btn-info" onclick="changeStatus('rejected', <%= event.id %>)">Decline</a>
@@ -214,9 +226,11 @@
                         <a class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
                         <a class="btn btn-info disabled">Decline</a>
                         <% } %>
+
+                        <% } %>
                         <a href="/ViewDetails/<%= event.id %>" class="btn btn-info">View Details</a>
                         <% if (event.access_level != 'user'){ %>
-                        <a onclick="deleteEvent(<%=event.id%>)" class="btn btn-info">Delete</a>
+                        <a onclick="deleteEvent(<%= event.id %>)" class="btn btn-info">Delete</a>
                         <% } %>
                     </div>
                     <% }) %>
