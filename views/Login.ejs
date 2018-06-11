@@ -12,12 +12,14 @@
             height: 100%;
             margin: 0;
         }
+
         /* Container holding the image and the text */
         .containimage {
             position: relative;
-      height: 100%;
+            height: 100%;
             color: white;
         }
+
         /* Centered text */
         .centered {
             position: absolute;
@@ -26,6 +28,7 @@
             transform: translate(-50%, -50%);
             text-align: center;
         }
+
         .down {
             position: absolute;
             top: 75%;
@@ -33,12 +36,21 @@
             transform: translate(-50%, -50%);
             text-align: center;
         }
+
+        .top {
+            position: absolute;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
         /* index */
     </style>
     <script>
-        $(document).ready(function(){
+        $(document).ready(function () {
             // Add smooth scrolling to all links
-            $("a").on('click', function(event) {
+            $("a").on('click', function (event) {
 
                 // Make sure this.hash has a value before overriding default behavior
                 if (this.hash !== "") {
@@ -52,7 +64,7 @@
                     // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
                     $('html, body').animate({
                         scrollTop: $(hash).offset().top
-                    }, 800, function(){
+                    }, 800, function () {
 
                         // Add hash (#) to URL when done scrolling (default click behavior)
                         window.location.hash = hash;
@@ -79,33 +91,59 @@
                 'password': extractval('Password'),
                 'forename': extractval('Forename'),
                 'surname': extractval('Surname'),
-                'gender' : extractvalfromselect('Gender'),
+                'gender': extractvalfromselect('Gender'),
                 'mobile': extractval('Mobile'),
             }
 
-            $.ajax({
-                type: 'POST',
-                url: '/register',
-                data: json,
-                success: alert('register with email:' + json.email.toString() + '\nforname:' + json.forename.toString() +
-                    '\nsurname:' + json.surname.toString() + '\ngender:' + json.gender.toString() +
-                    '\nmobile:' + json.mobile.toString()),
-                dataType: "json"
-            });
+            const cpassword = extractval('CPassword')
+
+            if (json.email.length < 1) {
+                alert('Please input your email address!')
+            } else if (json.password.length < 1) {
+                alert('Please input your password!')
+            } else if (json.password.length < 6) {
+                alert('Length of the password should be at least six!')
+            } else if (cpassword.length < 1) {
+                alert('Please confirm your password!')
+            } else if (json.password != cpassword) {
+                alert('Confirmed password doesn\'t match your password!')
+            } else if (json.forename.length < 1) {
+                alert('Please input your forename!')
+            } else if (json.surname.length < 1) {
+                alert('Please input your surname!')
+            } else if (json.mobile.length < 1) {
+                alert('Please input your mobile number!')
+            } else {
+                $.ajax({
+                    type: 'POST',
+                    url: '/register',
+                    data: json,
+                    success: function (data) {
+                        if (data.status == 'success') {
+                            alert('Register success!')
+                            window.location.reload()
+                        } else {
+                            alert('Register Fail! This eamil address has been used!')
+                            console.log('error')
+                        }
+                    },
+                    dataType: "json"
+                });
+            }
         }
     </script>
 </head>
 <body>
 <% if (message) { %>
 <script>
-    window.alert('login fail!')
+    window.alert('login fail! Wrong email or password!')
 </script>
 <% } %>
 <div class="containimage">
     <img src="https://s22.postimg.cc/r0d3q5km9/146674590746074236.jpg" height="100%" width="100%">
     <div class="centered">
-        <p style="font-size: 100px">Sporganize</p>
-        <h4> The best solution of managing sport events.</h4>
+        <p style="font-size: 175px">Sporganize</p>
+        <h2> The best solution of managing sport events.</h2>
     </div>
     <div class="down">
         <h2>Start</h2>
@@ -114,89 +152,110 @@
 </div>
 
 <div class="main" id="section2" style="height: 100%">
-<div class="container">
-    <h3>No account yet? Easy Registration <a href="" data-toggle="modal" data-target="#myModal">here</a>.</h3>
-    <!-- Modal -->
-    <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title" style="text-align: center">Registration</h4>
-                </div>
-                <div class="modal-body" align="center">
-                    <div>
-                        <label class="control-label">Email:</label><br>
-                        <input class="placeholder-no-fix" type="text" maxlength="100" placeholder="example@gmail.com" id="UserEmail" name="useremail" />
+    <div class="containimage">
+        <img src="https://s15.postimg.cc/t5he6qkgr/1040-14042510504_E32.jpg" height="100%" width="100%">
+        <div class="top">
+            <div class="container">
+                <h3>No account yet? Easy Registration <a href="" data-toggle="modal" data-target="#myModal">here</a>.
+                </h3>
+            </div>
+
+            <div class="container">
+                <h3>Already has an account?</h3>
+                <form id="Login_Area" class="form-horizontal" method="post">
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="email">Email:</label>
+                        <div class="col-sm-10">
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
+                        </div>
                     </div>
-                    <div>
-                        <label class="control-label">Password:</label><br>
-                        <input type="text" maxlength="16" autocomplete="off" placeholder="Password" id="Password" name="password" onkeyup="value=value.replace(/[^0-9A-Za-z_]/g,'')" />
+                    <div class="form-group">
+                        <label class="control-label col-sm-2" for="pwd">Password:</label>
+                        <div class="col-sm-10">
+                            <input type="password" class="form-control" id="password" name="password"
+                                   placeholder="Enter password">
+                        </div>
                     </div>
-                    <div>
-                        <label class="control-label">Confirm Password:</label><br>
-                        <input type="text" maxlength="16" autocomplete="off" placeholder="Confirm Password" id="CPassword" name="cpassword" onkeyup="value=value.replace(/[^0-9A-Za-z_]/g,'')" />
+                    <!--<div class="form-group">-->
+                    <!--<div class="col-sm-offset-2 col-sm-10">-->
+                    <!--<div class="checkbox">-->
+                    <!--<label><input type="checkbox"> Remember me</label>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <!--</div>-->
+                    <div class="form-group">
+                        <div class="col-sm-offset-1 col-sm-10">
+                            <button type="submit" class="btn btn-default">Login</button>
+                        </div>
                     </div>
-                    <div>
-                        <label class="control-label">Forename:</label><br>
-                        <input type="text" maxlength="30" placeholder="Forename" id="Forename" name="forename" onkeyup="value=value.replace(/[^[A-Za-z]/ig,'')" />
-                    </div>
-                    <div>
-                        <label class="control-label">Surname:</label><br>
-                        <input type="text" maxlength="30" placeholder="Surname" id="Surname" name="surname" onkeyup="value=value.replace(/[^[A-Za-z]/i,'')" />
-                    </div>
-                    <div>
-                        <label class="control-label">Gender:</label><br>
-                        <select name="sex" id="Gender">
-                            <option value="1">male</option>
-                            <option value="2">female</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="control-label">Mobile Number:</label><br>
-                        <input type="text" maxlength="16" placeholder="Mobile Number" id="Mobile" name="mobile" onkeyup="value=value.replace(/[^\d]/g,'')" />
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div align="center">
-                    <button type="button" onclick="register()" class="btn btn-default" data-dismiss="modal">Register Now</button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
 </div>
 
-<div class="container">
-    <h3>Already has an account?</h3>
-    <form id="Login_Area" class="form-horizontal" method="post">
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="email">Email:</label>
-            <div class="col-sm-10">
-                <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
+<!-- Modal -->
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" style="text-align: center">Registration</h4>
+            </div>
+            <div class="modal-body" align="center">
+                <div>
+                    <label class="control-label">Email:</label><br>
+                    <input class="placeholder-no-fix" type="email" maxlength="100" placeholder="example@gmail.com"
+                           id="UserEmail" name="useremail"/>
+                </div>
+                <br>
+                <div>
+                    <label class="control-label">Password:</label><br>
+                    <input type="password" maxlength="16" autocomplete="off" placeholder="Password" id="Password"
+                           name="password" onkeyup="value=value.replace(/[^0-9A-Za-z_]/g,'')"/>
+                </div>
+
+                <div><p class="hint">（Password should be a combination of at least six numbers, letters and
+                        underscore.）</p><br>
+                    <label class="control-label">Confirm Password:</label><br>
+                    <input type="password" maxlength="16" autocomplete="off" placeholder="Confirm Password"
+                           id="CPassword" name="cpassword" onkeyup="value=value.replace(/[^0-9A-Za-z_]/g,'')"/>
+                </div>
+                <br>
+                <div>
+                    <label class="control-label">Forename:</label><br>
+                    <input type="text" maxlength="30" placeholder="Forename" id="Forename" name="forename"
+                           onkeyup="value=value.replace(/[^[A-Za-z]/ig,'')"/>
+                </div>
+                <br>
+                <div>
+                    <label class="control-label">Surname:</label><br>
+                    <input type="text" maxlength="30" placeholder="Surname" id="Surname" name="surname"
+                           onkeyup="value=value.replace(/[^[A-Za-z]/i,'')"/>
+                </div>
+                <br>
+                <div>
+                    <label class="control-label">Gender:</label><br>
+                    <select name="sex" id="Gender">
+                        <option value="1">male</option>
+                        <option value="2">female</option>
+                    </select>
+                </div>
+                <br>
+                <div>
+                    <label class="control-label">Mobile Number:</label><br>
+                    <input type="text" maxlength="16" placeholder="Mobile Number" id="Mobile" name="mobile"
+                           onkeyup="value=value.replace(/[^\d]/g,'')"/>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div align="center">
+                    <button type="button" onclick="register()" class="btn btn-info">Register Now</button>
+                </div>
             </div>
         </div>
-        <div class="form-group">
-            <label class="control-label col-sm-2" for="pwd">Password:</label>
-            <div class="col-sm-10">
-                <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
-            </div>
-        </div>
-        <!--<div class="form-group">-->
-            <!--<div class="col-sm-offset-2 col-sm-10">-->
-                <!--<div class="checkbox">-->
-                    <!--<label><input type="checkbox"> Remember me</label>-->
-                <!--</div>-->
-            <!--</div>-->
-        <!--</div>-->
-        <div class="form-group">
-            <div class="col-sm-offset-2 col-sm-10">
-                    <button type="submit" class="btn btn-default">Login</button>
-            </div>
-        </div>
-    </form>
-</div>
+    </div>
 </div>
 </body>
 </html>

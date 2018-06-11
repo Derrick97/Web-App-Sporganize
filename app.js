@@ -103,9 +103,11 @@ app.post('/logout', (req, res) => {
 app.post('/register', async (req, res) => {
     try {
         const pwhash = await bcrypt.hash(req.body.password, saltRounds)
-        await db.createUser(req.body.forename, req.body.surname,
+        const status = await db.createUser(req.body.forename, req.body.surname,
             req.body.gender, req.body.email, req.body.mobile, pwhash)
-        res.redirect('/login')
+        if (status.rowCount == 0) {
+            res.send({status: 'fail'})
+        } else res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
     }
@@ -170,7 +172,11 @@ app.post('/joinTeam', ensureAuthenticated, async (req, res) => {
     try {
         let success = await db.joinTeamWithJoinCodeForUserId(req.body.code, req.user.id)
         if (success) {
-            res.json({msg: 'Success'})
+            if (success.code == '23505') {
+                res.json({msg: 'Duplicate'})
+            } else {
+                res.json({msg: 'Success', redirect: '/groupchat'})
+            }
         } else {
             res.json({msg: 'Failed'})
         }
@@ -317,6 +323,7 @@ app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
 app.post('/changeStatus', ensureAuthenticated, async (req, res) => {
     try {
         await db.changeEventStatusForUserID(req.user.id, req.body.event_id, req.body.status)
+        res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
         return
