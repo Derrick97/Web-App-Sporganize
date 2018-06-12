@@ -298,12 +298,12 @@ module.exports = {
         await pool.query(query, [user_id, event_id, status])
     },
 
-    changeEventDetailsForUserID: async function (event_id, new_name, new_location, new_date) {
+    changeEventDetailsForUserID: async function (event_id, new_name, new_location, new_date, new_duration) {
         const query = ['UPDATE sporganize.events',
-            'SET name = $2, location = $3, timestamp = $4',
+            'SET name = $2, location = $3, timestamp = $4, duration = $5',
             'WHERE events.id = $1'
         ].join(' ')
-        await pool.query(query, [event_id, new_name, new_location, new_date])
+        await pool.query(query, [event_id, new_name, new_location, new_date, new_duration])
     },
 
     deleteEventForEventID: async function (event_id) {

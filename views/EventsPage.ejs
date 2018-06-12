@@ -209,35 +209,21 @@
                     <div class="list-group-item" style="text-align: center">
                         <h2 class="list-group-item-heading"><%= event.name %></h2>
                         <h4 class="list-group-item-text"><%= event.date %></h4>
-                        <% if (!event.duration.hours) { %>
+                        <h4 class="list-group-item-text">
+                            <% if (!event.duration.hours) { %>
+                            <% } else if (event.duration.hours == 1) { %>
+                            1 hour
+                            <% } else { %>
+                            <%= event.duration.hours %> hours
+                            <% } %>
 
-                        <% if (event.duration.minutes == 1) { %>
-                        <h4 class="list-group-item-text">1 minute</h4>
-                        <% } else { %>
-                        <h4 class="list-group-item-text"><%= event.duration.minutes %> minutes</h4>
-                        <% } %>
-
-                        <% } else if (event.duration.hours == 1) { %>
-
-                        <% if (!event.duration.minutes) { %>
-                        <h4 class="list-group-item-text">1 hour</h4>
-                        <% } else if (event.duration.minutes == 1) { %>
-                        <h4 class="list-group-item-text">1 hour 1 minute</h4>
-                        <% } else { %>
-                        <h4 class="list-group-item-text">1 hour <%= event.duration.minutes %> minutes</h4>
-                        <% } %>
-
-                        <% } else { %>
-
-                        <% if (!event.duration.minutes) { %>
-                        <h4 class="list-group-item-text"><%= event.duration.hours %> hours</h4>
-                        <% } else if (event.duration.minutes == 1) { %>
-                        <h4 class="list-group-item-text"><%= event.duration.hours %> hours 1 minute</h4>
-                        <% } else { %>
-                        <h4 class="list-group-item-text"><%= event.duration.hours %> hours <%= event.duration.minutes %> minutes</h4>
-                        <% } %>
-
-                        <% } %>
+                            <% if (!event.duration.minutes) { %>
+                            <% } else if (event.duration.minutes == 1) { %>
+                            1 minute
+                            <% } else { %>
+                            <%= event.duration.minutes %> minutes
+                            <% } %>
+                        </h4>
                         <h4 class="list-group-item-text"><%= event.location %></h4>
                         <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
                         <% if (event.status == 'noreply') { %>

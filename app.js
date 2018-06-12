@@ -365,7 +365,8 @@ app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
 
 app.post('/updateDetails', ensureAuthenticated, async (req, res) => {
     try {
-        await db.changeEventDetailsForUserID(req.body.event_id, req.body.name, req.body.location, req.body.date)
+      //  console.log(req.body.duration)
+        await db.changeEventDetailsForUserID(req.body.event_id, req.body.name, req.body.location, req.body.date, req.body.duration)
         return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)

@@ -41,7 +41,7 @@
         document.getElementById(textbox_id).disabled = true
     }
 
-    function updateDetails(event_id, event_name, event_location, event_date) {
+    function updateDetails(event_id, event_name, event_location, event_date, event_duration) {
         const extractval = (id) => {
             const val = document.getElementById(id).value
             document.getElementById(id).value = ""
@@ -72,10 +72,19 @@
             newDate = parseDate(new Date(event_date))
         }
 
+        let newDuration
+        const durationBox = document.getElementById('durationBox')
+        if (durationBox.checked) {
+            newDuration = extractval('durationTextbox')
+        } else {
+            newDuration = parseDuration(event_duration)
+        }
+
         const json = {
             'name': newName,
             'location': newLocation,
             'date': newDate,
+            'duration': newDuration,
             'event_id': event_id,
         }
 
@@ -104,6 +113,22 @@
         let seconds = date.getSeconds()
         return year + '-' + month + '-' + days + ' ' + hours + ':' + minutes + ':' + seconds
     }
+
+    function parseDuration(duration) {
+        if (!duration.hours) {
+        } else if (event.duration.hours == 1) {
+            return '1 hour'
+        } else {
+            return duration.hours+' hours'
+        }
+
+        if (!duration.minutes) {
+        } else if (event.duration.minutes == 1) {
+            return '1 minute'
+        } else {
+            return duration.minutes+' minutes'
+        }
+    }
 </script>
 <body>
 <div class="container">
@@ -117,7 +142,7 @@
     <form id="reply" action="/EventsPage" style="display: inline">
         <!--Actually the action should be the Event page, but that page has some unfixed problem now,
         to make the page testable, I redirected to the groupchat page temporarily.-->
-        <% if (event.timestamp >= new Date()){%>
+        <% if (event.timestamp >= new Date()){ %>
         <% if (event.status == 'noreply'){ %>
         <a href="" class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
         <a href="" class="btn btn-info" onclick="changeStatus('rejected', <%= event.id %>)">Decline</a>
@@ -129,10 +154,10 @@
         <% if (event.status == 'rejected'){ %>
         <a class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
         <a class="btn btn-info disabled">Decline</a>
-        <% } }%>
+        <% } } %>
 
     </form>
-    <%if ((access_level != 'user') && (event.timestamp >= new Date())) {%>
+    <% if ((access_level != 'user') && (event.timestamp >= new Date())) { %>
     <button class="btn btn-info" data-toggle="modal" data-target="#details-modal">Change Event Details</button>
     <br>
     <br>
@@ -170,10 +195,19 @@
                         <input class="placeholder-no-fix" id='dateTextbox' type="text" maxlength="100"
                                placeholder="<%= event.timestamp %>" disabled/>
                     </div>
+                    <div>
+                        <label class="control-label">
+                            <input type=checkbox id="durationBox"
+                                   onclick="enableTextbox('durationBox', 'durationTextbox')">Event
+                            Duration
+                        </label><br>
+                        <input class="placeholder-no-fix" id='durationTextbox' type="text" maxlength="100"
+                               disabled/>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default"
-                            onclick="updateDetails('<%= event.id %>', '<%= event.name %>', '<%= event.location %>','<%= event.timestamp %>')"
+                            onclick="updateDetails('<%= event.id %>', '<%= event.name %>', '<%= event.location %>','<%= event.timestamp %>', '<%= event.duration %>')"
                             data-dismiss="modal" style="float: left">Change
                     </button>
                 </div>
