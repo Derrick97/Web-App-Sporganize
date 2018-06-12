@@ -8,8 +8,83 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>Settings</title>
 </head>
+<script>
+    function enableTextbox(checkbox_id, textbox_id) {
+        const checkbox = document.getElementById(checkbox_id)
+        const textbox = document.getElementById(textbox_id)
+        textbox.disabled = !checkbox.checked;
+    }
+
+    function updateDetails(mobile){
+        const extractval = (id) => {
+            const val = document.getElementById(id).value
+            document.getElementById(id).value = ""
+            return val
+        }
+        let new_mobile
+        if(document.getElementById('mobileBox').checked){
+            new_mobile = extractval('mobileTextbox')
+        } else {
+            new_mobile = mobile
+        }
+
+        const json = {
+           'mobile': new_mobile,
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/updatePersonalDetails',
+            data: json,
+            success: function (data) {
+                if(data.status == 'success'){
+                    alert("Update personal details successfully.")
+                    window.location.reload()
+                } else {
+                    console.log('Error when updating personal details.')
+                }
+            },
+            dataType: "json",
+        })
+    }
+</script>
 <body>
 <h1>Settings</h1>
+<div class="main">
+    <div class="container">
+        <a class="jumbotron btn btn-default" style="width: 1000px; text-align: left" data-toggle="modal" data-target="#details-modal" >
+            <h2><%= user.forename %> <%= user.surname %></h2>
+            <p><%= user.gender%></p>
+            <p><%= user.email %></p>
+            <p><%= user.mobile%></p>
+        </a>
+    </div>
+    <div id="details-modal" class="modal fade" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Change Personal Details</h4>
+                </div>
+                <div class="modal-body">
+                    <div>Tick the items that you want to change and type the new info in the box.</div>
+                    <div>
+                        <label class="control-label">
+                            <input type = checkbox id = 'mobileBox' onclick = "enableTextbox('mobileBox', 'mobileTextbox')">Mobile Number
+                        </label><br>
+                        <input class="placeholder-no-fix" id = 'mobileTextbox' type="text" maxlength="100" placeholder="<%= user.mobile%>" disabled = 'disabled'/>
+                    </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" onclick="updateDetails('<%= user.mobile%>')" data-dismiss="modal" style="float: left">Change</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+
 <nav class="navbar navbar-fixed-bottom" style="background-color:grey">
     <div class="container-fluid">
         <ul class="nav nav-tabs nav-justified">

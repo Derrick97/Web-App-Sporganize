@@ -309,5 +309,12 @@ module.exports = {
     deleteEventForEventID: async function (event_id) {
         const query = 'DELETE FROM sporganize.events WHERE events.id = $1'
         await pool.query(query, [event_id])
-    }
+    },
+
+    changeMobileForUserID: async function (user_id, mobile){
+        const query = ['UPDATE sporganize.users',
+            'SET mobile = $2',
+            'WHERE id = $1'].join(' ')
+        await pool.query(query, [user_id, mobile])
+    },
 }
