@@ -317,4 +317,11 @@ module.exports = {
             'WHERE id = $1'].join(' ')
         await pool.query(query, [user_id, mobile])
     },
+
+    changeTeamDetailsForTeamID: async function (team_id, name, description) {
+        const query = ['UPDATE sporganize.teams',
+            'SET name = $2, description = $3',
+            'WHERE id = $1'].join(' ')
+        await pool.query(query, [team_id, name, description])
+    }
 }

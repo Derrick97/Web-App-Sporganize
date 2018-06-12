@@ -36,11 +36,6 @@
         textbox.disabled = !checkbox.checked;
     }
 
-    function restoreInput(checkbox, textbox_id) {
-        checkbox.checked = false
-        document.getElementById(textbox_id).disabled = true
-    }
-
     function updateDetails(event_id, event_name, event_location, event_date, event_duration) {
         const extractval = (id) => {
             const val = document.getElementById(id).value
@@ -119,14 +114,14 @@
         } else if (event.duration.hours == 1) {
             return '1 hour'
         } else {
-            return duration.hours+' hours'
+            return duration.hours + ' hours'
         }
 
         if (!duration.minutes) {
         } else if (event.duration.minutes == 1) {
             return '1 minute'
         } else {
-            return duration.minutes+' minutes'
+            return duration.minutes + ' minutes'
         }
     }
 </script>

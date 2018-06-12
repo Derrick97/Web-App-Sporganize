@@ -402,6 +402,16 @@ app.post('/updatePersonalDetails', ensureAuthenticated, async (req, res) => {
     }
 })
 
+app.post('/updateTeamDetails', ensureAuthenticated, async (req, res) => {
+    try {
+        await db.changeTeamDetailsForTeamID(req.body.team_id, req.body.name, req.body.description)
+        return res.send({status: 'success'})
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+})
+
 
 app.get('/Upload/:email/:eventID', ensureAuthenticated, (req, res) => {
     res.render('UploadPhotos', {
