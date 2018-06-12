@@ -207,7 +207,13 @@ module.exports = {
     getCurrentJoinCodeForTeamID: async function (team_id) {
         const query = 'SELECT * FROM sporganize.join_codes WHERE join_codes.team_id = $1'
         const join_code_info = await pool.query(query, [team_id])
-        return join_code_info.rows[0]
+        let temp = join_code_info.rows[0]
+        for (let i = 0; i < join_code_info.rows.length; i++) {
+            if(temp.id < join_code_info.rows[i].id){
+                temp = join_code_info.rows[i]
+            }
+        }
+        return temp
     },
 
     // Returns true on success, false on invalid code
@@ -323,5 +329,22 @@ module.exports = {
             'SET name = $2, description = $3',
             'WHERE id = $1'].join(' ')
         await pool.query(query, [team_id, name, description])
-    }
+    },
+
+    changeAccessLevelForUserID: async function (user_id, team_id, access_level) {
+        const query = ['UPDATE sporganize.users_teams',
+        'SET access_level = $3',
+        'WHERE user_id = $1 AND team_id = $2'].join(' ')
+        await pool.query(query, [user_id, team_id, access_level])
+    },
+
+    removeMemberForUserIDAndTeamID: async function (user_id, team_id){
+        let query = 'DELETE FROM sporganize.users_teams WHERE user_id = $1 AND team_id = $2'
+        await pool.query(query, [user_id, team_id])
+        const allEvent = await this.getEventsForTeamId(team_id)
+        for(let i = 0; i<allEvent.length;i++){
+            let query2 = 'DELETE FROM sporganize.users_events WHERE user_id = $1 AND event_id = $2'
+            await pool.query(query2, [user_id, allEvent[i].id])
+        }
+    },
 }

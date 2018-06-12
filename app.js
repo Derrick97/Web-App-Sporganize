@@ -347,7 +347,15 @@ app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
         all_members = await db.getAllUsersInfoForTeam(req.params.team_id)
         creator = await db.getCreatorForTeamID(req.params.team_id)
         access_level = await db.getAccessLevelForUserIDAndTeamID(req.user.id, req.params.team_id)
-        expire_period = Math.ceil((join_code_info.expires - new Date()) / (1000 * 3600 * 24))
+        if(access_level === undefined){
+            return res.send("You have been kicked out of this team.")
+        }
+        if(join_code_info === undefined) {
+
+            expire_period = 'No code generated yet.'
+        } else {
+            expire_period = Math.ceil((join_code_info.expires - new Date()) / (1000 * 3600 * 24))
+        }
     } catch (e) {
         res.status(500).send(e.stack)
         return
@@ -405,6 +413,26 @@ app.post('/updatePersonalDetails', ensureAuthenticated, async (req, res) => {
 app.post('/updateTeamDetails', ensureAuthenticated, async (req, res) => {
     try {
         await db.changeTeamDetailsForTeamID(req.body.team_id, req.body.name, req.body.description)
+        return res.send({status: 'success'})
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+})
+
+app.post('/setTeamManager', ensureAuthenticated, async (req, res) =>{
+    try {
+        await db.changeAccessLevelForUserID(req.body.member_id, req.body.team_id, 'manager')
+        return res.send({status: 'success'})
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+})
+
+app.post('/removeMember', ensureAuthenticated, async (req, res) => {
+    try {
+        await db.removeMemberForUserIDAndTeamID(req.body.member_id, req.body.team_id)
         return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)

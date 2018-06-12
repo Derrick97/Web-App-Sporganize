@@ -127,8 +127,8 @@
 </script>
 <body>
 <div class="container">
-    <div class="jumbotron">
-        <a href="/Events"><h4><span class="glyphicon glyphicon-arrow-left"></span>Go Back</h4></a>
+    <br>
+    <div class="jumbotron btn btn-default" data-toggle="modal" data-target="#details-modal" style="width: 1200px;">
         <h1><%= event.name %></h1>
         <p><%= event.timestamp %></p>
         <p><%= event.location %></p>
@@ -238,6 +238,10 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="container">
+    <a href="/Events" class="btn btn-info" role="button">Go back</a>
 </div>
 </body>
 </html>

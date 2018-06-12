@@ -59,6 +59,53 @@
             dataType: "json",
         })
     }
+
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover();
+    });
+
+    function setManager(member_id, team_id){
+        const json = {
+            'member_id': member_id,
+            'team_id' : team_id,
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/setTeamManager',
+            data: json,
+            success: function (data) {
+                if (data.status) {
+                    alert("Set manager successfully.")
+                    window.location.reload()
+                } else {
+                    console.log('Error when set managers.')
+                }
+            },
+            dataType: "json",
+        })
+    }
+
+    function removeUser(member_id, team_id) {
+        const json = {
+            'member_id': member_id,
+            'team_id' : team_id,
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/removeMember',
+            data: json,
+            success: function (data) {
+                if (data.status) {
+                    alert("Delete  successfully.")
+                    window.location.reload()
+                } else {
+                    console.log('Error when delete members.')
+                }
+            },
+            dataType: "json",
+        })
+    }
+
 </script>
 <body>
 
@@ -69,18 +116,24 @@
         <div class="jumbotron btn btn-default" data-toggle="modal" data-target="#details-modal" style="width: 1200px;">
             <h1><%= team.name %></h1>
             <p>Creator: <%= creator.forename %> <%= creator.surname %></p>
+
             <% if (access_level != 'user'){ %>
+            <% if (expire_period != 'No code generated yet.'){%>
             <p>Team Code: <%= join_code_info.code %></p>
             <% if (expire_period > 0){ %>
             <p> Expires in:<%= expire_period %> days</p>
             <% } else { %>
             <p> Already expired on <%= join_code_info.expires %></p>
-            <% }} %>
+            <% }} else {  %>
+            <p> <%=expire_period%></p>
+            <% }}%>
             <p><%= team.type %> team</p>
-
         </div>
 
+
         <a class="btn btn-info" data-toggle="modal" data-target="#details-modal">Change Details</a>
+        <a class="btn btn-info" data-toggle="modal" data-target="#set-manager-modal">Set Managers</a>
+        <a class="btn btn-info" data-toggle="modal" data-target="#remove-member-modal">Remove Members</a>
     </div>
     <div class="container">
         <h3>Team Members</h3>
@@ -89,6 +142,57 @@
         <% }) %>
     </div>
 </div>
+
+<div id="set-manager-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Set Team Managers</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <% team_members.forEach((member) => { %>
+                    <div><%= member.forename %> <%= member.surname %>
+                        <button type="button" class="btn btn-default"
+                                onclick="setManager('<%= member.id %>', '<%= team.id %>')"
+                                data-dismiss="modal">Set Manager
+                        </button>
+                    </div>
+                    <% }) %>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="remove-member-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Remove Team Members</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <% team_members.forEach((member) => { %>
+                    <div><%= member.forename %> <%= member.surname %>
+                        <button type="button" class="btn btn-default"
+                                onclick="removeUser('<%= member.id %>', '<%= team.id %>')"
+                                data-dismiss="modal">Remove
+                        </button>
+                    </div>
+                    <% }) %>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</div>
+
 
 <div id="details-modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
@@ -109,7 +213,8 @@
                 </div>
                 <div>
                     <label class="control-label">
-                        <input type=checkbox id="descriptBox" onclick="enableTextbox('descriptBox', 'descriptTextbox')">Team Description
+                        <input type=checkbox id="descriptBox" onclick="enableTextbox('descriptBox', 'descriptTextbox')">Team
+                        Description
                     </label><br>
                     <input class="placeholder-no-fix" id='descriptTextbox' type="text" maxlength="100"
                            placeholder="<%= team.description %>" disabled/>
