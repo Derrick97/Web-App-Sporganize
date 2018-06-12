@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <title>Change Status</title>
+    <title>View Event's Details</title>
 </head>
 <script>
     function changeStatus(new_status, event_id) {
@@ -88,12 +88,13 @@
             url: '/updateDetails',
             data: json,
             success: function (data) {
-                if (data.status == 'success') {
+                if (data.status) {
                     alert("Update event details successfully.")
                     window.location.reload()
-                } else {
-                    console.log('Error when updating event details.')
                 }
+                else
+                    console.log('Error')
+
             },
             dataType: "json",
         })
