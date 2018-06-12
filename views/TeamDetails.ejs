@@ -22,7 +22,7 @@
             <% if (expire_period > 0){ %>
             <p> Expires in:<%= expire_period %> days</p>
             <% } else { %>
-            <p> Already expired on <%=join_code_info.expires%></p>
+            <p> Already expired on <%= join_code_info.expires %></p>
             <% }} %>
             <p><%= team.type %> team</p>
         </div>

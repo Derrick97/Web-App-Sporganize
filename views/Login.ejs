@@ -119,11 +119,14 @@
                     url: '/register',
                     data: json,
                     success: function (data) {
-                        if (data.status == 'success') {
-                            alert('Register success!')
-                            window.location.reload()
+                        if (data.status) {
+                            if (data.status == 'success') {
+                                alert('Register success!')
+                                window.location.reload()
+                            } else {
+                                alert('Register Fail! This eamil address has been used!')
+                            }
                         } else {
-                            alert('Register Fail! This eamil address has been used!')
                             console.log('error')
                         }
                     },

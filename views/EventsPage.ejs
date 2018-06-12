@@ -86,7 +86,12 @@
                 type: 'POST',
                 url: '/addEvent',
                 data: json,
-                success: alert('Add success!'),
+                success: function (data) {
+                    if (data.status)
+                        alert('Add success!')
+                    else
+                        console.log('error')
+                },
                 dataType: "json",
             })
         }
@@ -111,24 +116,28 @@
                 url: '/changeStatus',
                 data: json,
                 dataType: "json",
-                success: function(data){
-                    if (data){
+                success: function (data) {
+                    if (data.status)
                         window.location.reload()
-                    } else {
+                    else
                         console.log("error")
-                    }
                 },
             })
         }
 
         function deleteEvent(event_id) {
-            const json = {'event_id':event_id,}
+            const json = {'event_id': event_id,}
 
             $.ajax({
                 type: 'POST',
                 url: '/deleteEvent',
                 data: json,
-                success: window.location.reload(),
+                success: function (data) {
+                    if (data.status)
+                        window.location.reload()
+                    else
+                        console.log("error")
+                },
                 dataType: "json",
             })
         }
@@ -200,23 +209,52 @@
                     <div class="list-group-item" style="text-align: center">
                         <h2 class="list-group-item-heading"><%= event.name %></h2>
                         <h4 class="list-group-item-text"><%= event.date %></h4>
+                        <% if (!event.duration.hours) { %>
+
+                        <% if (event.duration.minutes == 1) { %>
+                        <h4 class="list-group-item-text">1 minute</h4>
+                        <% } else { %>
+                        <h4 class="list-group-item-text"><%= event.duration.minutes %> minutes</h4>
+                        <% } %>
+
+                        <% } else if (event.duration.hours == 1) { %>
+
+                        <% if (!event.duration.minutes) { %>
+                        <h4 class="list-group-item-text">1 hour</h4>
+                        <% } else if (event.duration.minutes == 1) { %>
+                        <h4 class="list-group-item-text">1 hour 1 minute</h4>
+                        <% } else { %>
+                        <h4 class="list-group-item-text">1 hour <%= event.duration.minutes %> minutes</h4>
+                        <% } %>
+
+                        <% } else { %>
+
+                        <% if (!event.duration.minutes) { %>
+                        <h4 class="list-group-item-text"><%= event.duration.hours %> hours</h4>
+                        <% } else if (event.duration.minutes == 1) { %>
+                        <h4 class="list-group-item-text"><%= event.duration.hours %> hours 1 minute</h4>
+                        <% } else { %>
+                        <h4 class="list-group-item-text"><%= event.duration.hours %> hours <%= event.duration.minutes %> minutes</h4>
+                        <% } %>
+
+                        <% } %>
                         <h4 class="list-group-item-text"><%= event.location %></h4>
                         <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
-                        <% if (event.status == 'noreply'){ %>
+                        <% if (event.status == 'noreply') { %>
                         <a href="" class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
                         <a href="" class="btn btn-info" onclick="changeStatus('rejected', <%= event.id %>)">Decline</a>
                         <% } %>
-                        <% if (event.status == 'confirmed'){ %>
+                        <% if (event.status == 'confirmed') { %>
                         <a class="btn btn-info disabled">Accept</a>
                         <a class="btn btn-info" onclick="changeStatus('rejected', <%= event.id %>)">Decline</a>
                         <% } %>
-                        <% if (event.status == 'rejected'){ %>
+                        <% if (event.status == 'rejected') { %>
                         <a class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
                         <a class="btn btn-info disabled">Decline</a>
                         <% } %>
                         <a href="/ViewDetails/<%= event.id %>" class="btn btn-info">View Details</a>
-                        <% if (event.access_level != 'user'){ %>
-                        <a onclick="deleteEvent(<%=event.id%>)" class="btn btn-info">Delete</a>
+                        <% if (event.access_level != 'user') { %>
+                        <a onclick="deleteEvent(<%= event.id %>)" class="btn btn-info">Delete</a>
                         <% } %>
                     </div>
                     <% }) %>
@@ -240,6 +278,35 @@
                     <div class="list-group-item" style="text-align: center">
                         <h2 class="list-group-item-heading"><%= event.name %></h2>
                         <h4 class="list-group-item-text"><%= event.date %></h4>
+                        <% if (!event.duration.hours) { %>
+
+                        <% if (event.duration.minutes == 1) { %>
+                        <h4 class="list-group-item-text">1 minute</h4>
+                        <% } else { %>
+                        <h4 class="list-group-item-text"><%= event.duration.minutes %> minutes</h4>
+                        <% } %>
+
+                        <% } else if (event.duration.hours == 1) { %>
+
+                        <% if (!event.duration.minutes) { %>
+                        <h4 class="list-group-item-text">1 hour</h4>
+                        <% } else if (event.duration.minutes == 1) { %>
+                        <h4 class="list-group-item-text">1 hour 1 minute</h4>
+                        <% } else { %>
+                        <h4 class="list-group-item-text">1 hour <%= event.duration.minutes %> minutes</h4>
+                        <% } %>
+
+                        <% } else { %>
+
+                        <% if (!event.duration.minutes) { %>
+                        <h4 class="list-group-item-text"><%= event.duration.hours %> hours</h4>
+                        <% } else if (event.duration.minutes == 1) { %>
+                        <h4 class="list-group-item-text"><%= event.duration.hours %> hours 1 minute</h4>
+                        <% } else { %>
+                        <h4 class="list-group-item-text"><%= event.duration.hours %> hours <%= event.duration.minutes %> minutes</h4>
+                        <% } %>
+
+                        <% } %>
                         <h4 class="list-group-item-text"><%= event.location %></h4>
                         <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
                         <a href="/ViewDetails/<%= event.id %>" class="btn btn-info">View Details</a>

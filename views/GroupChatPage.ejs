@@ -8,8 +8,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>Chat List</title>
 </head>
-<script >
-    function changeActive(newid){
+<script>
+    function changeActive(newid) {
         let select_item_id = $("#sidenav").find(".active").attr('id')
         document.getElementById(select_item_id).className = ''
         document.getElementById(newid).className = 'active'
@@ -68,18 +68,18 @@
 
 <div class="sidenav" id="sidenav">
     <% teams.forEach((team) => { %>
-    <% if (team.id == teams[0].id) {%>
-    <a href="#" class="active" onclick="changeActive(<%= team.id%>)" id="<%= team.id%>"><%= team.name%></a>
-    <% } else {%>
-    <a href="#" onclick="changeActive(<%= team.id%>)" id="<%= team.id%>"><%= team.name%></a>
+    <% if (team.id == teams[0].id) { %>
+    <a href="#" class="active" onclick="changeActive(<%= team.id %>)" id="<%= team.id %>"><%= team.name %></a>
+    <% } else { %>
+    <a href="#" onclick="changeActive(<%= team.id %>)" id="<%= team.id %>"><%= team.name %></a>
     <% } %>
     <% }) %>
 </div>
 
 <div class="main">
-<div id="haha">
-    <h1>group chat</h1>
-</div>
+    <div id="haha">
+        <h1>group chat</h1>
+    </div>
 </div>
 
 <nav class="navbar navbar-default navbar-fixed-bottom" style="background-color:grey">

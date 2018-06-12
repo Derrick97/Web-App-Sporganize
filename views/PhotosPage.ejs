@@ -59,8 +59,8 @@
         }
     </style>
 </head>
-<script >
-    function changeActive(newid){
+<script>
+    function changeActive(newid) {
         let select_item_id = $("#sidenav").find(".active").attr('id')
         document.getElementById(select_item_id).className = ''
         document.getElementById(newid).className = 'active'
@@ -80,7 +80,7 @@
                     <% event.date %>
                 </p>
                 <p><%= event.location %></p>
-                <input type="button" value="Upload" onclick="location.href = '/Upload/<%= event.id%>'">
+                <input type="button" value="Upload" onclick="location.href = '/Upload/<%= event.id %>'">
                 <input type="button" value="View All">
             </div>
         </div>
@@ -92,7 +92,7 @@
 <div class="sidenav" id="sidenav">
     <a class="active" href="/Photos" id="allteams">All Teams</a>
     <% teams.forEach((team) => { %>
-    <a href="#" onclick="changeActive(<%= team.id%>)" id="<%= team.id%>"><%= team.name%></a>
+    <a href="#" onclick="changeActive(<%= team.id %>)" id="<%= team.id %>"><%= team.name %></a>
     <% }) %>
 </div>
 

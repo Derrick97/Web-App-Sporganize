@@ -127,20 +127,23 @@
             'description': extractval('description')
         }
 
-        $.ajax({
-            type: 'POST',
-            url: '/createTeam',
-            data: json,
-            dataType: "json",
-            success: function(data){
-                if (data.redirect){
-                    window.location.href = data.redirect
-                } else {
-                    console.log("error")
-                }
-            },
-        })
-
+        if (json.name.length < 1) {
+            alert('Please give your team a name!')
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/createTeam',
+                data: json,
+                dataType: "json",
+                success: function (data) {
+                    if (data.redirect) {
+                        window.location.href = data.redirect
+                    } else {
+                        console.log("error")
+                    }
+                },
+            })
+        }
     }
 </script>
 </body>

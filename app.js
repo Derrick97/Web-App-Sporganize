@@ -121,6 +121,7 @@ app.get('/groupchat', ensureAuthenticated, async (req, res) => {
     let teams
     try {
         teams = await db.getTeamsForUserId(req.user.id)
+        teams.reverse()
     } catch (e) {
         res.status(500).send(e.stack)
         return
@@ -220,6 +221,7 @@ app.get('/Events', ensureAuthenticated, async (req, res) => {
                 'id': ev.id,
                 'name': ev.name,
                 'date': ev.timestamp,
+                'duration': ev.duration,
                 'location': ev.location,
                 'status': ev.status,
                 'access_level': ev.access_level,
@@ -259,6 +261,7 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
                 'id': ev.id,
                 'name': ev.name,
                 'date': ev.timestamp,
+                'duration': ev.duration,
                 'location': ev.location,
                 'status': ev.status,
                 'access_level': ev.access_level,
@@ -287,6 +290,7 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
 app.post('/addEvent', ensureAuthenticated, async (req, res) => {
     try {
         await db.createEvent(req.user.id, req.body.teamid, req.body.eventname, req.body.starttime, req.body.duration, req.body.location)
+        return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
         return
@@ -372,6 +376,7 @@ app.post('/updateDetails', ensureAuthenticated, async (req, res) => {
 app.post('/deleteEvent', ensureAuthenticated, async (req, res) => {
     try {
         await db.deleteEventForEventID(req.body.event_id)
+        return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
         return
