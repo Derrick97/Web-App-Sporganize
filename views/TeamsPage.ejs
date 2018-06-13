@@ -12,15 +12,34 @@
         body {
             font-family: "Lato", sans-serif;
         }
+
         .topright {
             position: absolute;
             top: 18px;
             right: 16px;
             font-size: 18px;
         }
+
+        .topleft {
+            position: absolute;
+            top: 18px;
+            left: 16px;
+            font-size: 18px;
+        }
+
+        .topright_cross {
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 18px;
+        }
     </style>
 </head>
 <body>
+<div class="topleft">
+    <div class="fa fa-times-circle btn" style="font-size:24px" onclick="leaveCrossAppears()" id="leave_btn">Leave</div>
+</div>
+
 <div class="topright">
     <div class="fa fa-plus-circle btn" style="font-size:24px" data-toggle="modal" data-target="#add_modal">Add</div>
 </div>
@@ -30,7 +49,7 @@
 
     <div id="accordion">
         <% if (teamsc.length != 0) { %>
-        <div class="card">
+        <div class="card" style="overflow: hidden">
             <div class="card-header" style="background-color: #818181">
                 <a class="collapsed card-link btn-block" data-toggle="collapse" href="#collapseOne"
                    style="font-size:20px; color:black; padding-left:5px" onclick="changeIcon('icon1')">
@@ -40,78 +59,138 @@
             <div id="collapseOne" class="collapse in">
                 <div class="card-body">
                     <% teamsc.forEach((teamc) => { %>
-                    <div style="float: left; margin: 30px" align="center">
+                    <div style="float: left; margin: 30px; position: relative">
                         <a href="/TeamDetails/<%= teamc.id %>" class="list-group-item btn"
                            style="background-color: #E6E6E6; height:400px; width:350px; border: 3px solid black;">
                             <h2 class="list-group-item-heading"><%= teamc.icon %>  <%= teamc.name %></h2>
                             <h5><%= teamc.type %> team</h5>
                         </a>
+                        <i class="fa fa-times-circle topright_cross btn"
+                           style="font-size:24px; color:red; visibility: hidden" id="leave_cross<%= teamc.id %>"
+                           data-toggle="modal" data-target="#leave_modal<%= teamc.id %>">
+                        </i>
+                    </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="leave_modal<%= teamc.id %>" role="dialog">
+                        <div class="modal-dialog">
+
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title" style="text-align: center">Leave <%= teamc.name %></h4>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure to leave this team?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                                            style="float:left"
+                                            onclick="leaveTeam()">yes
+                                    </button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                                            style="float:right">no
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <% }) %>
+
                 </div>
             </div>
         </div>
         <% } %>
         <% if (teams.length != 0) { %>
-        <div class="card">
+        <div class="card" style="overflow: hidden">
             <div class="collapsed card-header" style="background-color: #818181">
                 <a class="collapsed card-link btn-block" data-toggle="collapse" href="#collapseTwo"
                    style="font-size:20px; color:black; padding-left:5px" onclick="changeIcon('icon2')">
-                    <span class="fa fa-caret-down" id="icon2"></span> Teams joined
+                    <span class="fa fa-caret-right" id="icon2"></span> Teams joined
                 </a>
             </div>
-            <div id="collapseTwo" class="collapse in">
+            <div id="collapseTwo" class="collapse">
                 <div class="card-body">
-                    <div>
-                        <% teams.forEach((team) => { %>
+                    <% teams.forEach((team) => { %>
+                    <div style="float: left; margin: 30px; position: relative">
                         <a href="/TeamDetails/<%= team.id %>" class="list-group-item btn"
-                           style="background-color: #E6E6E6; float: left; height:400px; width:350px; margin: 30px; border: 3px solid black;">
+                           style="background-color: #E6E6E6; height:400px; width:350px; border: 3px solid black;">
                             <h1 class="list-group-item-heading"><%= team.icon %>  <%= team.name %></h1>
                             <h4><%= team.type %> team</h4>
                         </a>
-                        <% }) %>
+                        <i class="fa fa-times-circle topright_cross btn"
+                           style="font-size:24px; color:red; visibility: hidden" id="leave_cross<%= team.id %>"
+                           data-toggle="modal" data-target="#leave_modal<%= team.id %>">
+                        </i>
                     </div>
-                </div>
-            </div>
-        </div>
-        <% } %>
-    </div>
+                    <!-- Modal -->
+                    <div class="modal fade" id="leave_modal<%= team.id %>" role="dialog">
+                        <div class="modal-dialog">
 
-    <div class="modal fade" id="add_modal" role="dialog" style="top:300px">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <a href="/CreateTeam" class="btn btn-info" style="height: 100px; font-size: 40px; width: 100%">Create a
-                    new team</a><br>
-                <a class="btn btn-info" data-toggle="modal" data-target="#myModal"
-                   style="height: 100px; font-size: 40px; width: 100%">Join a team via code</a>
-            </div>
-        </div>
-    </div>
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title" style="text-align: center">Leave <%= team.name %></h4>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure to leave this team?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                                            style="float:left"
+                                            onclick="leaveTeam()">yes
+                                    </button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                                            style="float:right">no
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-    <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title" style="text-align: center">Join a team</h4>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+    <% } %>
+</div>
+
+<div class="modal fade" id="add_modal" role="dialog" style="top:300px">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <a href="/CreateTeam" class="btn btn-info" style="height: 100px; font-size: 40px; width: 100%">Create a
+                new team</a><br>
+            <a class="btn btn-info" data-toggle="modal" data-target="#myModal"
+               style="height: 100px; font-size: 40px; width: 100%">Join a team via code</a>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" style="text-align: center">Join a team</h4>
+            </div>
+            <div class="modal-body" align="center">
+                <div>
+                    <label class="control-label">Invitation code:</label><br>
+                    <input class="placeholder-no-fix" type="text" maxlength="50" placeholder="Invitation code"
+                           id="code" name="code"/>
                 </div>
-                <div class="modal-body" align="center">
-                    <div>
-                        <label class="control-label">Invitation code:</label><br>
-                        <input class="placeholder-no-fix" type="text" maxlength="50" placeholder="Invitation code"
-                               id="code" name="code"/>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div align="center">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="joinTeam()">Join
-                        </button>
-                    </div>
+            </div>
+            <div class="modal-footer">
+                <div align="center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" onclick="joinTeam()">Join
+                    </button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </div>
 
 <nav class="navbar navbar-default navbar-fixed-bottom" style="background-color:grey">
@@ -162,11 +241,73 @@
 
     function changeIcon(iconid) {
         const icon = document.getElementById(iconid)
+        const btn = document.getElementById('leave_btn')
         if (icon.className == 'fa fa-caret-down') {
             icon.className = 'fa fa-caret-right'
+            let cross
+            <% teamsc.forEach((teamc) => { %>
+            cross = document.getElementById('leave_cross<%= teamc.id %>')
+            if (cross.style.visibility == "visible") {
+                cross.style.visibility = "hidden"
+                btn.innerText = "Leave"
+            }
+            <% }) %>
+            <% teams.forEach((team) => { %>
+            cross = document.getElementById('leave_cross<%= team.id %>')
+            if (cross.style.visibility == "visible") {
+                cross.style.visibility = "hidden"
+                btn.innerText = "Leave"
+            }
+            <% }) %>
         } else {
             icon.className = 'fa fa-caret-down'
         }
+    }
+
+    function leaveCrossAppears() {
+        let cross
+        const btn = document.getElementById('leave_btn')
+        <% teamsc.forEach((teamc) => { %>
+        cross = document.getElementById('leave_cross<%= teamc.id %>')
+        if (cross.style.visibility == "visible") {
+            cross.style.visibility = "hidden"
+            btn.innerText = "Leave"
+        }
+        else {
+            cross.style.visibility = "visible"
+            btn.innerText = "Cancel"
+        }
+        <% }) %>
+        <% teams.forEach((team) => { %>
+        cross = document.getElementById('leave_cross<%= team.id %>')
+        if (cross.style.visibility == "visible") {
+            cross.style.visibility = "hidden"
+            btn.innerText = "Leave"
+        }
+        else {
+            cross.style.visibility = "visible"
+            btn.innerText = "Cancel"
+        }
+        <% }) %>
+    }
+    
+    function leaveTeam() {
+        json = {team_id: 1}
+
+        $.ajax({
+            type: 'POST',
+            url: '/removeMember',
+            data: json,
+            dataType: "json",
+            success: function (data) {
+                if (data.status) {
+                    alert('Leave success!')
+                    window.location.reload()
+                } else {
+                    console.log('error')
+                }
+            },
+        })
     }
 </script>
 </body>
