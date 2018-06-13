@@ -8,6 +8,50 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>Welcome, <%= forename %></title>
 </head>
+<body>
+<div class="jumbotron text-center">
+    <h1>It is quiet here...</h1>
+    <p> You may want to add a team by unique code or create your own team!</p>
+</div>
+
+<div class="panel-group">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <a href="/createTeam" style="font-size: 40px"> Create a Team </a>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <a href="" data-toggle="modal" data-target="#myModal" style="font-size: 40px"> Search a team by code </a>
+        </div>
+    </div>
+
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="text-align: center">Join a team</h4>
+                </div>
+                <div class="modal-body" align="center">
+                    <div>
+                        <label class="control-label">Invitation code:</label><br>
+                        <input class="placeholder-no-fix" type="text" maxlength="50" placeholder="Invitation code"
+                               id="code" name="code"/>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div align="center">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="joinTeam()">Join
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     function joinTeam() {
         const extractval = (id) => {
@@ -40,50 +84,5 @@
         })
     }
 </script>
-<body>
-
-<div class="jumbotron text-center">
-    <h1>It is quiet here...</h1>
-    <p> You may want to add a team by unique code or create your own team!</p>
-</div>
-<div class="panel-group">
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <a href="/createTeam" style="font-size: 40px"> Create a Team </a>
-        </div>
-    </div>
-    <div class="panel panel-default">
-        <div class="panel-body">
-            <a href="" data-toggle="modal" data-target="#myModal" style="font-size: 40px"> Search a team by code </a>
-        </div>
-
-    </div>
-
-    <div class="modal fade" id="myModal" role="dialog">
-        <div class="modal-dialog">
-            <!-- Modal content-->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title" style="text-align: center">Join a team</h4>
-                </div>
-                <div class="modal-body" align="center">
-                    <div>
-                        <label class="control-label">Invitation code:</label><br>
-                        <input class="placeholder-no-fix" type="text" maxlength="50" placeholder="Invitation code"
-                               id="code" name="code"/>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div align="center">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="joinTeam()">Join
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-</div>
 </body>
 </html>

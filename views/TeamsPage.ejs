@@ -8,86 +8,24 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>Teams</title>
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+        }
+        .topright {
+            position: absolute;
+            top: 18px;
+            right: 16px;
+            font-size: 18px;
+        }
+    </style>
 </head>
-<style>
-    .topright {
-        position: absolute;
-        top: 18px;
-        right: 16px;
-        font-size: 18px;
-    }
-</style>
-<script>
-    function joinTeam() {
-        const extractval = (id) => {
-            const val = document.getElementById(id).value
-            document.getElementById(id).value = ""
-            return val
-        }
-
-        const json = {
-            'code': extractval('code'),
-        }
-
-        $.ajax({
-            type: 'POST',
-            url: '/joinTeam',
-            data: json,
-            success: function (data) {
-                if (data.msg) {
-                    if (data.msg == 'Success') {
-                        alert('Join success!')
-                        window.location.href = data.redirect
-                    } else if (data.msg == 'Duplicate') {
-                        alert('You\'ve already in this team!')
-                    } else {
-                        alert('Wrong code!Can\'t find the team!')
-                    }
-                } else {
-                    console.log('error')
-                }
-            },
-            dataType: "json",
-        })
-    }
-
-    function generateCode(teamid) {
-        const extractval = (id) => {
-            const val = document.getElementById(id).value
-            document.getElementById(id).value = ""
-            return val
-        }
-
-        const json = {
-            'codeGen': extractval('codeGen' + teamid),
-            'teamId': teamid,
-        }
-
-        $.ajax({
-            type: 'POST',
-            url: '/generateCode',
-            data: json,
-            success: alert("Generate success!"),
-            dataType: "json",
-        })
-    }
-
-    function changeIcon(iconid) {
-        const icon = document.getElementById(iconid)
-        if (icon.className == 'fa fa-caret-down') {
-            icon.className = 'fa fa-caret-right'
-        } else {
-            icon.className = 'fa fa-caret-down'
-        }
-    }
-</script>
 <body>
-
 <div class="topright">
     <div class="fa fa-plus-circle btn" style="font-size:24px" data-toggle="modal" data-target="#add_modal">Add</div>
 </div>
 
-<div style="padding-bottom:100px">
+<div class="upnav" style="padding-bottom:100px">
     <h1 style="text-align: center">My Teams</h1>
 
     <div id="accordion">
@@ -106,42 +44,8 @@
                         <a href="/TeamDetails/<%= teamc.id %>" class="list-group-item btn"
                            style="background-color: #E6E6E6; height:400px; width:350px; border: 3px solid black;">
                             <h2 class="list-group-item-heading"><%= teamc.icon %>  <%= teamc.name %></h2>
-                            <div class="modal fade" id="codeGenerator<%= teamc.id %>" role="dialog">
-                                <div class="modal-dialog">
-                                    <!-- Modal content-->
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <button type="button" class="close" data-dismiss="modal">&times;
-                                            </button>
-                                            <h4 class="modal-title" style="text-align: center">Generate code
-                                                for this team</h4>
-                                        </div>
-                                        <div class="modal-body" align="center">
-                                            <div>
-                                                <label class="control-label">code:</label><br>
-                                                <input class="placeholder-no-fix" type="text" maxlength="50"
-                                                       placeholder="Invitation Code" id="codeGen<%= teamc.id %>"
-                                                       name="codeGen"/>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <div align="center">
-                                                <button type="button" class="btn btn-default" data-dismiss="modal"
-                                                        onclick="generateCode(<%= teamc.id %>)">Generate
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                             <h5><%= teamc.type %> team</h5>
                         </a>
-
-                        <div class="btn btn-info" data-toggle="modal" data-target="#codeGenerator<%= teamc.id %>" style="margin-top: 10px">
-                            Generate
-                            code for this team
-                        </div>
-
                     </div>
                     <% }) %>
                 </div>
@@ -209,18 +113,61 @@
         </div>
     </div>
 </div>
+
 <nav class="navbar navbar-default navbar-fixed-bottom" style="background-color:grey">
     <div class="container-fluid">
         <ul class="nav nav-tabs nav-justified">
             <li><a href="/groupchat" style="color:black"><h1>GroupChat</h1></a></li>
             <li><a href="/Events" style="color:black"><h1>Events</h1></a></li>
             <li><a href="/Photos" style="color:black"><h1>Photos</h1></a></li>
-            <li class="active"><a href="#" style="color:black"><h1>My Teams</h1></a></li>
+            <li class="active"><a style="color:black"><h1>My Teams</h1></a></li>
             <li><a href="/Settings" style="color:black"><h1>Settings</h1></a></li>
         </ul>
     </div>
 </nav>
 
+<script>
+    function joinTeam() {
+        const extractval = (id) => {
+            const val = document.getElementById(id).value
+            document.getElementById(id).value = ""
+            return val
+        }
 
+        const json = {
+            'code': extractval('code'),
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/joinTeam',
+            data: json,
+            success: function (data) {
+                if (data.msg) {
+                    if (data.msg == 'Success') {
+                        alert('Join success!')
+                        window.location.href = data.redirect
+                    } else if (data.msg == 'Duplicate') {
+                        alert('You\'ve already in this team!')
+                    } else {
+                        alert('Wrong code!Can\'t find the team!')
+                    }
+                } else {
+                    console.log('error')
+                }
+            },
+            dataType: "json",
+        })
+    }
+
+    function changeIcon(iconid) {
+        const icon = document.getElementById(iconid)
+        if (icon.className == 'fa fa-caret-down') {
+            icon.className = 'fa fa-caret-right'
+        } else {
+            icon.className = 'fa fa-caret-down'
+        }
+    }
+</script>
 </body>
 </html>

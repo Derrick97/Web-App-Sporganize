@@ -7,64 +7,16 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>Settings</title>
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+        }
+    </style>
 </head>
-<script>
-    function logOut() {
-        $.ajax({
-            type: 'POST',
-            url: '/logout',
-            success: function (data) {
-                if (data.redirect) {
-                    window.location.href = data.redirect
-                } else {
-                    console.log('error')
-                }
-            },
-        })
-    }
-
-    function enableTextbox(checkbox_id, textbox_id) {
-        const checkbox = document.getElementById(checkbox_id)
-        const textbox = document.getElementById(textbox_id)
-        textbox.disabled = !checkbox.checked;
-    }
-
-    function updateDetails(mobile) {
-        const extractval = (id) => {
-            const val = document.getElementById(id).value
-            document.getElementById(id).value = ""
-            return val
-        }
-        let new_mobile
-        if (document.getElementById('mobileBox').checked) {
-            new_mobile = extractval('mobileTextbox')
-        } else {
-            new_mobile = mobile
-        }
-
-        const json = {
-            'mobile': new_mobile,
-        }
-
-        $.ajax({
-            type: 'POST',
-            url: '/updatePersonalDetails',
-            data: json,
-            success: function (data) {
-                if (data.status == 'success') {
-                    alert("Update personal details successfully.")
-                    window.location.reload()
-                } else {
-                    console.log('Error when updating personal details.')
-                }
-            },
-            dataType: "json",
-        })
-    }
-</script>
 <body>
-<h1>Settings</h1>
-<div class="main" style="padding-bottom: 93px">
+<div class="upnav" style="padding-bottom: 100px">
+    <h1 style="text-align: center">Settings</h1>
+
     <div class="container">
         <a class="jumbotron btn btn-default" style="width: 1000px; text-align: left" data-toggle="modal"
            data-target="#details-modal">
@@ -74,6 +26,7 @@
             <p><%= user.mobile %></p>
         </a>
     </div>
+
     <div id="details-modal" class="modal fade" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -100,9 +53,10 @@
             </div>
         </div>
     </div>
-<div class="container">
-    <button data-toggle="modal" data-target="#logoutModal">Log out</button>
-</div>
+
+    <div class="container">
+        <button data-toggle="modal" data-target="#logoutModal">Log out</button>
+    </div>
 
     <!-- Modal -->
     <div class="modal fade" id="logoutModal" role="dialog">
@@ -126,9 +80,7 @@
             </div>
         </div>
     </div>
-
 </div>
-
 
 <nav class="navbar navbar-fixed-bottom" style="background-color:grey">
     <div class="container-fluid">
@@ -137,7 +89,7 @@
             <li><a href="/Events" style="color:black"><h1>Events</h1></a></li>
             <li><a href="/Photos" style="color:black"><h1>Photos</h1></a></li>
             <li><a href="/Teams" style="color:black"><h1>My Teams</h1></a></li>
-            <li class="active"><a href="#" style="color:black"><h1>Settings</h1></a></li>
+            <li class="active"><a style="color:black"><h1>Settings</h1></a></li>
         </ul>
     </div>
 </nav>

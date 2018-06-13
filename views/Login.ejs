@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <title>Welcome to Sporganize.</title>
+    <title>Welcome to Sporganize</title>
     <style>
         body, html {
             height: 100%;
@@ -44,97 +44,7 @@
             transform: translate(-50%, -50%);
             text-align: center;
         }
-
-        /* index */
     </style>
-    <script>
-        $(document).ready(function () {
-            // Add smooth scrolling to all links
-            $("a").on('click', function (event) {
-
-                // Make sure this.hash has a value before overriding default behavior
-                if (this.hash !== "") {
-                    // Prevent default anchor click behavior
-                    event.preventDefault();
-
-                    // Store hash
-                    var hash = this.hash;
-
-                    // Using jQuery's animate() method to add smooth page scroll
-                    // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
-                    $('html, body').animate({
-                        scrollTop: $(hash).offset().top
-                    }, 800, function () {
-
-                        // Add hash (#) to URL when done scrolling (default click behavior)
-                        window.location.hash = hash;
-                    });
-                } // End if
-            });
-        });
-
-        function register() {
-            const extractval = (id) => {
-                const val = document.getElementById(id).value
-                document.getElementById(id).value = ""
-                return val
-            }
-
-            const extractvalfromselect = (id) => {
-                const select = document.getElementById(id);
-                const val = select.options[select.selectedIndex].innerHTML;
-                return val
-            }
-
-            const json = {
-                'email': extractval('UserEmail'),
-                'password': extractval('Password'),
-                'forename': extractval('Forename'),
-                'surname': extractval('Surname'),
-                'gender': extractvalfromselect('Gender'),
-                'mobile': extractval('Mobile'),
-            }
-
-            const cpassword = extractval('CPassword')
-
-            if (json.email.length < 1) {
-                alert('Please input your email address!')
-            } else if (json.password.length < 1) {
-                alert('Please input your password!')
-            } else if (json.password.length < 6) {
-                alert('Length of the password should be at least six!')
-            } else if (cpassword.length < 1) {
-                alert('Please confirm your password!')
-            } else if (json.password != cpassword) {
-                alert('Confirmed password doesn\'t match your password!')
-            } else if (json.forename.length < 1) {
-                alert('Please input your forename!')
-            } else if (json.surname.length < 1) {
-                alert('Please input your surname!')
-            } else if (json.mobile.length < 1) {
-                alert('Please input your mobile number!')
-            } else {
-                $.ajax({
-                    type: 'POST',
-                    url: '/register',
-                    data: json,
-                    success: function (data) {
-                        if (data.status) {
-                            if (data.status == 'success') {
-                                alert('Register success!')
-                                window.location.reload()
-                            } else {
-                                alert('Register Fail! This eamil address has been used!')
-                            }
-                        } else {
-                            console.log('error')
-                        }
-                    },
-                    dataType: "json"
-                });
-            }
-        }
-    </script>
 </head>
 <body>
 <% if (message) { %>
@@ -142,6 +52,7 @@
     window.alert('login fail! Wrong email or password!')
 </script>
 <% } %>
+
 <div class="containimage">
     <img src="https://s22.postimg.cc/r0d3q5km9/146674590746074236.jpg" height="100%" width="100%">
     <div class="centered">
@@ -260,5 +171,94 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        // Add smooth scrolling to all links
+        $("a").on('click', function (event) {
+
+            // Make sure this.hash has a value before overriding default behavior
+            if (this.hash !== "") {
+                // Prevent default anchor click behavior
+                event.preventDefault();
+
+                // Store hash
+                var hash = this.hash;
+
+                // Using jQuery's animate() method to add smooth page scroll
+                // The optional number (800) specifies the number of milliseconds it takes to scroll to the specified area
+                $('html, body').animate({
+                    scrollTop: $(hash).offset().top
+                }, 800, function () {
+
+                    // Add hash (#) to URL when done scrolling (default click behavior)
+                    window.location.hash = hash;
+                });
+            } // End if
+        });
+    });
+
+    function register() {
+        const extractval = (id) => {
+            const val = document.getElementById(id).value
+            document.getElementById(id).value = ""
+            return val
+        }
+
+        const extractvalfromselect = (id) => {
+            const select = document.getElementById(id);
+            const val = select.options[select.selectedIndex].innerHTML;
+            return val
+        }
+
+        const json = {
+            'email': extractval('UserEmail'),
+            'password': extractval('Password'),
+            'forename': extractval('Forename'),
+            'surname': extractval('Surname'),
+            'gender': extractvalfromselect('Gender'),
+            'mobile': extractval('Mobile'),
+        }
+
+        const cpassword = extractval('CPassword')
+
+        if (json.email.length < 1) {
+            alert('Please input your email address!')
+        } else if (json.password.length < 1) {
+            alert('Please input your password!')
+        } else if (json.password.length < 6) {
+            alert('Length of the password should be at least six!')
+        } else if (cpassword.length < 1) {
+            alert('Please confirm your password!')
+        } else if (json.password != cpassword) {
+            alert('Confirmed password doesn\'t match your password!')
+        } else if (json.forename.length < 1) {
+            alert('Please input your forename!')
+        } else if (json.surname.length < 1) {
+            alert('Please input your surname!')
+        } else if (json.mobile.length < 1) {
+            alert('Please input your mobile number!')
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/register',
+                data: json,
+                success: function (data) {
+                    if (data.status) {
+                        if (data.status == 'success') {
+                            alert('Register success!')
+                            window.location.reload()
+                        } else {
+                            alert('Register Fail! This eamil address has been used!')
+                        }
+                    } else {
+                        console.log('error')
+                    }
+                },
+                dataType: "json"
+            });
+        }
+    }
+</script>
 </body>
 </html>
