@@ -190,6 +190,7 @@ app.post('/joinTeam', ensureAuthenticated, async (req, res) => {
 app.post('/generateCode', ensureAuthenticated, async (req, res) => {
     try {
         await db.createJoinCodeForTeamId(req.body.codeGen, req.body.teamId)
+        return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
         return

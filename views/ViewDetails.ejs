@@ -8,131 +8,6 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>View Event's Details</title>
 </head>
-<script>
-    function goBack() {
-        url = document.referrer;
-        window.location.href = url;
-    }
-
-    function changeStatus(new_status, event_id) {
-        const json = {
-            'event_id': event_id,
-            'status': new_status,
-        }
-
-        $.ajax({
-            type: 'POST',
-            url: '/changeStatus',
-            data: json,
-            success: function (data) {
-                if (data) {
-                    window.location.reload()
-                } else {
-                    console.log("error")
-                }
-            },
-            dataType: "json",
-        })
-    }
-
-    function enableTextbox(checkbox_id, textbox_id) {
-        const checkbox = document.getElementById(checkbox_id)
-        const textbox = document.getElementById(textbox_id)
-        textbox.disabled = !checkbox.checked;
-    }
-
-    function updateDetails(event_id, event_name, event_location, event_date, event_duration_hours, event_duration_minutes) {
-        const extractval = (id) => {
-            const val = document.getElementById(id).value
-            document.getElementById(id).value = ""
-            return val
-        }
-
-        let newName
-        const nameBox = document.getElementById('nameBox')
-        if (nameBox.checked) {
-            newName = extractval('nameTextbox')
-        } else {
-            newName = event_name
-        }
-
-        let newLocation
-        const locationBox = document.getElementById('locationBox')
-        if (locationBox.checked) {
-            newLocation = extractval('locationTextbox')
-        } else {
-            newLocation = event_location
-        }
-
-        let newDate
-        const dateBox = document.getElementById('dateBox')
-        if (dateBox.checked) {
-            newDate = extractval('dateTextbox')
-        } else {
-            newDate = parseDate(new Date(event_date))
-        }
-
-        let newDuration
-        const durationBox = document.getElementById('durationBox')
-        if (durationBox.checked) {
-            newDuration = extractval('durationTextbox')
-        } else {
-            newDuration = parseDuration(event_duration_hours, event_duration_minutes)
-        }
-
-        const json = {
-            'name': newName,
-            'location': newLocation,
-            'date': newDate,
-            'duration': newDuration,
-            'event_id': event_id,
-        }
-
-        $.ajax({
-            type: 'POST',
-            url: '/updateDetails',
-            data: json,
-            success: function (data) {
-                if (data.status) {
-                    alert("Update event details successfully.")
-                    window.location.reload()
-                }
-                else
-                    console.log('Error')
-
-            },
-            dataType: "json",
-        })
-    }
-
-    function parseDate(date) {
-        let year = date.getFullYear()
-        let month = date.getMonth() + 1
-        let days = date.getDate()
-        let hours = date.getHours()
-        let minutes = date.getMinutes()
-        let seconds = date.getSeconds()
-        return year + '-' + month + '-' + days + ' ' + hours + ':' + minutes + ':' + seconds
-    }
-
-    function parseDuration(duration_hours, duration_minutes) {
-        formatted_duration = ''
-        if (!duration_hours) {
-        } else if (duration_hours == 1) {
-            formatted_duration = formatted_duration + '1 hour'
-        } else {
-            formatted_duration = formatted_duration + duration_hours + ' hours'
-        }
-
-        if (!duration_minutes) {
-        } else if (duration_minutes == 1) {
-            formatted_duration = formatted_duration + '1 minute'
-        } else {
-            formatted_duration = formatted_duration + duration_minutes + ' minutes'
-        }
-        return formatted_duration;
-    }
-</script>
 <body>
 <div class="container">
     <br>
@@ -286,5 +161,131 @@
 <div class="container">
     <a class="btn btn-info" role="button" onclick="goBack()">Go back</a>
 </div>
+
+<script>
+    function goBack() {
+        url = document.referrer;
+        window.location.href = url;
+    }
+
+    function changeStatus(new_status, event_id) {
+        const json = {
+            'event_id': event_id,
+            'status': new_status,
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/changeStatus',
+            data: json,
+            success: function (data) {
+                if (data) {
+                    window.location.reload()
+                } else {
+                    console.log("error")
+                }
+            },
+            dataType: "json",
+        })
+    }
+
+    function enableTextbox(checkbox_id, textbox_id) {
+        const checkbox = document.getElementById(checkbox_id)
+        const textbox = document.getElementById(textbox_id)
+        textbox.disabled = !checkbox.checked;
+    }
+
+    function updateDetails(event_id, event_name, event_location, event_date, event_duration_hours, event_duration_minutes) {
+        const extractval = (id) => {
+            const val = document.getElementById(id).value
+            document.getElementById(id).value = ""
+            return val
+        }
+
+        let newName
+        const nameBox = document.getElementById('nameBox')
+        if (nameBox.checked) {
+            newName = extractval('nameTextbox')
+        } else {
+            newName = event_name
+        }
+
+        let newLocation
+        const locationBox = document.getElementById('locationBox')
+        if (locationBox.checked) {
+            newLocation = extractval('locationTextbox')
+        } else {
+            newLocation = event_location
+        }
+
+        let newDate
+        const dateBox = document.getElementById('dateBox')
+        if (dateBox.checked) {
+            newDate = extractval('dateTextbox')
+        } else {
+            newDate = parseDate(new Date(event_date))
+        }
+
+        let newDuration
+        const durationBox = document.getElementById('durationBox')
+        if (durationBox.checked) {
+            newDuration = extractval('durationTextbox')
+        } else {
+            newDuration = parseDuration(event_duration_hours, event_duration_minutes)
+        }
+
+        const json = {
+            'name': newName,
+            'location': newLocation,
+            'date': newDate,
+            'duration': newDuration,
+            'event_id': event_id,
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/updateDetails',
+            data: json,
+            success: function (data) {
+                if (data.status) {
+                    alert("Update event details successfully.")
+                    window.location.reload()
+                }
+                else
+                    console.log('Error')
+
+            },
+            dataType: "json",
+        })
+    }
+
+    function parseDate(date) {
+        let year = date.getFullYear()
+        let month = date.getMonth() + 1
+        let days = date.getDate()
+        let hours = date.getHours()
+        let minutes = date.getMinutes()
+        let seconds = date.getSeconds()
+        return year + '-' + month + '-' + days + ' ' + hours + ':' + minutes + ':' + seconds
+    }
+
+    function parseDuration(duration_hours, duration_minutes) {
+        formatted_duration = ''
+        if (!duration_hours) {
+        } else if (duration_hours == 1) {
+            formatted_duration = formatted_duration + '1 hour'
+        } else {
+            formatted_duration = formatted_duration + duration_hours + ' hours'
+        }
+
+        if (!duration_minutes) {
+        } else if (duration_minutes == 1) {
+            formatted_duration = formatted_duration + '1 minute'
+        } else {
+            formatted_duration = formatted_duration + duration_minutes + ' minutes'
+        }
+        return formatted_duration;
+    }
+</script>
 </body>
 </html>

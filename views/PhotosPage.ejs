@@ -22,7 +22,6 @@
             background-color: #111;
             overflow-x: hidden;
             padding-top: 20px;
-            padding-bottom: 93px;
         }
 
         .sidenav a {
@@ -45,7 +44,6 @@
 
         .main {
             margin-left: 200px; /* Same as the width of the sidenav */
-            padding-bottom: 93px;
         }
 
         @media screen and (max-height: 450px) {
@@ -59,41 +57,31 @@
         }
     </style>
 </head>
-<script>
-    function changeActive(newid) {
-        let select_item_id = $("#sidenav").find(".active").attr('id')
-        document.getElementById(select_item_id).className = ''
-        document.getElementById(newid).className = 'active'
-    }
-</script>
 <body>
-
-
-<div class="main">
-    <h1 style="text-align: center">Photos</h1>
-    <div class="container">
-        <% events.forEach((event) => { %>
-        <div class="container">
-            <div class="jumbotron">
-                <h3><%= event.name %></h3>
-                <p><%= event.day %>
-                    <% event.date %>
-                </p>
-                <p><%= event.location %></p>
-                <input type="button" value="Upload" onclick="location.href = '/Upload/<%= event.id %>'">
-                <input type="button" value="View All">
-            </div>
-        </div>
+<div class="upnav" style="padding-bottom: 100px">
+    <div class="sidenav" id="sidenav">
+        <a class="active" href="/Photos" id="allteams">All Teams</a>
+        <% teams.forEach((team) => { %>
+        <a href="#" onclick="changeActive(<%= team.id %>)" id="<%= team.id %>"><%= team.name %></a>
         <% }) %>
     </div>
 
-</div>
-
-<div class="sidenav" id="sidenav">
-    <a class="active" href="/Photos" id="allteams">All Teams</a>
-    <% teams.forEach((team) => { %>
-    <a href="#" onclick="changeActive(<%= team.id %>)" id="<%= team.id %>"><%= team.name %></a>
-    <% }) %>
+    <div class="main">
+        <h1 style="text-align: center">Photos</h1>
+        <div class="container">
+            <% events.forEach((event) => { %>
+            <div class="container">
+                <div class="jumbotron">
+                    <h3><%= event.name %></h3>
+                    <p><% event.date %></p>
+                    <p><%= event.location %></p>
+                    <input type="button" value="Upload" onclick="location.href = '/Upload/<%= event.id %>'">
+                    <input type="button" value="View All">
+                </div>
+            </div>
+            <% }) %>
+        </div>
+    </div>
 </div>
 
 <nav class="navbar navbar-fixed-bottom" style="background-color:grey">
@@ -101,11 +89,19 @@
         <ul class="nav nav-tabs nav-justified">
             <li><a href="/groupchat" style="color:black"><h1>GroupChat</h1></a></li>
             <li><a href="/Events" style="color:black"><h1>Events</h1></a></li>
-            <li class="active"><a href="#" style="color:black"><h1>Photos</h1></a></li>
+            <li class="active"><a style="color:black"><h1>Photos</h1></a></li>
             <li><a href="/Teams" style="color:black"><h1>My Teams</h1></a></li>
             <li><a href="/Settings" style="color:black"><h1>Settings</h1></a></li>
         </ul>
     </div>
 </nav>
+
+<script>
+    function changeActive(newid) {
+        let select_item_id = $("#sidenav").find(".active").attr('id')
+        document.getElementById(select_item_id).className = ''
+        document.getElementById(newid).className = 'active'
+    }
+</script>
 </body>
 </html>
