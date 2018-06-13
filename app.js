@@ -97,7 +97,7 @@ app.get('/loginfail', (req, res) => {
 
 app.post('/logout', (req, res) => {
     req.logout()
-    res.redirect('/')
+    return res.send({redirect: '/'})
 })
 
 app.post('/register', async (req, res) => {
