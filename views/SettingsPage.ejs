@@ -93,5 +93,60 @@
         </ul>
     </div>
 </nav>
+
+<script>
+    function logOut() {
+        $.ajax({
+            type: 'POST',
+            url: '/logout',
+            success: function (data) {
+                if (data.redirect) {
+                    window.location.href = data.redirect
+                } else {
+                    console.log('error')
+                }
+            },
+        })
+    }
+
+    function enableTextbox(checkbox_id, textbox_id) {
+        const checkbox = document.getElementById(checkbox_id)
+        const textbox = document.getElementById(textbox_id)
+        textbox.disabled = !checkbox.checked;
+    }
+
+    function updateDetails(mobile) {
+        const extractval = (id) => {
+            const val = document.getElementById(id).value
+            document.getElementById(id).value = ""
+            return val
+        }
+        let new_mobile
+        if (document.getElementById('mobileBox').checked) {
+            new_mobile = extractval('mobileTextbox')
+        } else {
+            new_mobile = mobile
+        }
+        const json = {
+            'mobile': new_mobile,
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/updatePersonalDetails',
+            data: json,
+            success: function (data) {
+                if (data.status == 'success') {
+                    alert("Update personal details successfully.")
+                    window.location.reload()
+                } else {
+                    console.log('Error when updating personal details.')
+                }
+            },
+            dataType: "json",
+        })
+    }
+</script>
+
 </body>
 </html>
