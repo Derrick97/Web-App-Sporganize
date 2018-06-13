@@ -30,8 +30,6 @@
     </div>
     <a class="btn btn-info" data-toggle="modal" data-target="#details-modal">Change Details</a>
     <% if (team_members.length != 1) { %>
-    <a class="btn btn-info" data-toggle="modal" data-target="#set-manager-modal">Set Managers</a>
-    <a class="btn btn-info" data-toggle="modal" data-target="#remove-member-modal">Remove Members</a>
     <% } %>
     <div class="btn btn-info" data-toggle="modal" data-target="#codeGenerator">Generate code</div>
     <% } else { %>
@@ -39,66 +37,102 @@
         <h1><%= team.name %></h1>
         <p>Creator: <%= creator.forename %> <%= creator.surname %></p>
         <p><%= team.type %> team</p>
-        <p>Descirption: <%= team.description %></p>
+        <p>Description: <%= team.description %></p>
     </div>
     <% } %>
     <h3>Team Members</h3>
     <% team_members.forEach((member) => { %>
-    <p> <%= member.forename %> <%= member.surname %></p>
+    <div class="dropdown" style="float: left; margin-right: 10px">
+        <div class="btn btn-default dropdown-toggle list-group-item"
+             data-toggle="dropdown" style="background-color: white; height:200px; width:150px;">
+
+            <h5 class="list-group-item-heading">Place for avatar</h5>
+
+            <h4><%= member.forename %> <br><%= member.surname %></h4>
+        </div>
+        <% if (access_level != 'user' && member.access_level != 'admin'){ %>
+        <ul class="dropdown-menu">
+            <% if (access_level == 'admin') { %>
+            <% if (member.access_level == 'user'){ %>
+            <li><a data-toggle="modal" data-target="#setManagerModal<%= member.id %>">Set as Manager</a></li>
+            <% } else if (member.access_level == 'manager') { %>
+            <li><a data-toggle="modal" data-target="#unsetManagerModal<%= member.id %>">Unset as Manager</a></li>
+            <% } %>
+            <% } %>
+            <li><a data-toggle="modal" data-target="#removeModal<%= member.id %>">Remove from Team</a></li>
+        </ul>
+        <% } %>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="removeModal<%= member.id %>" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure to remove <%= member.forename %> <%= member.surname %> from <%= team.name %>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="float:left"
+                            onclick="removeUser('<%= member.id %>', '<%= team.id %>')">yes
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right">no</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="setManagerModal<%= member.id %>" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure to set <%= member.forename %> <%= member.surname %> as manager in <%= team.name %>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="float:left"
+                            onclick="setManager('<%= member.id %>', '<%= team.id %>')">yes
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right">no</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="unsetManagerModal<%= member.id %>" role="dialog">
+        <div class="modal-dialog">
+
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Modal Header</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure to retract <%= member.forename %> <%= member.surname %>'s manager in <%= team.name %>?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="float:left"
+                            onclick="unsetManager('<%= member.id %>', '<%= team.id %>')">yes
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal" style="float:right">no</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <% }) %>
+
 </div>
 
-<div id="set-manager-modal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Set Team Managers</h4>
-            </div>
-            <div class="modal-body">
-                <div>
-                    <% team_members.forEach((member) => { %>
-                    <% if (member.id != creator.id) { %>
-                    <div><%= member.forename %> <%= member.surname %>
-                        <button type="button" class="btn btn-default"
-                                onclick="setManager('<%= member.id %>', '<%= team.id %>')"
-                                data-dismiss="modal">Set Manager
-                        </button>
-                    </div>
-                    <% } %>
-                    <% }) %>
-                    <br>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div id="remove-member-modal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Remove Team Members</h4>
-            </div>
-            <div class="modal-body">
-                <div>
-                    <% team_members.forEach((member) => { %>
-                    <% if (member.id != creator.id) { %>
-                    <div><%= member.forename %> <%= member.surname %>
-                        <button type="button" class="btn btn-default"
-                                onclick="removeUser('<%= member.id %>', '<%= team.id %>')"
-                                data-dismiss="modal">Remove
-                        </button>
-                    </div>
-                    <% } %>
-                    <% }) %>
-                    <br>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div id="details-modal" class="modal fade" role="dialog">
     <div class="modal-dialog">
@@ -165,6 +199,8 @@
 </div>
 
 <div class="container">
+    <br>
+    <br>
     <a href="/Teams" class="btn btn-info" role="button">Go back</a>
 </div>
 
@@ -267,6 +303,27 @@
                     window.location.reload()
                 } else {
                     console.log('Error when set managers.')
+                }
+            },
+            dataType: "json",
+        })
+    }
+
+    function unsetManager(member_id, team_id) {
+        const json = {
+            'member_id': member_id,
+            'team_id': team_id,
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/unsetTeamManager',
+            data: json,
+            success: function (data) {
+                if (data.status) {
+                    alert("unset manager successfully.")
+                    window.location.reload()
+                } else {
+                    console.log('Error when unset managers.')
                 }
             },
             dataType: "json",
