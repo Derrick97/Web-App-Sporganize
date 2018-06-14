@@ -164,8 +164,27 @@
                                    onclick="enableTextbox('durationBox', 'durationTextbox')">Event
                             Duration
                         </label><br>
-                        <input class="placeholder-no-fix" id='durationTextbox' type="text" maxlength="100"
-                               disabled/>
+                        <div class="container">
+                            <div class="row">
+                                <div class='col-sm-6'>
+                                    <div class="form-group">
+                                        <div class='input-group date' id='datetimepicker2'>
+                                            <input id="durationTextbox" type='text' class="form-control" disabled data-toggle="tooltip" title="Hours:Minutes:Seconds"/>
+                                            <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-time"></span>
+                    </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script type="text/javascript">
+                                    $(function () {
+                                        $('#datetimepicker2').datetimepicker({
+                                            format: 'HH:mm:ss'
+                                        });
+                                    });
+                                </script>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
