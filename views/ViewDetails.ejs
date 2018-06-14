@@ -86,7 +86,7 @@
                     <div>Tick the items that you want to change and type the new info in the box.</div>
                     <div>
                         <label class="control-label">
-                            <input type=checkbox id='nameBox' onclick="enableTextbox('nameBox', 'nameTextbox')" checked="false">Event
+                            <input type=checkbox id="nameBox" onclick="enableTextbox('nameBox', 'nameTextbox')">Event
                             Name
                         </label><br>
                         <input class="placeholder-no-fix" id='nameTextbox' type="text" maxlength="100"
@@ -163,6 +163,11 @@
 </div>
 
 <script>
+    $(".modal").on('hidden.bs.modal', function(e) {
+        $("#details-modal .modal-body").find('input:radio, input:checkbox').prop('checked', false);
+        $("#details-modal .modal-body").find('input:text').prop('disabled', true);
+    })
+
     function goBack() {
         url = document.referrer;
         window.location.href = url;
