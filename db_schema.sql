@@ -47,7 +47,8 @@ CREATE TABLE sporganize.users_events (
 CREATE TABLE sporganize.photos (
     id       serial PRIMARY KEY,
     event_id int REFERENCES sporganize.events (id) ON DELETE CASCADE NOT NULL,
-    photo    bytea                                                   NOT NULL
+    photo    bytea                                                   NOT NULL,
+    mime     text                                                    NOT NULL
 );
 
 CREATE TABLE sporganize.join_codes (
@@ -55,4 +56,12 @@ CREATE TABLE sporganize.join_codes (
     team_id int REFERENCES sporganize.teams (id) ON DELETE CASCADE NOT NULL,
     code    text CHECK(length(code) < 30)                          NOT NULL,
     expires timestamp                                              NOT NULL
+);
+
+CREATE TABLE sporganize.messages (
+    id        serial PRIMARY KEY,
+    team_id   int REFERENCES sporganize.teams (id) ON DELETE CASCADE NOT NULL,
+    user_id   int REFERENCES sporganize.users (id)                   NOT NULL,
+    message   text CHECK(length(message) < 1000)                     NOT NULL,
+    timestamp timestamp DEFAULT now()                                NOT NULL
 );

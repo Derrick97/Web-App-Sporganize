@@ -1,5 +1,5 @@
 // Uses environment vars to auth
-const {Pool} = require('pg')
+const {Pool, Client} = require('pg')
 pool = new Pool()
 
 module.exports = {
@@ -347,4 +347,65 @@ module.exports = {
             await pool.query(query2, [user_id, allEvent[i].id])
         }
     },
+
+    dismissTeamForTeamID: async function (team_id) {
+        const query = 'DELETE FROM sporganize.teams WHERE teams.id = $1'
+        await pool.query(query, [team_id])
+    },
+
+    /* Photos */
+    getPhotoIdsForEventId: async function(id) {
+        let query = ['SELECT photos.id',
+                     'FROM sporganize.events',
+                     'JOIN sporganize.photos ON events.id = photos.event_id',
+                     'WHERE events.id = $1'].join(' ')
+        const resp = await pool.query(query, [id])
+        return resp.rows.map((r) => r.id)
+    },
+
+    getPhotoForId: async function(id) {
+        let query = 'SELECT * FROM sporganize.photos WHERE id = $1'
+        const photos = await pool.query(query, [id])
+        if (photos.rows.length > 0) {
+            return photos.rows[0]
+        }
+
+        return false
+    },
+
+    createPhoto: async function(data, mime, event_id) {
+        let query = 'INSERT INTO sporganize.photos (event_id, photo, mime) VALUES ($1, $2, $3)'
+        await pool.query(query, [event_id, data, mime])
+    },
+
+
+    /* Messaging */
+    onMessageNotification: async function (callback) {
+        const client = new Client()
+        await client.connect()
+
+        await client.query('LISTEN sporganize_messages')
+        client.on('notification', (msg) => { callback(JSON.parse(msg.payload)) })
+    },
+
+    addMessage: async function(message, user_id, team_id) {
+        let query = ['INSERT INTO sporganize.messages (team_id, user_id, message)',
+                     'VALUES ($1, $2, $3)',
+                     'RETURNING *'].join(' ')
+
+        const resp = await pool.query(query, [team_id, user_id, message])
+        await pool.query("SELECT pg_notify('sporganize_messages', $1)",
+                         [JSON.stringify(resp.rows[0])])
+
+        return resp.rows[0]
+    },
+
+    getMessagesForTeamId: async function(id, n) {
+        let query = ['SELECT * FROM sporganize.messages',
+                     'WHERE team_id = $1',
+                     'ORDER BY timestamp DESC',
+                     'LIMIT $2'].join(' ')
+        const resp = await pool.query(query, [id, n])
+        return resp.rows
+    }
 }

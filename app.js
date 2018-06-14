@@ -1,5 +1,7 @@
 "use strict";
 const bodyParser = require('body-parser')
+const fileUpload = require('express-fileupload')
+
 const express = require('express')
 const session = require('express-session')
 
@@ -18,12 +20,15 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
+app.use(fileUpload())
 
-app.use(session({
+const sessionParser = session({
     secret: "TODO: move this out to environment var",
     resave: false,
     saveUninitialized: false
-}))
+})
+
+app.use(sessionParser)
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -208,6 +213,23 @@ app.get('/Photos', ensureAuthenticated, async (req, res) => {
         return
     }
     res.render('PhotosPage', {events: allEvents, teams: teams})
+})
+
+app.post('/Photos/Upload/:eventid', ensureAuthenticated, async (req, res) => {
+    console.log("Uploaded: " + req.files.photo.name + " MIME: " + req.files.photo.mimetype)
+    await db.createPhoto(req.files.photo.data, req.files.photo.mimetype, req.params.eventid)
+    return res.redirect("/Photos")
+})
+
+app.get('/Photos/:id', ensureAuthenticated, async (req, res) => {
+    const photo = await db.getPhotoForId(req.params.id)
+
+    res.writeHead(200, {
+        'Content-Type': photo.mime,
+        'Content-Length': photo.photo.length
+    });
+
+    res.end(photo.photo)
 })
 
 app.get('/Events', ensureAuthenticated, async (req, res) => {
@@ -459,4 +481,27 @@ app.get('/Upload/:email/:eventID', ensureAuthenticated, (req, res) => {
     })
 });
 
-module.exports = app;
+app.post('/leaveTeam', ensureAuthenticated, async (req, res) => {
+    try {
+        await db.removeMemberForUserIDAndTeamID(req.user.id, req.body.team_id)
+        return res.send({status: 'success'})
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+})
+
+app.post('/dismissTeam', ensureAuthenticated, async (req, res) => {
+    try {
+        await db.dismissTeamForTeamID(req.body.team_id)
+        return res.send({status: 'success'})
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+})
+
+module.exports = {
+    app: app,
+    sessionParser: sessionParser
+}

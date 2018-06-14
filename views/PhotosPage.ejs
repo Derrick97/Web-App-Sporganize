@@ -75,7 +75,14 @@
                     <h3><%= event.name %></h3>
                     <p><% event.date %></p>
                     <p><%= event.location %></p>
-                    <input type="button" value="Upload" onclick="location.href = '/Upload/<%= event.id %>'">
+
+                    <form action="/Photos/Upload/<%= event.id %>" method="post" encType="multipart/form-data">
+                        <input type="file" name="photo" />
+                        <input type='submit' value='Upload' />
+                    </form>
+    
+                    <br/>
+
                     <input type="button" value="View All">
                 </div>
             </div>
