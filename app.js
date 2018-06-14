@@ -463,14 +463,6 @@ app.post('/removeMember', ensureAuthenticated, async (req, res) => {
     }
 })
 
-
-app.get('/Upload/:email/:eventID', ensureAuthenticated, (req, res) => {
-    res.render('UploadPhotos', {
-        emailAdd: req.params.email,
-        eventID: req.params.eventID,
-    })
-});
-
 app.post('/leaveTeam', ensureAuthenticated, async (req, res) => {
     try {
         await db.removeMemberForUserIDAndTeamID(req.user.id, req.body.team_id)
