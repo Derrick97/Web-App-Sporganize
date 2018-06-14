@@ -1,5 +1,5 @@
 // Uses environment vars to auth
-const {Pool} = require('pg')
+const {Pool, Client} = require('pg')
 pool = new Pool()
 
 module.exports = {
@@ -347,4 +347,25 @@ module.exports = {
             await pool.query(query2, [user_id, allEvent[i].id])
         }
     },
+
+    /* Messaging */
+    onMessageNotification: async function (callback) {
+        const client = new Client()
+        await client.connect()
+
+        await client.query('LISTEN sporganize_messages')
+        client.on('notification', (msg) => { callback(JSON.parse(msg.payload)) })
+    },
+
+    addMessage: async function(message, user_id, team_id) {
+        let query = ['INSERT INTO sporganize.messages (team_id, user_id, message)',
+                     'VALUES ($1, $2, $3)',
+                     'RETURNING *'].join(' ')
+
+        const resp = await pool.query(query, [team_id, user_id, message])
+        await pool.query("SELECT pg_notify('sporganize_messages', $1)",
+                         [JSON.stringify(resp.rows[0])])
+
+        return resp.rows[0]
+    }
 }
