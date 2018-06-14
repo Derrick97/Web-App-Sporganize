@@ -453,6 +453,16 @@ app.post('/setTeamManager', ensureAuthenticated, async (req, res) =>{
     }
 })
 
+app.post('/unsetTeamManager', ensureAuthenticated, async (req, res) =>{
+    try {
+        await db.changeAccessLevelForUserID(req.body.member_id, req.body.team_id, 'user')
+        return res.send({status: 'success'})
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+})
+
 app.post('/removeMember', ensureAuthenticated, async (req, res) => {
     try {
         await db.removeMemberForUserIDAndTeamID(req.body.member_id, req.body.team_id)
