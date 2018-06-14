@@ -168,11 +168,6 @@
         $("#details-modal .modal-body").find('input:text').prop('disabled', true);
     })
 
-    function goBack() {
-        url = document.referrer;
-        window.location.href = url;
-    }
-
     function changeStatus(new_status, event_id) {
         const json = {
             'event_id': event_id,
