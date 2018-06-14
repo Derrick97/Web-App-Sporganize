@@ -122,7 +122,7 @@
                         </label><br>
                         <input class="placeholder-no-fix" id='nameTextbox' type="text" maxlength="100"
                                placeholder="<%= event.name %>" disabled='disabled'/>
-                    </div>
+                    </div><br>
                     <div>
                         <label class="control-label">
                             <input type=checkbox id="locationBox"
@@ -130,15 +130,15 @@
                         </label><br>
                         <input class="placeholder-no-fix" id='locationTextbox' type="text" maxlength="100"
                                placeholder="<%= event.location %>" disabled/>
-                    </div>
+                    </div><br>
                     <div>
                         <label class="control-label">
                             <input type=checkbox id="dateBox" onclick="enableTextbox('dateBox', 'dateTextbox')">Event
                             Date
                         </label><br>
-                        <div class="container">
-                            <div class="row">
-                                <div class='col-sm-6'>
+
+
+
                                     <div class="form-group">
                                         <div class='input-group date' id='datetimepicker' >
                                             <input id="dateTextbox" type='text' class="form-control" disabled/>
@@ -147,16 +147,19 @@
                     </span>
                                         </div>
                                     </div>
-                                </div>
+
                                 <script type="text/javascript">
                                     $(function () {
+                                        let date = new Date(new Date().getTime())
+                                        date.setDate(date.getDate()+2)
                                         $('#datetimepicker').datetimepicker({
                                             format: 'YYYY-MM-DD HH:mm:ss',
+                                            minDate: date,
                                         })
                                     });
                                 </script>
-                            </div>
-                        </div>
+
+
                     </div>
                     <div>
                         <label class="control-label">
@@ -164,9 +167,7 @@
                                    onclick="enableTextbox('durationBox', 'durationTextbox')">Event
                             Duration
                         </label><br>
-                        <div class="container">
-                            <div class="row">
-                                <div class='col-sm-6'>
+
                                     <div class="form-group">
                                         <div class='input-group date' id='datetimepicker2'>
                                             <input id="durationTextbox" type='text' class="form-control" disabled data-toggle="tooltip" title="Hours:Minutes:Seconds"/>
@@ -175,7 +176,7 @@
                     </span>
                                         </div>
                                     </div>
-                                </div>
+
                                 <script type="text/javascript">
                                     $(function () {
                                         $('#datetimepicker2').datetimepicker({
@@ -183,8 +184,7 @@
                                         });
                                     });
                                 </script>
-                            </div>
-                        </div>
+
                     </div>
                 </div>
                 <div class="modal-footer">

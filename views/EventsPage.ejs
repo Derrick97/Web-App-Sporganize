@@ -111,51 +111,47 @@
                         Event name: <input type="text" id="eventname"><br/><br/>
                         Event location: <input type="text" id="location"><br/><br/>
                         Event start time: <br/>
-                        <div class="container">
-                            <div class="row">
-                                <div class='col-sm-6'>
-                                    <div class="form-group">
-                                        <div class='input-group date' id='datetimepicker' >
-                                            <input id="dateTextbox" type='text' class="form-control" />
-                                            <span class="input-group-addon">
+
+                        <div class="form-group">
+                            <div class='input-group date' id='datetimepicker'>
+                                <input id="dateTextbox" type='text' class="form-control"/>
+                                <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <script type="text/javascript">
-                                    $(function () {
-                                        $('#datetimepicker').datetimepicker({
-                                            format: 'YYYY-MM-DD HH:mm:ss',
-                                        })
-                                    });
-                                </script>
                             </div>
                         </div>
-                        <br/><br/>
+
+                        <script type="text/javascript">
+                            $(function () {
+                                let date = new Date(new Date().getTime())
+                                date.setDate(date.getDate() + 2)
+                                $('#datetimepicker').datetimepicker({
+                                    format: 'YYYY-MM-DD HH:mm:ss',
+                                    minDate: date,
+                                })
+                            });
+                        </script>
+                        
                         Event duration:
-                        <div class="container">
-                            <div class="row">
-                                <div class='col-sm-6'>
-                                    <div class="form-group">
-                                        <div class='input-group date' id='datetimepicker2'>
-                                            <input id="durationTextbox" type='text' class="form-control" data-toggle="tooltip" title="Hours:Minutes:Seconds"/>
-                                            <span class="input-group-addon">
+
+                        <div class="form-group">
+                            <div class='input-group date' id='datetimepicker2'>
+                                <input id="durationTextbox" type='text' class="form-control" data-toggle="tooltip"
+                                       title="Hours:Minutes:Seconds"/>
+                                <span class="input-group-addon">
                         <span class="glyphicon glyphicon-time"></span>
                     </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <script type="text/javascript">
-                                    $(function () {
-                                        $('#datetimepicker2').datetimepicker({
-                                            format: 'HH:mm:ss'
-                                        });
-                                    });
-                                </script>
                             </div>
                         </div>
-                        <br/><br/>
+
+                        <script type="text/javascript">
+                            $(function () {
+                                $('#datetimepicker2').datetimepicker({
+                                    format: 'HH:mm:ss',
+
+                                });
+                            });
+                        </script>
 
                     </div>
                     <div class="modal-footer">
@@ -204,7 +200,7 @@
                             </h4>
                             <h4 class="list-group-item-text"><%= event.location %></h4>
                             <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
-                            <% if (new Date() <= finalDecisionDate(event.date, 2)){%>
+                            <% if (new Date() <= finalDecisionDate(event.date, 1)){ %>
                             <% if (event.status == 'noreply') { %>
                             <a href="" class="btn btn-info"
                                onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
@@ -228,7 +224,8 @@
                                     <div class="modal-content">
                                         <div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                            <h4 class="modal-title" style="text-align: center">Delete <%=event.name%></h4>
+                                            <h4 class="modal-title" style="text-align: center">
+                                                Delete <%= event.name %></h4>
                                         </div>
                                         <div class="modal-body">
                                             Are you sure to delete this event? <br>
