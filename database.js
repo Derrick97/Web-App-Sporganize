@@ -348,6 +348,11 @@ module.exports = {
         }
     },
 
+    dismissTeamForTeamID: async function (team_id) {
+        const query = 'DELETE FROM sporganize.teams WHERE teams.id = $1'
+        await pool.query(query, [team_id])
+    },
+
     /* Messaging */
     onMessageNotification: async function (callback) {
         const client = new Client()

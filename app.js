@@ -451,6 +451,26 @@ app.get('/Upload/:email/:eventID', ensureAuthenticated, (req, res) => {
     })
 });
 
+app.post('/leaveTeam', ensureAuthenticated, async (req, res) => {
+    try {
+        await db.removeMemberForUserIDAndTeamID(req.user.id, req.body.team_id)
+        return res.send({status: 'success'})
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+})
+
+app.post('/dismissTeam', ensureAuthenticated, async (req, res) => {
+    try {
+        await db.dismissTeamForTeamID(req.body.team_id)
+        return res.send({status: 'success'})
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+})
+
 module.exports = {
     app: app,
     sessionParser: sessionParser
