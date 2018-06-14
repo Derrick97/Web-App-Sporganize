@@ -78,6 +78,14 @@ function ensureAuthenticated(req, res, next) {
     res.redirect('/login')
 }
 
+
+function finalDecisionDate(date, days) {
+    let copy = new Date(date.getTime())
+    copy.setDate(date.getDate()-days)
+    return copy
+}
+
+
 app.get('/', (req, res) => {
     return res.redirect('/login')
 });
@@ -339,6 +347,7 @@ app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
     }
     res.render('ViewDetails',
         {
+            finalDecisionDate: finalDecisionDate,
             event: event,
             access_level: access_level,
             acceptedList: accepted_list,

@@ -50,7 +50,7 @@
 
             <h4><%= member.forename %> <br><%= member.surname %></h4>
         </div>
-        <% if (access_level != 'user' && member.access_level != 'admin'){ %>
+        <% if ((!(access_level=='manager' && member.access_level == 'manager'))&&(access_level != 'user' && member.access_level != 'admin')){ %>
         <ul class="dropdown-menu">
             <% if (access_level == 'admin') { %>
             <% if (member.access_level == 'user'){ %>
