@@ -86,7 +86,7 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal"
                                             style="float:left"
-                                            onclick="leaveTeam()">yes
+                                            onclick="leaveTeam(<%= teamc.id %>)">yes
                                     </button>
                                     <button type="button" class="btn btn-default" data-dismiss="modal"
                                             style="float:right">no
@@ -139,7 +139,7 @@
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal"
                                             style="float:left"
-                                            onclick="leaveTeam()">yes
+                                            onclick="leaveTeam(<%= team.id %>)">yes
                                     </button>
                                     <button type="button" class="btn btn-default" data-dismiss="modal"
                                             style="float:right">no
@@ -291,8 +291,8 @@
         <% }) %>
     }
     
-    function leaveTeam() {
-        json = {team_id: 1}
+    function leaveTeam(id) {
+        json = {team_id: id}
 
         $.ajax({
             type: 'POST',
