@@ -26,7 +26,7 @@
         <p><%= expire_period %></p>
         <% } %>
         <p><%= team.type %> team</p>
-        <p>Descirption: <%= team.description %></p>
+        <p>Description: <%= team.description %></p>
     </div>
     <a class="btn btn-info" data-toggle="modal" data-target="#details-modal">Change Details</a>
     <% if (team_members.length != 1) { %>
@@ -42,15 +42,25 @@
     <% } %>
     <h3>Team Members</h3>
     <% team_members.forEach((member) => { %>
-    <div class="dropdown" style="float: left; margin-right: 10px">
+    <div class="dropdown"
+            <% if (member.access_level == 'admin'){ %>
+         style="float: left; margin-right: 10px; border:5px solid gold"
+            <% } else if (member.access_level == 'manager') { %>
+         style="float: left; margin-right: 10px; border:5px solid silver"
+            <% } else { %>
+         style="float: left; margin-right: 10px;"
+            <% } %>
+    >
         <div class="btn btn-default dropdown-toggle list-group-item"
              data-toggle="dropdown" style="background-color: white; height:200px; width:150px;">
 
             <h5 class="list-group-item-heading">Place for avatar</h5>
 
-            <h4><%= member.forename %> <br><%= member.surname %></h4>
+
+            <h4>
+                <%= member.forename %> <br><%= member.surname %></h4>
         </div>
-        <% if ((!(access_level=='manager' && member.access_level == 'manager'))&&(access_level != 'user' && member.access_level != 'admin')){ %>
+        <% if ((!(access_level == 'manager' && member.access_level == 'manager')) && (access_level != 'user' && member.access_level != 'admin')){ %>
         <ul class="dropdown-menu">
             <% if (access_level == 'admin') { %>
             <% if (member.access_level == 'user'){ %>
@@ -205,7 +215,7 @@
 </div>
 
 <script>
-    $(".modal").on('hidden.bs.modal', function(e) {
+    $(".modal").on('hidden.bs.modal', function (e) {
         $("#details-modal .modal-body").find('input:radio, input:checkbox').prop('checked', false);
         $("#details-modal .modal-body").find('input:text').prop('disabled', true);
     })
@@ -244,7 +254,7 @@
         textbox.disabled = !checkbox.checked;
     }
 
-    function restoreInput(box, textbox){
+    function restoreInput(box, textbox) {
         document.getElementById(box).checked = false
         document.getElementById(textbox).disabled = true
     }

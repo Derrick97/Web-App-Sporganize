@@ -394,6 +394,23 @@ app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
         res.status(500).send(e.stack)
         return
     }
+    all_members.sort(function (a,b) {
+        if (a.access_level == 'admin') return -1
+        if (a.access_level == 'manager'){
+            if (b.access_level == 'manager'){
+                return a.forename - b.forename
+            } else if (b.access_level == 'admin'){
+                return 1
+            } else {
+                return -1
+            }
+        }
+        if (b.access_level != 'user'){
+            return 1
+        } else {
+            return a.forename - b.forename
+        }
+    })
     res.render('TeamDetails',
         {
             team: team,

@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a55fbabd-eb2d-41e5-ab2d-edb2c1b4550d" name="Default" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/views/EventsPage.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/EventsPage.ejs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/ViewDetails.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/ViewDetails.ejs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/views/TeamDetails.ejs" beforeDir="false" afterPath="$PROJECT_DIR$/views/TeamDetails.ejs" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
@@ -20,8 +22,8 @@
       <file leaf-file-name="app.js" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="259">
-              <caret line="418" column="16" selection-start-line="418" selection-start-column="11" selection-end-line="418" selection-end-column="16" />
+            <state relative-caret-position="543">
+              <caret line="408" column="20" lean-forward="true" selection-start-line="408" selection-start-column="20" selection-end-line="408" selection-end-column="20" />
             </state>
           </provider>
         </entry>
@@ -44,11 +46,16 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TeamDetails.ejs" pinned="false" current-in-tab="false">
+      <file leaf-file-name="TeamDetails.ejs" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/views/TeamDetails.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-623">
-              <caret line="52" column="81" selection-start-line="52" selection-start-column="81" selection-end-line="52" selection-end-column="81" />
+            <state relative-caret-position="234">
+              <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
+              <folding>
+                <element signature="n#style#0;n#div#3;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#1;n#div#3;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+                <element signature="n#style#2;n#div#3;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -74,8 +81,8 @@
       <file leaf-file-name="TeamsPage.ejs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/TeamsPage.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="205">
-              <caret line="68" column="34" lean-forward="true" selection-start-line="68" selection-start-column="34" selection-end-line="68" selection-end-column="34" />
+            <state relative-caret-position="259">
+              <caret line="124" column="94" selection-start-line="124" selection-start-column="88" selection-end-line="124" selection-end-column="94" />
               <folding>
                 <element signature="n#style#0;n#i#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
               </folding>
@@ -83,11 +90,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="EventsPage.ejs" pinned="false" current-in-tab="true">
+      <file leaf-file-name="EventsPage.ejs" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/views/EventsPage.ejs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="223">
-              <caret line="133" column="24" selection-start-line="133" selection-start-column="24" selection-end-line="133" selection-end-column="24" />
+            <state relative-caret-position="349">
+              <caret line="140" column="21" lean-forward="true" selection-start-line="140" selection-start-column="21" selection-end-line="140" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -102,6 +109,9 @@
       <find>go back</find>
       <find>viewDetails</find>
       <find>view</find>
+      <find>teamDeta</find>
+      <find>are</find>
+      <find>border</find>
       <find>delete</find>
     </findStrings>
   </component>
@@ -113,10 +123,10 @@
       <list>
         <option value="$PROJECT_DIR$/views/SettingsPage.ejs" />
         <option value="$PROJECT_DIR$/views/TeamsPage.ejs" />
-        <option value="$PROJECT_DIR$/views/TeamDetails.ejs" />
-        <option value="$PROJECT_DIR$/app.js" />
         <option value="$PROJECT_DIR$/views/ViewDetails.ejs" />
         <option value="$PROJECT_DIR$/views/EventsPage.ejs" />
+        <option value="$PROJECT_DIR$/app.js" />
+        <option value="$PROJECT_DIR$/views/TeamDetails.ejs" />
       </list>
     </option>
   </component>
@@ -137,8 +147,8 @@
     </packageJsonPaths>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="77" />
-    <option name="y" value="133" />
+    <option name="x" value="44" />
+    <option name="y" value="91" />
     <option name="width" value="1634" />
     <option name="height" value="991" />
   </component>
@@ -199,10 +209,10 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="20311000" />
+    <option name="totallyTimeSpent" value="22889000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="77" y="133" width="1634" height="991" extended-state="0" />
+    <frame x="44" y="91" width="1634" height="991" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24984463" />
@@ -257,6 +267,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="241">
           <caret line="52" column="81" selection-start-line="52" selection-start-column="81" selection-end-line="52" selection-end-column="81" />
+          <folding>
+            <element signature="n#style#0;n#div#3;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#1;n#div#3;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#2;n#div#3;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -369,6 +384,11 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-623">
           <caret line="52" column="81" selection-start-line="52" selection-start-column="81" selection-end-line="52" selection-end-column="81" />
+          <folding>
+            <element signature="n#style#0;n#div#3;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#1;n#div#3;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#2;n#div#3;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -550,16 +570,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/TeamsPage.ejs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="205">
-          <caret line="68" column="34" lean-forward="true" selection-start-line="68" selection-start-column="34" selection-end-line="68" selection-end-column="34" />
-          <folding>
-            <element signature="n#style#0;n#i#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/database.js">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="216">
@@ -567,17 +577,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/TeamDetails.ejs">
+    <entry file="file://$PROJECT_DIR$/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-623">
-          <caret line="52" column="81" selection-start-line="52" selection-start-column="81" selection-end-line="52" selection-end-column="81" />
+        <state relative-caret-position="543">
+          <caret line="408" column="20" lean-forward="true" selection-start-line="408" selection-start-column="20" selection-end-line="408" selection-end-column="20" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/app.js">
+    <entry file="file://$PROJECT_DIR$/views/TeamsPage.ejs">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="259">
-          <caret line="418" column="16" selection-start-line="418" selection-start-column="11" selection-end-line="418" selection-end-column="16" />
+          <caret line="124" column="94" selection-start-line="124" selection-start-column="88" selection-end-line="124" selection-end-column="94" />
+          <folding>
+            <element signature="n#style#0;n#i#0;n#div#0;n#div#0;n#div#1;n#div#0;n#div#0;n#div#2;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/views/EventsPage.ejs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="349">
+          <caret line="140" column="21" lean-forward="true" selection-start-line="140" selection-start-column="21" selection-end-line="140" selection-end-column="21" />
         </state>
       </provider>
     </entry>
@@ -588,10 +608,15 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/views/EventsPage.ejs">
+    <entry file="file://$PROJECT_DIR$/views/TeamDetails.ejs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="223">
-          <caret line="133" column="24" selection-start-line="133" selection-start-column="24" selection-end-line="133" selection-end-column="24" />
+        <state relative-caret-position="234">
+          <caret line="13" column="22" selection-start-line="13" selection-start-column="22" selection-end-line="13" selection-end-column="22" />
+          <folding>
+            <element signature="n#style#0;n#div#3;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#1;n#div#3;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+            <element signature="n#style#2;n#div#3;n#div#0;n#body#0;n#html#0;n#!!top" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
