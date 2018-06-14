@@ -373,9 +373,9 @@ module.exports = {
         return false
     },
 
-    createPhoto: async function(data, event_id) {
-        let query = 'INSERT INTO sporganize.photos (event_id, photo) VALUES ($1, $2)'
-        await pool.query(query, [event_id, data])
+    createPhoto: async function(data, mime, event_id) {
+        let query = 'INSERT INTO sporganize.photos (event_id, photo, mime) VALUES ($1, $2, $3)'
+        await pool.query(query, [event_id, data, mime])
     },
 
 

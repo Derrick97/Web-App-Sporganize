@@ -217,13 +217,19 @@ app.get('/Photos', ensureAuthenticated, async (req, res) => {
 
 app.post('/Photos/Upload/:eventid', ensureAuthenticated, async (req, res) => {
     console.log("Uploaded: " + req.files.photo.name + " MIME: " + req.files.photo.mimetype)
-    await db.createPhoto(req.files.photo.data, req.params.eventid)
+    await db.createPhoto(req.files.photo.data, req.files.photo.mimetype, req.params.eventid)
     return res.redirect("/Photos")
 })
 
 app.get('/Photos/:id', ensureAuthenticated, async (req, res) => {
     const photo = await db.getPhotoForId(req.params.id)
-    return res.send(photo.photo)
+
+    res.writeHead(200, {
+        'Content-Type': photo.mime,
+        'Content-Length': photo.photo.length
+    });
+
+    res.end(photo.photo)
 })
 
 app.get('/Events', ensureAuthenticated, async (req, res) => {
