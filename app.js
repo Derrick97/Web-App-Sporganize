@@ -216,20 +216,44 @@ app.get('/Photos', ensureAuthenticated, async (req, res) => {
 })
 
 app.post('/Photos/Upload/:eventid', ensureAuthenticated, async (req, res) => {
-    console.log("Uploaded: " + req.files.photo.name + " MIME: " + req.files.photo.mimetype)
-    await db.createPhoto(req.files.photo.data, req.files.photo.mimetype, req.params.eventid)
+    if (!req.files.photo) {
+        return res.redirect("/Photos")
+    }
+
+    if (!(['image/jpeg', 'image/png', 'image/webp'].includes(req.files.photo.mimetype))) {
+        return res.redirect("/Photos")
+    }
+
+    const events = await db.getAllEventsForUserId(req.user.id)
+    const event_ids = events.map((e) => e.id.toString())
+
+    if (event_ids.includes(req.params.eventid)) {
+        await db.createPhoto(req.files.photo.data, req.files.photo.mimetype, req.params.eventid)
+    }
+
     return res.redirect("/Photos")
 })
 
 app.get('/Photos/:id', ensureAuthenticated, async (req, res) => {
     const photo = await db.getPhotoForId(req.params.id)
 
-    res.writeHead(200, {
-        'Content-Type': photo.mime,
-        'Content-Length': photo.photo.length
-    });
+    console.log("Got photo (event_id = " + photo.event_id + ")")
 
-    res.end(photo.photo)
+    const events = await db.getAllEventsForUserId(req.user.id)
+    const event_ids = events.map((e) => e.id)
+
+    console.log("Got event_ids = " + event_ids)
+
+    if (event_ids.includes(photo.event_id)) {
+        res.writeHead(200, {
+            'Content-Type': photo.mime,
+            'Content-Length': photo.photo.length
+        });
+
+        res.end(photo.photo)
+    } else {
+        res.status(404).send("Photo not found")
+    }
 })
 
 app.get('/Events', ensureAuthenticated, async (req, res) => {
