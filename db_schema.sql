@@ -56,3 +56,11 @@ CREATE TABLE sporganize.join_codes (
     code    text CHECK(length(code) < 30)                          NOT NULL,
     expires timestamp                                              NOT NULL
 );
+
+CREATE TABLE sporganize.messages (
+    id        serial PRIMARY KEY,
+    team_id   int REFERENCES sporganize.teams (id) ON DELETE CASCADE NOT NULL,
+    user_id   int REFERENCES sporganize.users (id)                   NOT NULL,
+    message   text CHECK(length(message) < 1000)                     NOT NULL,
+    timestamp timestamp DEFAULT now()                                NOT NULL
+);

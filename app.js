@@ -19,11 +19,13 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 
-app.use(session({
+const sessionParser = session({
     secret: "TODO: move this out to environment var",
     resave: false,
     saveUninitialized: false
-}))
+})
+
+app.use(sessionParser)
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -449,24 +451,7 @@ app.get('/Upload/:email/:eventID', ensureAuthenticated, (req, res) => {
     })
 });
 
-app.post('/leaveTeam', ensureAuthenticated, async (req, res) => {
-    try {
-        await db.removeMemberForUserIDAndTeamID(req.user.id, req.body.team_id)
-        return res.send({status: 'success'})
-    } catch (e) {
-        res.status(500).send(e.stack)
-        return
-    }
-})
-
-app.post('/dismissTeam', ensureAuthenticated, async (req, res) => {
-    try {
-        await db.dismissTeamForTeamID(req.body.team_id)
-        return res.send({status: 'success'})
-    } catch (e) {
-        res.status(500).send(e.stack)
-        return
-    }
-})
-
-module.exports = app;
+module.exports = {
+    app: app,
+    sessionParser: sessionParser
+}
