@@ -41,8 +41,8 @@
                             <input type=checkbox id='mobileBox' onclick="enableTextbox('mobileBox', 'mobileTextbox')">Mobile
                             Number
                         </label><br>
-                        <input class="placeholder-no-fix" id='mobileTextbox' type="text" maxlength="100"
-                               placeholder="<%= user.mobile %>" disabled='disabled'/>
+                        <input class="placeholder-no-fix"  onkeyup="value=value.replace(/[^\d]/g,'')" id='mobileTextbox' type="text" maxlength="16"
+                               placeholder="<%= user.mobile %>" disabled='disabled' />
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" onclick="updateDetails('<%= user.mobile %>')"
@@ -95,6 +95,11 @@
 </nav>
 
 <script>
+    $(".modal").on('hidden.bs.modal', function(e) {
+        $("#details-modal .modal-body").find('input:radio, input:checkbox').prop('checked', false);
+        $("#details-modal .modal-body").find('input:text').prop('disabled', true);
+    })
+
     function logOut() {
         $.ajax({
             type: 'POST',

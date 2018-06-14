@@ -78,6 +78,14 @@ function ensureAuthenticated(req, res, next) {
     res.redirect('/login')
 }
 
+
+function finalDecisionDate(date, days) {
+    let copy = new Date(date.getTime())
+    copy.setDate(date.getDate()-days)
+    return copy
+}
+
+
 app.get('/', (req, res) => {
     return res.redirect('/login')
 });
@@ -284,6 +292,7 @@ app.get('/Events', ensureAuthenticated, async (req, res) => {
     }
 
     res.render('EventsPage', {
+        finalDecisionDate: finalDecisionDate,
         eventsprevious: eventsprevious,
         eventsupcoming: eventsupcoming,
         teams: teams,
@@ -325,6 +334,7 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
         return
     }
     res.render('EventsPage', {
+        finalDecisionDate: finalDecisionDate,
         eventsprevious: eventsprevious,
         eventsupcoming: eventsupcoming,
         teams: teams,
@@ -363,6 +373,7 @@ app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
     }
     res.render('ViewDetails',
         {
+            finalDecisionDate: finalDecisionDate,
             event: event,
             access_level: access_level,
             acceptedList: accepted_list,
@@ -407,6 +418,23 @@ app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
         res.status(500).send(e.stack)
         return
     }
+    all_members.sort(function (a,b) {
+        if (a.access_level == 'admin') return -1
+        if (a.access_level == 'manager'){
+            if (b.access_level == 'manager'){
+                return a.forename - b.forename
+            } else if (b.access_level == 'admin'){
+                return 1
+            } else {
+                return -1
+            }
+        }
+        if (b.access_level != 'user'){
+            return 1
+        } else {
+            return a.forename - b.forename
+        }
+    })
     res.render('TeamDetails',
         {
             team: team,

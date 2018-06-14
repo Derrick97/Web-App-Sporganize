@@ -4,30 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
     <title>View Event's Details</title>
 </head>
 <body>
 <div class="container">
     <br>
+    <% if (new Date() <= finalDecisionDate(event.timestamp, 2)){%>
     <% if (access_level != 'user') { %>
     <div class="jumbotron btn btn-default" data-toggle="modal" data-target="#details-modal" style="width: 1200px;">
         <h1><%= event.name %></h1>
         <p><%= event.timestamp %></p>
-        <p><% if (!event.duration.hours) { %>
+        <p>
+            <% if (!event.duration.hours) { %>
             <% } else if (event.duration.hours == 1) { %>
             1 hour
             <% } else { %>
             <%= event.duration.hours %> hours
             <% } %>
-
             <% if (!event.duration.minutes) { %>
             <% } else if (event.duration.minutes == 1) { %>
             1 minute
             <% } else { %>
             <%= event.duration.minutes %> minutes
-            <% } %></p>
+            <% } %>
+        </p>
         <p><%= event.location %></p>
         <h2>Current Status: <%= event.status %></h2>
     </div>
@@ -35,7 +42,8 @@
     <div class="jumbotron" style="width: 1200px; text-align: center">
         <h1><%= event.name %></h1>
         <p><%= event.timestamp %></p>
-        <p><% if (!event.duration.hours) { %>
+        <p>
+            <% if (!event.duration.hours) { %>
             <% } else if (event.duration.hours == 1) { %>
             1 hour
             <% } else { %>
@@ -47,15 +55,38 @@
             1 minute
             <% } else { %>
             <%= event.duration.minutes %> minutes
-            <% } %></p>
+            <% } %>
+        </p>
         <p><%= event.location %></p>
         <h2>Current Status: <%= event.status %></h2>
     </div>
-    <% } %>
+    <% }} else { %>
+    <div class="jumbotron" style="width: 1200px; text-align: center">
+        <h1><%= event.name %></h1>
+        <p><%= event.timestamp %></p>
+        <p>
+            <% if (!event.duration.hours) { %>
+            <% } else if (event.duration.hours == 1) { %>
+            1 hour
+            <% } else { %>
+            <%= event.duration.hours %> hours
+            <% } %>
+
+            <% if (!event.duration.minutes) { %>
+            <% } else if (event.duration.minutes == 1) { %>
+            1 minute
+            <% } else { %>
+            <%= event.duration.minutes %> minutes
+            <% } %>
+        </p>
+        <p><%= event.location %></p>
+        <h2>Current Status: <%= event.status %></h2>
+    </div>
+    <%}%>
     <form id="reply" action="/EventsPage" style="display: inline">
         <!--Actually the action should be the Event page, but that page has some unfixed problem now,
         to make the page testable, I redirected to the groupchat page temporarily.-->
-        <% if (event.timestamp >= new Date()){ %>
+        <% if (new Date() <= finalDecisionDate(event.timestamp, 1)){ %>
         <% if (event.status == 'noreply'){ %>
         <a href="" class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
         <a href="" class="btn btn-info" onclick="changeStatus('rejected', <%= event.id %>)">Decline</a>
@@ -70,7 +101,7 @@
         <% } } %>
 
     </form>
-    <% if ((access_level != 'user') && (event.timestamp >= new Date())) { %>
+    <% if ((access_level != 'user') && (new Date() <= finalDecisionDate(event.timestamp, 2))){ %>
     <button class="btn btn-info" data-toggle="modal" data-target="#details-modal">Change Event Details</button>
     <br>
     <br>
@@ -91,7 +122,7 @@
                         </label><br>
                         <input class="placeholder-no-fix" id='nameTextbox' type="text" maxlength="100"
                                placeholder="<%= event.name %>" disabled='disabled'/>
-                    </div>
+                    </div><br>
                     <div>
                         <label class="control-label">
                             <input type=checkbox id="locationBox"
@@ -99,14 +130,36 @@
                         </label><br>
                         <input class="placeholder-no-fix" id='locationTextbox' type="text" maxlength="100"
                                placeholder="<%= event.location %>" disabled/>
-                    </div>
+                    </div><br>
                     <div>
                         <label class="control-label">
                             <input type=checkbox id="dateBox" onclick="enableTextbox('dateBox', 'dateTextbox')">Event
                             Date
                         </label><br>
-                        <input class="placeholder-no-fix" id='dateTextbox' type="text" maxlength="100"
-                               placeholder="<%= event.timestamp %>" disabled/>
+
+
+
+                                    <div class="form-group">
+                                        <div class='input-group date' id='datetimepicker' >
+                                            <input id="dateTextbox" type='text' class="form-control" disabled/>
+                                            <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                                        </div>
+                                    </div>
+
+                                <script type="text/javascript">
+                                    $(function () {
+                                        let date = new Date(new Date().getTime())
+                                        date.setDate(date.getDate()+2)
+                                        $('#datetimepicker').datetimepicker({
+                                            format: 'YYYY-MM-DD HH:mm:ss',
+                                            minDate: date,
+                                        })
+                                    });
+                                </script>
+
+
                     </div>
                     <div>
                         <label class="control-label">
@@ -114,8 +167,24 @@
                                    onclick="enableTextbox('durationBox', 'durationTextbox')">Event
                             Duration
                         </label><br>
-                        <input class="placeholder-no-fix" id='durationTextbox' type="text" maxlength="100"
-                               disabled/>
+
+                                    <div class="form-group">
+                                        <div class='input-group date' id='datetimepicker2'>
+                                            <input id="durationTextbox" type='text' class="form-control" disabled data-toggle="tooltip" title="Hours:Minutes:Seconds"/>
+                                            <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-time"></span>
+                    </span>
+                                        </div>
+                                    </div>
+
+                                <script type="text/javascript">
+                                    $(function () {
+                                        $('#datetimepicker2').datetimepicker({
+                                            format: 'HH:mm:ss'
+                                        });
+                                    });
+                                </script>
+
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -128,6 +197,7 @@
         </div>
     </div>
 </div>
+
 
 <div class="container text-center">
     <div class="row">
@@ -163,15 +233,10 @@
 </div>
 
 <script>
-    $(".modal").on('hidden.bs.modal', function(e) {
+    $(".modal").on('hidden.bs.modal', function (e) {
         $("#details-modal .modal-body").find('input:radio, input:checkbox').prop('checked', false);
         $("#details-modal .modal-body").find('input:text').prop('disabled', true);
     })
-
-    function goBack() {
-        url = document.referrer;
-        window.location.href = url;
-    }
 
     function changeStatus(new_status, event_id) {
         const json = {
@@ -231,6 +296,7 @@
             newDate = parseDate(new Date(event_date))
         }
 
+
         let newDuration
         const durationBox = document.getElementById('durationBox')
         if (durationBox.checked) {
@@ -242,7 +308,7 @@
         const json = {
             'name': newName,
             'location': newLocation,
-            'date': newDate,
+            'date': newDate ,
             'duration': newDuration,
             'event_id': event_id,
         }

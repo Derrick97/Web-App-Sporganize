@@ -6,7 +6,9 @@
   "dependencies": {
     "bcrypt": "^2.0.1",
     "body-parser": "^1.18.3",
+    "bootstrap-datetimepicker-npm": "^4.17.37-npm",
     "ejs": "^2.6.1",
+    "eonasdan-bootstrap-datetimepicker": "^4.17.47",
     "express": "^4.16.3",
     "express-fileupload": "^0.4.0",
     "express-session": "^1.15.6",
