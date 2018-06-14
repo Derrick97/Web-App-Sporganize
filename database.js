@@ -348,6 +348,33 @@ module.exports = {
         }
     },
 
+
+    /* Photos */
+    getPhotoIdsForEventId: async function(id) {
+        let query = ['SELECT photos.id',
+                     'FROM sporganize.events',
+                     'JOIN sporganize.photos ON events.id = photos.event_id',
+                     'WHERE events.id = $1'].join(' ')
+        const resp = await pool.query(query, [id])
+        return resp.rows.map((r) => r.id)
+    },
+
+    getPhotoForId: async function(id) {
+        let query = 'SELECT * FROM sporganize.photos WHERE id = $1'
+        const photos = await pool.query(query, [id])
+        if (photos.rows.length > 0) {
+            return photos.rows[0]
+        }
+
+        return false
+    },
+
+    createPhoto: async function(data, event_id) {
+        let query = 'INSERT INTO sporganize.photos (event_id, photo) VALUES ($1, $2)'
+        await pool.query(query, [event_id, data])
+    },
+
+
     /* Messaging */
     onMessageNotification: async function (callback) {
         const client = new Client()

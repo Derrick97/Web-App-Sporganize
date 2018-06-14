@@ -1,5 +1,7 @@
 "use strict";
 const bodyParser = require('body-parser')
+const fileUpload = require('express-fileupload')
+
 const express = require('express')
 const session = require('express-session')
 
@@ -18,6 +20,7 @@ app.set('view engine', 'ejs');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
+app.use(fileUpload())
 
 const sessionParser = session({
     secret: "TODO: move this out to environment var",
@@ -210,6 +213,17 @@ app.get('/Photos', ensureAuthenticated, async (req, res) => {
         return
     }
     res.render('PhotosPage', {events: allEvents, teams: teams})
+})
+
+app.post('/Photos/Upload/:eventid', ensureAuthenticated, async (req, res) => {
+    console.log("Uploaded: " + req.files.photo.name + " MIME: " + req.files.photo.mimetype)
+    await db.createPhoto(req.files.photo.data, req.params.eventid)
+    return res.redirect("/Photos")
+})
+
+app.get('/Photos/:id', ensureAuthenticated, async (req, res) => {
+    const photo = await db.getPhotoForId(req.params.id)
+    return res.send(photo.photo)
 })
 
 app.get('/Events', ensureAuthenticated, async (req, res) => {
@@ -442,14 +456,6 @@ app.post('/removeMember', ensureAuthenticated, async (req, res) => {
         return
     }
 })
-
-
-app.get('/Upload/:email/:eventID', ensureAuthenticated, (req, res) => {
-    res.render('UploadPhotos', {
-        emailAdd: req.params.email,
-        eventID: req.params.eventID,
-    })
-});
 
 module.exports = {
     app: app,

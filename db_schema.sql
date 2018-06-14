@@ -47,7 +47,8 @@ CREATE TABLE sporganize.users_events (
 CREATE TABLE sporganize.photos (
     id       serial PRIMARY KEY,
     event_id int REFERENCES sporganize.events (id) ON DELETE CASCADE NOT NULL,
-    photo    bytea                                                   NOT NULL
+    photo    bytea                                                   NOT NULL,
+    mime     text                                                    NOT NULL
 );
 
 CREATE TABLE sporganize.join_codes (

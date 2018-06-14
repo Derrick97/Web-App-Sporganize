@@ -1,9 +1,6 @@
 "use strict";
 const app = require('./app.js')
 
-const { Pool } = require('pg')
-const pool = new Pool()
-
 const WebSocket = require('ws')
 
 const port = normalizePort(process.env.PORT || '8080')
