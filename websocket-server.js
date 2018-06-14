@@ -98,7 +98,6 @@ module.exports = (server, sessionParser) => {
             }
 
             if (!teams.map((t) => t.id).includes(json.team_id)) {
-                console.log("dsafd")
                 return
             }
 
