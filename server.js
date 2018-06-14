@@ -7,32 +7,10 @@ const pool = new Pool()
 const WebSocket = require('ws')
 
 const port = normalizePort(process.env.PORT || '8080')
-app.set('port', port)
+app.app.set('port', port)
 
-const server = require('http').createServer(app)
-const wss = new WebSocket.Server({ server })
-
-// TODO: Move this out to another file
-wss.on('connection', (ws) => {
-    ws.on('error', (e) => {
-        console.log(e)
-    })
-
-    ws.on('message', async (data) => {
-        const json = JSON.parse(data)
-        const query = {
-            text: 'INSERT INTO events (eventname, starttime, duration, location) \
-                   VALUES ($1, $2, $3, $4)',
-            values: [json.eventname, json.starttime, json.duration, json.location]
-        }
-
-        try {
-            const resp = await pool.query(query)
-        } catch(e) {
-            console.log(e.stack)
-        }
-    })
-})
+const server = require('http').createServer(app.app)
+require('./websocket-server.js')(server, app.sessionParser)
 
 server.listen(port)
 server.on('error', onError)

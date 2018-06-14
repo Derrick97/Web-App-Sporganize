@@ -19,11 +19,13 @@ app.set('view engine', 'ejs');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}))
 
-app.use(session({
+const sessionParser = session({
     secret: "TODO: move this out to environment var",
     resave: false,
     saveUninitialized: false
-}))
+})
+
+app.use(sessionParser)
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -399,4 +401,7 @@ app.get('/Upload/:email/:eventID', ensureAuthenticated, (req, res) => {
     })
 });
 
-module.exports = app;
+module.exports = {
+    app: app,
+    sessionParser: sessionParser
+}
