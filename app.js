@@ -268,6 +268,7 @@ app.get('/Events', ensureAuthenticated, async (req, res) => {
     }
 
     res.render('EventsPage', {
+        finalDecisionDate: finalDecisionDate,
         eventsprevious: eventsprevious,
         eventsupcoming: eventsupcoming,
         teams: teams,
@@ -309,6 +310,7 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
         return
     }
     res.render('EventsPage', {
+        finalDecisionDate: finalDecisionDate,
         eventsprevious: eventsprevious,
         eventsupcoming: eventsupcoming,
         teams: teams,

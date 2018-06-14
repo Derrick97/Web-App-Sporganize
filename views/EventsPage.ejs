@@ -7,6 +7,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/css/bootstrap-datetimepicker.min.css"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.6/moment.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
     <title>Events</title>
     <style>
         body {
@@ -102,9 +109,54 @@
                     </div>
                     <div class="modal-body">
                         Event name: <input type="text" id="eventname"><br/><br/>
-                        Event start time: <input type="text" id="starttime"><br/><br/>
-                        Event duration: <input type="text" id="duration"><br/><br/>
-                        Event location: <input type="text" id="location">
+                        Event location: <input type="text" id="location"><br/><br/>
+                        Event start time: <br/>
+                        <div class="container">
+                            <div class="row">
+                                <div class='col-sm-6'>
+                                    <div class="form-group">
+                                        <div class='input-group date' id='datetimepicker' >
+                                            <input id="dateTextbox" type='text' class="form-control" />
+                                            <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script type="text/javascript">
+                                    $(function () {
+                                        $('#datetimepicker').datetimepicker({
+                                            format: 'YYYY-MM-DD HH:mm:ss',
+                                        })
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                        <br/><br/>
+                        Event duration:
+                        <div class="container">
+                            <div class="row">
+                                <div class='col-sm-6'>
+                                    <div class="form-group">
+                                        <div class='input-group date' id='datetimepicker2'>
+                                            <input id="durationTextbox" type='text' class="form-control" data-toggle="tooltip" title="Hours:Minutes:Seconds"/>
+                                            <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-time"></span>
+                    </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <script type="text/javascript">
+                                    $(function () {
+                                        $('#datetimepicker2').datetimepicker({
+                                            format: 'HH:mm:ss'
+                                        });
+                                    });
+                                </script>
+                            </div>
+                        </div>
+                        <br/><br/>
+
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" data-dismiss="modal" style="float: left"
@@ -152,6 +204,7 @@
                             </h4>
                             <h4 class="list-group-item-text"><%= event.location %></h4>
                             <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
+                            <% if (new Date() <= finalDecisionDate(event.date, 2)){%>
                             <% if (event.status == 'noreply') { %>
                             <a href="" class="btn btn-info"
                                onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
@@ -168,10 +221,33 @@
                             <% } %>
                             <a href="/ViewDetails/<%= event.id %>" class="btn btn-info">View Details</a>
                             <% if (event.access_level != 'user') { %>
-                            <a onclick="deleteEvent(<%= event.id %>)" class="btn btn-info">Delete</a>
+                            <a data-toggle="modal" data-target="#delete_modal<%= event.id %>" class="btn btn-info">Delete</a>
+                            <div class="modal fade" id="delete_modal<%= event.id %>" role="dialog">
+                                <div class="modal-dialog">
+                                    <!-- Modal content-->
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                            <h4 class="modal-title" style="text-align: center">Delete <%=event.name%></h4>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure to delete this event? <br>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal"
+                                                    style="float:left" onclick="deleteEvent(<%= event.id %>)">yes
+                                            </button>
+                                            <button type="button" class="btn btn-default" data-dismiss="modal"
+                                                    style="float:right">no
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <% } %>
                         </div>
-                        <% }) %>
+                        <% }}) %>
                         <% } %>
                     </div>
                 </div>
@@ -242,8 +318,8 @@
 
         const json = {
             'eventname': extractval('eventname'),
-            'starttime': extractval('starttime'),
-            'duration': extractval('duration'),
+            'starttime': extractval('dateTextbox'),
+            'duration': extractval('durationTextbox'),
             'location': extractval('location'),
             'teamid': teamid
         }
@@ -300,12 +376,14 @@
             url: '/deleteEvent',
             data: json,
             success: function (data) {
-                if (data.status)
+                if (data.status) {
+                    alert("Delete event successfully.")
                     window.location.reload()
+                }
                 else
-                    console.log("error")
+                    console.log('Error when deleting event.')
+
             },
-            dataType: "json",
         })
     }
 </script>
