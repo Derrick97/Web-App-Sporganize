@@ -367,5 +367,14 @@ module.exports = {
                          [JSON.stringify(resp.rows[0])])
 
         return resp.rows[0]
+    },
+
+    getMessagesForTeamId: async function(id, n) {
+        let query = ['SELECT * FROM sporganize.messages',
+                     'WHERE team_id = $1',
+                     'ORDER BY timestamp DESC',
+                     'LIMIT $2'].join(' ')
+        const resp = await pool.query(query, [id, n])
+        return resp.rows
     }
 }
