@@ -459,4 +459,14 @@ app.post('/leaveTeam', ensureAuthenticated, async (req, res) => {
     }
 })
 
+app.post('/dismissTeam', ensureAuthenticated, async (req, res) => {
+    try {
+        await db.dismissTeamForTeamID(req.body.team_id)
+        return res.send({status: 'success'})
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+})
+
 module.exports = app;

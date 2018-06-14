@@ -81,12 +81,20 @@
                                     <h4 class="modal-title" style="text-align: center">Leave <%= teamc.name %></h4>
                                 </div>
                                 <div class="modal-body">
-                                    Are you sure to leave this team?
+                                    Are you sure to leave this team? <br>
+                                    <% if (teamc.access_level == 'admin') { %>
+                                    Notice: This team will automatically be dismissed after your leaving!
+                                    <% } %>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-default" data-dismiss="modal"
                                             style="float:left"
-                                            onclick="leaveTeam(<%= teamc.id %>)">yes
+                                            <% if (teamc.access_level != 'admin') { %>
+                                            onclick="leaveTeam(<%= teamc.id %>)"
+                                            <% } else { %>
+                                            onclick="dismissTeam(<%= teamc.id %>)"
+                                            <% } %>
+                                    >yes
                                     </button>
                                     <button type="button" class="btn btn-default" data-dismiss="modal"
                                             style="float:right">no
@@ -301,7 +309,26 @@
             dataType: "json",
             success: function (data) {
                 if (data.status) {
-                    alert('Leave success!')
+                    alert('You have already left this team!')
+                    window.location.reload()
+                } else {
+                    console.log('error')
+                }
+            },
+        })
+    }
+
+    function dismissTeam(id) {
+        json = {team_id: id}
+
+        $.ajax({
+            type: 'POST',
+            url: '/dismissTeam',
+            data: json,
+            dataType: "json",
+            success: function (data) {
+                if (data.status) {
+                    alert('This team has already been dismissed!')
                     window.location.reload()
                 } else {
                     console.log('error')

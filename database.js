@@ -347,4 +347,9 @@ module.exports = {
             await pool.query(query2, [user_id, allEvent[i].id])
         }
     },
+
+    dismissTeamForTeamID: async function (team_id) {
+        const query = 'DELETE FROM sporganize.teams WHERE teams.id = $1'
+        await pool.query(query, [team_id])
+    },
 }
