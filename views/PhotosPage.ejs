@@ -66,28 +66,59 @@
         <% }) %>
     </div>
 
-    <div class="main">
+    <div class="main" align="center">
         <h1 style="text-align: center">Photos</h1>
-        <div class="container">
-            <% events.forEach((event) => { %>
-            <div class="container">
-                <div class="jumbotron">
-                    <h3><%= event.name %></h3>
-                    <p><% event.date %></p>
-                    <p><%= event.location %></p>
-
-                    <form action="/Photos/Upload/<%= event.id %>" method="post" encType="multipart/form-data">
-                        <input type="file" name="photo" />
-                        <input type='submit' value='Upload' />
-                    </form>
-    
-                    <br/>
-
-                    <input type="button" value="View All">
+        <% let c = 0 %>
+        <% events.forEach((event) => { %>
+        <div class="jumbotron" style="height: 270px; width: 1250px; overflow: hidden; padding-top: 20px">
+            <div style="width: 275px; height: 200px; word-break: break-all; float: left;">
+                <h3><%= event.name %></h3>
+                <p><%= event.timestamp %></p>
+                <p><%= event.location %></p>
+                <button data-toggle="modal" data-target="#uploadModal<%= event.id %>">Upload</button>
+                <input type="button" value="View All">
+            </div>
+            <div class="modal fade" id="uploadModal<%= event.id %>" role="dialog">
+                <div class="modal-dialog">
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            <h4 class="modal-title" style="text-align: center">Upload photos</h4>
+                        </div>
+                        <form action="/Photos/Upload/<%= event.id %>" method="post"
+                              encType="multipart/form-data">
+                            <div class="modal-body" align="center">
+                                <div>
+                                    <input type="file" name="photo" onchange="previewFile(<%= event.id %>)"
+                                           id="file<%= event.id %>"/>
+                                    <img src="" height="200" id="preview<%= event.id %>">
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <div align="center">
+                                    <input type='submit' value='Upload'/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
+
+            <% if (photos[c].length < 3) { %>
+            <% photos[c].forEach((photo) => { %>
+            <img src="/Photos/view/<%= photo %>" style="width: 275px; height: 210px; float:left; padding-top: 20px">
             <% }) %>
+            <% } else { %>
+            <% for (let i = 0; i < 3; i++) { %>
+            <img src="/Photos/view/<%= photos[c][i] %>" style="width: 275px; height: 210px; float:left; padding-top: 20px">
+            <% } %>
+            <% } %>
         </div>
+
+        <% c = c + 1 %>
+        <% }) %>
+
     </div>
 </div>
 
@@ -104,10 +135,28 @@
 </nav>
 
 <script>
+    $(".modal").on('hidden.bs.modal', function (e) {
+        $(".modal-body").find('input:file').prop('value', "");
+        $(".modal-body").find('img').prop('src', "");
+    })
+
     function changeActive(newid) {
         let select_item_id = $("#sidenav").find(".active").attr('id')
         document.getElementById(select_item_id).className = ''
         document.getElementById(newid).className = 'active'
+    }
+
+    function previewFile(id) {
+        let preview = document.getElementById('preview' + id);
+        let file = document.getElementById('file' + id).files[0];
+        let reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+            preview.src = reader.result;
+        }, false);
+        if (file) {
+            reader.readAsDataURL(file);
+        }
     }
 </script>
 </body>

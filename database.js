@@ -172,7 +172,6 @@ module.exports = {
             'FROM sporganize.events JOIN sporganize.users_events ON events.id = users_events.event_id',
             'WHERE events.id = $1 AND users_events.user_id = $2'].join(' ')
         const event = await pool.query(query, [event_id, user_id])
-        // console.log(event.length)
         return event.rows[0]
     },
 

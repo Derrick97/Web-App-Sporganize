@@ -213,14 +213,19 @@ app.post('/generateCode', ensureAuthenticated, async (req, res) => {
 app.get('/Photos', ensureAuthenticated, async (req, res) => {
     let allEvents
     let teams
+    let photos
     try {
         allEvents = await db.getAllEventsForUserId(req.user.id)
         teams = await db.getTeamsForUserId(req.user.id)
+        photos = []
+        for (let i = 0; i < allEvents.length; i++) {
+            photos[i] = await db.getPhotoIdsForEventId(allEvents[i].id)
+        }
     } catch (e) {
         res.status(500).send(e.stack)
         return
     }
-    res.render('PhotosPage', {events: allEvents, teams: teams})
+    res.render('PhotosPage', {events: allEvents, teams: teams, photos: photos})
 })
 
 app.post('/Photos/Upload/:eventid', ensureAuthenticated, async (req, res) => {
@@ -242,15 +247,15 @@ app.post('/Photos/Upload/:eventid', ensureAuthenticated, async (req, res) => {
     return res.redirect("/Photos")
 })
 
-app.get('/Photos/:id', ensureAuthenticated, async (req, res) => {
+app.get('/Photos/view/:id', ensureAuthenticated, async (req, res) => {
     const photo = await db.getPhotoForId(req.params.id)
 
-    console.log("Got photo (event_id = " + photo.event_id + ")")
+   // console.log("Got photo (event_id = " + photo.event_id + ")")
 
     const events = await db.getAllEventsForUserId(req.user.id)
     const event_ids = events.map((e) => e.id)
 
-    console.log("Got event_ids = " + event_ids)
+   // console.log("Got event_ids = " + event_ids)
 
     if (event_ids.includes(photo.event_id)) {
         res.writeHead(200, {
