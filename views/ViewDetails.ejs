@@ -159,15 +159,10 @@
 </div>
 
 <div class="container">
-    <a class="btn btn-info" role="button" onclick="goBack()">Go back</a>
+    <a href="/Events" class="btn btn-info" role="button">Go back</a>
 </div>
 
 <script>
-    function goBack() {
-        url = document.referrer;
-        window.location.href = url;
-    }
-
     function changeStatus(new_status, event_id) {
         const json = {
             'event_id': event_id,
