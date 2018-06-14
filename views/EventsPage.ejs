@@ -63,186 +63,251 @@
             right: 16px;
             font-size: 18px;
         }
-
     </style>
-
-    <script>
-        function addEvent(teamid) {
-            const extractval = (id) => {
-                const val = document.getElementById(id).value
-                document.getElementById(id).value = ""
-                return val
-            }
-
-            const json = {
-                'eventname': extractval('eventname'),
-                'starttime': extractval('starttime'),
-                'duration': extractval('duration'),
-                'location': extractval('location'),
-                'teamid': teamid
-            }
-
-            $.ajax({
-                type: 'POST',
-                url: '/addEvent',
-                data: json,
-                success: alert('Add success!'),
-                dataType: "json",
-            })
-        }
-
-        function changeIcon(iconid) {
-            const icon = document.getElementById(iconid)
-            if (icon.className == 'fa fa-caret-down') {
-                icon.className = 'fa fa-caret-right'
-            } else {
-                icon.className = 'fa fa-caret-down'
-            }
-        }
-
-        function changeStatus(new_status, event_id) {
-            const json = {
-                'event_id': event_id,
-                'status': new_status,
-            }
-
-            $.ajax({
-                type: 'POST',
-                url: '/changeStatus',
-                data: json,
-                success: window.location.reload(),
-                dataType: "json",
-            })
-        }
-    </script>
 </head>
 <body>
-<div class="sidenav" id="sidenav">
-    <% if (active_id == 0) { %>
-    <a class="active" href="/Events" id="allevents">All Events</a>
-    <% teams.forEach((team) => { %>
-    <a href="/Events/<%= team.id %>" id="<%= team.id %>"><%= team.name %></a>
-    <% }) %>
-    <% } else { %>
-    <a href="/Events" id="allevents">All Events</a>
-    <% teams.forEach((team) => { %>
-    <% if (active_id == team.id) { %>
-    <a class="active" href="/Events/<%= team.id %>" id="<%= team.id %>"><%= team.name %></a>
-    <% }  else { %>
-    <a href="/Events/<%= team.id %>" id="<%= team.id %>"><%= team.name %></a>
-    <% } %>
-    <% }) %>
-    <% } %>
-</div>
+<div class="upnav" style="padding-bottom: 100px">
+    <div class="sidenav" id="sidenav">
+        <% if (active_id == 0) { %>
+        <a class="active" href="/Events" id="allevents">All Events</a>
+        <% teams.forEach((team) => { %>
+        <a href="/Events/<%= team.id %>" id="<%= team.id %>"><%= team.name %></a>
+        <% }) %>
+        <% } else { %>
+        <a href="/Events" id="allevents">All Events</a>
+        <% teams.forEach((team) => { %>
+        <% if (active_id == team.id) { %>
+        <a class="active" href="/Events/<%= team.id %>" id="<%= team.id %>"><%= team.name %></a>
+        <% }  else { %>
+        <a href="/Events/<%= team.id %>" id="<%= team.id %>"><%= team.name %></a>
+        <% } %>
+        <% }) %>
+        <% } %>
+    </div>
 
-<div class="topright">
-    <% if (access_level != 'user') { %>
-    <div class="fa fa-plus-circle btn" style="font-size:24px" data-toggle="modal" data-target="#add_modal">Add</div>
-    <% } %>
-</div>
+    <div>
+        <div class="topright">
+            <% if (access_level != 'user') { %>
+            <div class="fa fa-plus-circle btn" style="font-size:24px" data-toggle="modal" data-target="#add_modal">Add
+            </div>
+            <% } %>
+        </div>
 
-<div id="add_modal" class="modal fade" role="dialog">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title">Add event for <%= current_team_name %></h4>
+        <div id="add_modal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Add event for <%= current_team_name %></h4>
+                    </div>
+                    <div class="modal-body">
+                        Event name: <input type="text" id="eventname"><br/><br/>
+                        Event start time: <input type="text" id="starttime"><br/><br/>
+                        Event duration: <input type="text" id="duration"><br/><br/>
+                        Event location: <input type="text" id="location">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" style="float: left"
+                                onclick="addEvent(<%= active_id %>)">Add event
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="modal-body">
-                Event name: <input type="text" id="eventname"><br/><br/>
-                Event start time: <input type="text" id="starttime"><br/><br/>
-                Event duration: <input type="text" id="duration"><br/><br/>
-                Event location: <input type="text" id="location">
+        </div>
+    </div>
+
+    <div class="main">
+        <h1 style="text-align: center">Events</h1>
+        <div id="accordion">
+            <div class="card">
+                <div class="card-header" style="background-color: #818181">
+                    <a class="collapsed card-link btn-block" data-toggle="collapse" href="#collapseOne"
+                       style="font-size:20px; color:black; padding-left:5px" onclick="changeIcon('icon1')">
+                        <span class="fa fa-caret-down" id="icon1"></span> Upcoming Events
+                    </a>
+                </div>
+                <div id="collapseOne" class="collapse in">
+                    <div class="card-body">
+                        <% if (eventsupcoming.length == 0) { %>
+                        <h2 style="text-align: center">You don't have any upcoming event!</h2>
+                        <% } else { %>
+                        <% eventsupcoming.forEach((event) => { %>
+                        <div class="list-group-item" style="text-align: center">
+                            <h2 class="list-group-item-heading"><%= event.name %></h2>
+                            <h4 class="list-group-item-text"><%= event.date %></h4>
+                            <h4 class="list-group-item-text">
+                                <% if (!event.duration.hours) { %>
+                                <% } else if (event.duration.hours == 1) { %>
+                                1 hour
+                                <% } else { %>
+                                <%= event.duration.hours %> hours
+                                <% } %>
+
+                                <% if (!event.duration.minutes) { %>
+                                <% } else if (event.duration.minutes == 1) { %>
+                                1 minute
+                                <% } else { %>
+                                <%= event.duration.minutes %> minutes
+                                <% } %>
+                            </h4>
+                            <h4 class="list-group-item-text"><%= event.location %></h4>
+                            <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
+                            <% if (event.status == 'noreply') { %>
+                            <a href="" class="btn btn-info"
+                               onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
+                            <a href="" class="btn btn-info"
+                               onclick="changeStatus('rejected', <%= event.id %>)">Decline</a>
+                            <% } %>
+                            <% if (event.status == 'confirmed') { %>
+                            <a class="btn btn-info disabled">Accept</a>
+                            <a class="btn btn-info" onclick="changeStatus('rejected', <%= event.id %>)">Decline</a>
+                            <% } %>
+                            <% if (event.status == 'rejected') { %>
+                            <a class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
+                            <a class="btn btn-info disabled">Decline</a>
+                            <% } %>
+                            <a href="/ViewDetails/<%= event.id %>" class="btn btn-info">View Details</a>
+                            <% if (event.access_level != 'user') { %>
+                            <a onclick="deleteEvent(<%= event.id %>)" class="btn btn-info">Delete</a>
+                            <% } %>
+                        </div>
+                        <% }) %>
+                        <% } %>
+                    </div>
+                </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal" style="float: left"
-                        onclick="addEvent(<%= active_id %>)">Add event
-                </button>
+            <div class="card">
+                <div class="collapsed card-header" style="background-color: #818181">
+                    <a class="collapsed card-link btn-block" data-toggle="collapse" href="#collapseTwo"
+                       style="font-size:20px; color:black; padding-left:5px" onclick="changeIcon('icon2')">
+                        <span class="fa fa-caret-right" id="icon2"></span> Previous Events
+                    </a>
+                </div>
+                <div id="collapseTwo" class="collapse">
+                    <div class="card-body">
+                        <% if (eventsprevious.length == 0) { %>
+                        <h2 style="text-align: center">You don't have any previous event!</h2>
+                        <% } else { %>
+                        <% eventsprevious.forEach((event) => { %>
+                        <div class="list-group-item" style="text-align: center">
+                            <h2 class="list-group-item-heading"><%= event.name %></h2>
+                            <h4 class="list-group-item-text"><%= event.date %></h4>
+                            <h4 class="list-group-item-text">
+                                <% if (!event.duration.hours) { %>
+                                <% } else if (event.duration.hours == 1) { %>
+                                1 hour
+                                <% } else { %>
+                                <%= event.duration.hours %> hours
+                                <% } %>
+
+                                <% if (!event.duration.minutes) { %>
+                                <% } else if (event.duration.minutes == 1) { %>
+                                1 minute
+                                <% } else { %>
+                                <%= event.duration.minutes %> minutes
+                                <% } %>
+                            </h4>
+                            <h4 class="list-group-item-text"><%= event.location %></h4>
+                            <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
+                            <a href="/ViewDetails/<%= event.id %>" class="btn btn-info">View Details</a>
+                        </div>
+                        <% }) %>
+                        <% } %>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
 
-<div class="main" style="padding-bottom: 93px">
-    <h1 style="text-align: center">Events</h1>
-    <div id="accordion">
-        <div class="card">
-            <div class="card-header" style="background-color: #818181">
-                <a class="collapsed card-link btn-block" data-toggle="collapse" href="#collapseOne"
-                   style="font-size:20px; color:black; padding-left:5px" onclick="changeIcon('icon1')">
-                    <span class="fa fa-caret-down" id="icon1"></span> Upcoming Events
-                </a>
-            </div>
-            <div id="collapseOne" class="collapse in">
-                <div class="card-body">
-                    <% if (eventsupcoming.length == 0) { %>
-                    <h2 style="text-align: center">You don't have any upcoming event!</h2>
-                    <% } else { %>
-                    <% eventsupcoming.forEach((event) => { %>
-                    <div class="list-group-item" style="text-align: center">
-                        <h2 class="list-group-item-heading"><%= event.name %></h2>
-                        <h4 class="list-group-item-text"><%= event.date %></h4>
-                        <h4 class="list-group-item-text"><%= event.location %></h4>
-                        <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
-                        <% if (event.status == 'noreply'){ %>
-                        <a href="" class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
-                        <a href="" class="btn btn-info" onclick="changeStatus('rejected', <%= event.id %>)">Decline</a>
-                        <% } %>
-                        <% if (event.status == 'confirmed'){ %>
-                        <a class="btn btn-info disabled">Accept</a>
-                        <a class="btn btn-info" onclick="changeStatus('rejected', <%= event.id %>)">Decline</a>
-                        <% } %>
-                        <% if (event.status == 'rejected'){ %>
-                        <a class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
-                        <a class="btn btn-info disabled">Decline</a>
-                        <% } %>
-                        <a href="/ViewDetails/<%= event.id %>" class="btn btn-info">View Details</a>
-                        <% if (event.access_level != 'user'){ %>
-                        <a href="" class="btn btn-info">Delete</a>
-                        <% } %>
-                    </div>
-                    <% }) %>
-                    <% } %>
-                </div>
-            </div>
-        </div>
-        <div class="card">
-            <div class="collapsed card-header" style="background-color: #818181">
-                <a class="collapsed card-link btn-block" data-toggle="collapse" href="#collapseTwo"
-                   style="font-size:20px; color:black; padding-left:5px" onclick="changeIcon('icon2')">
-                    <span class="fa fa-caret-right" id="icon2"></span> Previous Events
-                </a>
-            </div>
-            <div id="collapseTwo" class="collapse">
-                <div class="card-body">
-                    <% if (eventsprevious.length == 0) { %>
-                    <h2 style="text-align: center">You don't have any previous event!</h2>
-                    <% } else { %>
-                    <% eventsprevious.forEach((event) => { %>
-                    <div class="list-group-item" style="text-align: center">
-                        <h2 class="list-group-item-heading"><%= event.name %></h2>
-                        <h4 class="list-group-item-text"><%= event.date %></h4>
-                        <h4 class="list-group-item-text"><%= event.location %></h4>
-                        <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
-                        <a href="/ViewDetails/<%= event.id %>" class="btn btn-info">View Details</a>
-                    </div>
-                    <% }) %>
-                    <% } %>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 <nav class="navbar navbar-fixed-bottom" style="background-color:grey">
     <div class="container-fluid">
         <ul class="nav nav-tabs nav-justified">
             <li><a href="/groupchat" style="color:black"><h1>GroupChat</h1></a></li>
-            <li class="active"><a href="#" style="color:black"><h1>Events</h1></a></li>
+            <li class="active"><a style="color:black"><h1>Events</h1></a></li>
             <li><a href="/Photos" style="color:black"><h1>Photos</h1></a></li>
             <li><a href="/Teams" style="color:black"><h1>My Teams</h1></a></li>
             <li><a href="/Settings" style="color:black"><h1>Settings</h1></a></li>
         </ul>
     </div>
 </nav>
+
+<script>
+    function addEvent(teamid) {
+        const extractval = (id) => {
+            const val = document.getElementById(id).value
+            document.getElementById(id).value = ""
+            return val
+        }
+
+        const json = {
+            'eventname': extractval('eventname'),
+            'starttime': extractval('starttime'),
+            'duration': extractval('duration'),
+            'location': extractval('location'),
+            'teamid': teamid
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/addEvent',
+            data: json,
+            success: function (data) {
+                if (data.status) {
+                    alert('Add success!')
+                    window.location.reload()
+                } else
+                    console.log('error')
+            },
+            dataType: "json",
+        })
+    }
+
+    function changeIcon(iconid) {
+        const icon = document.getElementById(iconid)
+        if (icon.className == 'fa fa-caret-down') {
+            icon.className = 'fa fa-caret-right'
+        } else {
+            icon.className = 'fa fa-caret-down'
+        }
+    }
+
+    function changeStatus(new_status, event_id) {
+        const json = {
+            'event_id': event_id,
+            'status': new_status,
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/changeStatus',
+            data: json,
+            dataType: "json",
+            success: function (data) {
+                if (data.status)
+                    window.location.reload()
+                else
+                    console.log("error")
+            },
+        })
+    }
+
+    function deleteEvent(event_id) {
+        const json = {'event_id': event_id,}
+
+        $.ajax({
+            type: 'POST',
+            url: '/deleteEvent',
+            data: json,
+            success: function (data) {
+                if (data.status)
+                    window.location.reload()
+                else
+                    console.log("error")
+            },
+            dataType: "json",
+        })
+    }
+</script>
 </body>
 </html>

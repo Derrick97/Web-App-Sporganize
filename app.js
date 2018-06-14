@@ -81,7 +81,7 @@ app.get('/', (req, res) => {
 
 app.get('/login', (req, res) => {
     if (login_success) {
-    res.render('Login', {message: null});
+        res.render('Login', {message: null});
     } else {
         res.render('Login', {message: 'loginfail'});
         login_success = true
@@ -89,7 +89,7 @@ app.get('/login', (req, res) => {
 });
 
 app.post('/login', passport.authenticate('local',
-        {successRedirect: '/groupchat', failureRedirect: '/loginfail'})
+    {successRedirect: '/groupchat', failureRedirect: '/loginfail'})
 )
 
 app.get('/loginfail', (req, res) => {
@@ -99,15 +99,17 @@ app.get('/loginfail', (req, res) => {
 
 app.post('/logout', (req, res) => {
     req.logout()
-    res.redirect('/')
+    return res.send({redirect: '/'})
 })
 
 app.post('/register', async (req, res) => {
     try {
         const pwhash = await bcrypt.hash(req.body.password, saltRounds)
-        await db.createUser(req.body.forename, req.body.surname,
+        const status = await db.createUser(req.body.forename, req.body.surname,
             req.body.gender, req.body.email, req.body.mobile, pwhash)
-        res.redirect('/login')
+        if (status.rowCount == 0) {
+            res.send({status: 'fail'})
+        } else res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
     }
@@ -121,6 +123,7 @@ app.get('/groupchat', ensureAuthenticated, async (req, res) => {
     let teams
     try {
         teams = await db.getTeamsForUserId(req.user.id)
+        teams.reverse()
     } catch (e) {
         res.status(500).send(e.stack)
         return
@@ -170,7 +173,16 @@ app.get('/Teams', ensureAuthenticated, async (req, res) => {
 
 app.post('/joinTeam', ensureAuthenticated, async (req, res) => {
     try {
-        await db.joinTeamWithJoinCodeForUserId(req.body.code, req.user.id)
+        let success = await db.joinTeamWithJoinCodeForUserId(req.body.code, req.user.id)
+        if (success) {
+            if (success.code == '23505') {
+                res.json({msg: 'Duplicate'})
+            } else {
+                res.json({msg: 'Success', redirect: '/groupchat'})
+            }
+        } else {
+            res.json({msg: 'Failed'})
+        }
     } catch (e) {
         res.status(500).send(e.stack)
         return
@@ -180,6 +192,7 @@ app.post('/joinTeam', ensureAuthenticated, async (req, res) => {
 app.post('/generateCode', ensureAuthenticated, async (req, res) => {
     try {
         await db.createJoinCodeForTeamId(req.body.codeGen, req.body.teamId)
+        return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
         return
@@ -211,6 +224,7 @@ app.get('/Events', ensureAuthenticated, async (req, res) => {
                 'id': ev.id,
                 'name': ev.name,
                 'date': ev.timestamp,
+                'duration': ev.duration,
                 'location': ev.location,
                 'status': ev.status,
                 'access_level': ev.access_level,
@@ -225,7 +239,14 @@ app.get('/Events', ensureAuthenticated, async (req, res) => {
         return
     }
 
-    res.render('EventsPage', {eventsprevious: eventsprevious, eventsupcoming: eventsupcoming, teams: teams, access_level: 'user', active_id: 0, current_team_name: null});
+    res.render('EventsPage', {
+        eventsprevious: eventsprevious,
+        eventsupcoming: eventsupcoming,
+        teams: teams,
+        access_level: 'user',
+        active_id: 0,
+        current_team_name: null
+    });
 });
 
 
@@ -243,6 +264,7 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
                 'id': ev.id,
                 'name': ev.name,
                 'date': ev.timestamp,
+                'duration': ev.duration,
                 'location': ev.location,
                 'status': ev.status,
                 'access_level': ev.access_level,
@@ -258,12 +280,20 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
         res.status(500).send(e.stack)
         return
     }
-    res.render('EventsPage', {eventsprevious: eventsprevious, eventsupcoming: eventsupcoming, teams:teams, access_level: access_level, active_id: req.params.teamid, current_team_name: current_team.name})
+    res.render('EventsPage', {
+        eventsprevious: eventsprevious,
+        eventsupcoming: eventsupcoming,
+        teams: teams,
+        access_level: access_level,
+        active_id: req.params.teamid,
+        current_team_name: current_team.name
+    })
 });
 
 app.post('/addEvent', ensureAuthenticated, async (req, res) => {
     try {
         await db.createEvent(req.user.id, req.body.teamid, req.body.eventname, req.body.starttime, req.body.duration, req.body.location)
+        return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
         return
@@ -278,7 +308,7 @@ app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
     let declined_list
     let noreply_list
     try {
-        event = await db.getEventForEventId(req.params.event_id)
+        event = await db.getEventForEventIDWithStatus(req.params.event_id, req.user.id)
         access_level = await db.getAccessLevelForUserIDAndTeamID(req.user.id, event.team_id)
         accepted_list = await db.getAllUsersFromEventsWithStatus(event.id, 'confirmed')
         declined_list = await db.getAllUsersFromEventsWithStatus(event.id, 'rejected')
@@ -295,11 +325,70 @@ app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
             rejectList: declined_list,
             noreplyList: noreply_list,
         })
-    })
+})
 
 app.post('/changeStatus', ensureAuthenticated, async (req, res) => {
     try {
         await db.changeEventStatusForUserID(req.user.id, req.body.event_id, req.body.status)
+        res.send({status: 'success'})
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+})
+
+app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
+    let team
+    let join_code_info
+    let all_members
+    let creator
+    let access_level
+    let expire_period
+    try {
+        team = await db.getTeamForId(req.params.team_id)
+        join_code_info = await db.getCurrentJoinCodeForTeamID(req.params.team_id);
+        all_members = await db.getAllUsersInfoForTeam(req.params.team_id)
+        creator = await db.getCreatorForTeamID(req.params.team_id)
+        access_level = await db.getAccessLevelForUserIDAndTeamID(req.user.id, req.params.team_id)
+        if(access_level === undefined){
+            return res.send("You have been kicked out of this team.")
+        }
+        if(join_code_info === undefined) {
+
+            expire_period = 'No code generated yet.'
+        } else {
+            expire_period = Math.ceil((join_code_info.expires - new Date()) / (1000 * 3600 * 24))
+        }
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+    res.render('TeamDetails',
+        {
+            team: team,
+            join_code_info: join_code_info,
+            team_members: all_members,
+            creator: creator,
+            access_level: access_level,
+            expire_period: expire_period,
+        })
+})
+
+app.post('/updateDetails', ensureAuthenticated, async (req, res) => {
+    try {
+      //  console.log(req.body.duration)
+        await db.changeEventDetailsForUserID(req.body.event_id, req.body.name, req.body.location, req.body.date, req.body.duration)
+        return res.send({status: 'success'})
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+})
+
+app.post('/deleteEvent', ensureAuthenticated, async (req, res) => {
+    try {
+        await db.deleteEventForEventID(req.body.event_id)
+        return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
         return
@@ -307,91 +396,52 @@ app.post('/changeStatus', ensureAuthenticated, async (req, res) => {
 })
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-app.get('/Photos/:email', ensureAuthenticated, (req, res) => {
-    //Mock database query.
-    const user = queryUser(req.params.email);
-    let eventsID = [];
-    for (let i = 0; i < user.groupID.length; i++) {
-        const group = groups.filter((group) => {
-            return group.id == user.groupID[i];
-        })[0];
-        eventsID.concat(group.eventsID);
-    }
-    let allEvents = [];
-    for (let i = 0; i < eventsID.length; i++) {
-        const event = events.filter((event) => {
-            return event.id == eventsID[i];
-        })[0];
-        allEvents.push(event);
-    }
-
-    res.render('PhotosPage',
+app.get('/Settings', ensureAuthenticated, (req, res) => {
+    res.render('SettingsPage',
         {
-            groupsID: user.groupID,
-            emailAdd: req.params.email,
-            events: [events[0], events[1], events[2]],
-            activeID: -1,
-        });
-});
-
-app.get('/Photos/:email/:groupID', ensureAuthenticated, (req, res) => {
-    const user = queryUser(req.params.email);
-    const group = groups.filter((group) => {
-        return group.id == req.params.groupID;
-    });
-    //...Some query...
-    res.render('PhotosPage',
-        {
-            groupsID: user.groupID,
-            emailAdd: req.params.email,
-            events: [events[0]],
-            activeID: req.params.eventID,
-        });
-});
-
-
-app.post('/Teams/:email', ensureAuthenticated, (req, res) => {
-    const user = login_info.filter((user) => {
-        return user.email == req.params.email;
-    })[0];
-    const createGroupID = [];
-    const joinGroupID = [22, 23];
-    //The two attribute above should be queried from database.
-    //In post method, the teamname and team type in req.body should be sent to database first, and then queried
-    // from database to get the latest info of all teams.
-    res.render('TeamsPage',
-        {
-            createGroupID: createGroupID,
-            joinGroupID: joinGroupID,
-            emailAdd: req.params.email,
-            events: events,
-            teamName: req.body.teamname,
-            teamType: req.body.teamtype,
+            user: req.user,
         })
+});
+
+app.post('/updatePersonalDetails', ensureAuthenticated, async (req, res) => {
+    try {
+        await db.changeMobileForUserID(req.user.id, req.body.mobile)
+        res.send({status: 'success'})
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
 })
 
-app.get('/Settings', ensureAuthenticated, (req, res) => {
-    res.render('SettingsPage', {emailAdd: req.user.email});
-});
+app.post('/updateTeamDetails', ensureAuthenticated, async (req, res) => {
+    try {
+        await db.changeTeamDetailsForTeamID(req.body.team_id, req.body.name, req.body.description)
+        return res.send({status: 'success'})
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+})
+
+app.post('/setTeamManager', ensureAuthenticated, async (req, res) =>{
+    try {
+        await db.changeAccessLevelForUserID(req.body.member_id, req.body.team_id, 'manager')
+        return res.send({status: 'success'})
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+})
+
+app.post('/removeMember', ensureAuthenticated, async (req, res) => {
+    try {
+        await db.removeMemberForUserIDAndTeamID(req.body.member_id, req.body.team_id)
+        return res.send({status: 'success'})
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+})
 
 
 app.get('/Upload/:email/:eventID', ensureAuthenticated, (req, res) => {

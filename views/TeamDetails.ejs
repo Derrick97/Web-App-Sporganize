@@ -9,22 +9,291 @@
     <title>Team Details</title>
 </head>
 <body>
+<h1 style="text-align: center">Team Details</h1>
 
-<div class="main">
-    <h1>Team Details</h1>
-    <div class="container">
-        <div class="jumbotron">
-            <h1><%= team.name %></h1>
-            <p>Creator: <%= team.creator %></p>
-            <p>Team Code: <%= team.id+10000%></p>
-            <p><%=team.type%> team</p>
+<div class="container">
+    <% if (access_level != 'user') { %>
+    <div class="jumbotron btn btn-default" data-toggle="modal" data-target="#details-modal" style="width: 1200px;">
+        <h1><%= team.name %></h1>
+        <p>Creator: <%= creator.forename %> <%= creator.surname %></p>
+        <% if (expire_period != 'No code generated yet.') { %>
+        <p>Team Code: <%= join_code_info.code %></p>
+        <% if (expire_period > 0){ %>
+        <p>Expires in: <%= expire_period %> days</p>
+        <% } else { %>
+        <p>Already expired on <%= join_code_info.expires %></p>
+        <% }} else { %>
+        <p><%= expire_period %></p>
+        <% } %>
+        <p><%= team.type %> team</p>
+        <p>Descirption: <%= team.description %></p>
+    </div>
+    <a class="btn btn-info" data-toggle="modal" data-target="#details-modal">Change Details</a>
+    <% if (team_members.length != 1) { %>
+    <a class="btn btn-info" data-toggle="modal" data-target="#set-manager-modal">Set Managers</a>
+    <a class="btn btn-info" data-toggle="modal" data-target="#remove-member-modal">Remove Members</a>
+    <% } %>
+    <div class="btn btn-info" data-toggle="modal" data-target="#codeGenerator">Generate code</div>
+    <% } else { %>
+    <div class="jumbotron" style="width: 1200px; text-align: center">
+        <h1><%= team.name %></h1>
+        <p>Creator: <%= creator.forename %> <%= creator.surname %></p>
+        <p><%= team.type %> team</p>
+        <p>Descirption: <%= team.description %></p>
+    </div>
+    <% } %>
+    <h3>Team Members</h3>
+    <% team_members.forEach((member) => { %>
+    <p> <%= member.forename %> <%= member.surname %></p>
+    <% }) %>
+</div>
+
+<div id="set-manager-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Set Team Managers</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <% team_members.forEach((member) => { %>
+                    <% if (member.id != creator.id) { %>
+                    <div><%= member.forename %> <%= member.surname %>
+                        <button type="button" class="btn btn-default"
+                                onclick="setManager('<%= member.id %>', '<%= team.id %>')"
+                                data-dismiss="modal">Set Manager
+                        </button>
+                    </div>
+                    <% } %>
+                    <% }) %>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="remove-member-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Remove Team Members</h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    <% team_members.forEach((member) => { %>
+                    <% if (member.id != creator.id) { %>
+                    <div><%= member.forename %> <%= member.surname %>
+                        <button type="button" class="btn btn-default"
+                                onclick="removeUser('<%= member.id %>', '<%= team.id %>')"
+                                data-dismiss="modal">Remove
+                        </button>
+                    </div>
+                    <% } %>
+                    <% }) %>
+                    <br>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="details-modal" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Change Details of <%= team.name %></h4>
+            </div>
+            <div class="modal-body">
+                <div>Tick the items that you want to change and type the new info in the box.</div>
+                <div>
+                    <label class="control-label">
+                        <input type=checkbox id='nameBox' onclick="enableTextbox('nameBox', 'nameTextbox')">Team
+                        Name
+                    </label><br>
+                    <input class="placeholder-no-fix" id='nameTextbox' type="text" maxlength="100"
+                           placeholder="<%= team.name %>" disabled='disabled'/>
+                </div>
+                <div>
+                    <label class="control-label">
+                        <input type=checkbox id="descriptBox" onclick="enableTextbox('descriptBox', 'descriptTextbox')">Team
+                        Description
+                    </label><br>
+                    <input class="placeholder-no-fix" id='descriptTextbox' type="text" maxlength="100"
+                           placeholder="<%= team.description %>" disabled/>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default"
+                        onclick="updateDetails('<%= team.id %>', '<%= team.name %>', '<%= team.description %>')"
+                        data-dismiss="modal" style="float: left">Change
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="codeGenerator" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;
+                </button>
+                <h4 class="modal-title" style="text-align: center">Generate code for this team</h4>
+            </div>
+            <div class="modal-body" align="center">
+                <div>
+                    <label class="control-label">code:</label><br>
+                    <input class="placeholder-no-fix" type="text" maxlength="50"
+                           placeholder="Invitation Code" id="codeGen"
+                           name="codeGen"/>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div align="center">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                            onclick="generateCode(<%= team.id %>)">Generate
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 </div>
 
 <div class="container">
-    <a href="/Teams/<%=emailAdd%>" class="btn btn-info" role="button">Go back</a>
+    <a href="/Teams" class="btn btn-info" role="button">Go back</a>
 </div>
 
+<script>
+    function generateCode(teamid) {
+        const extractval = (id) => {
+            const val = document.getElementById(id).value
+            document.getElementById(id).value = ""
+            return val
+        }
+
+        const json = {
+            'codeGen': extractval('codeGen'),
+            'teamId': teamid,
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/generateCode',
+            data: json,
+            success: function (data) {
+                if (data.status) {
+                    alert('Generate success!')
+                    window.location.reload()
+                } else {
+                    console.log('error')
+                }
+            },
+            dataType: "json",
+        })
+    }
+
+    function enableTextbox(checkbox_id, textbox_id) {
+        const checkbox = document.getElementById(checkbox_id)
+        const textbox = document.getElementById(textbox_id)
+        textbox.disabled = !checkbox.checked;
+    }
+
+    function updateDetails(team_id, team_name, description) {
+        const extractval = (id) => {
+            const val = document.getElementById(id).value
+            document.getElementById(id).value = ""
+            return val
+        }
+
+        let newName
+        const nameBox = document.getElementById('nameBox')
+        if (nameBox.checked) {
+            newName = extractval('nameTextbox')
+        } else {
+            newName = team_name
+        }
+
+        let newDescription
+        const descriptBox = document.getElementById('descriptBox')
+        if (descriptBox.checked) {
+            newDescription = extractval('descriptTextbox')
+        } else {
+            newDescription = description
+        }
+
+        const json = {
+            'name': newName,
+            'description': newDescription,
+            'team_id': team_id,
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/updateTeamDetails',
+            data: json,
+            success: function (data) {
+                if (data.status == 'success') {
+                    alert("Update event details successfully.")
+                    window.location.reload()
+                } else {
+                    console.log('Error when updating event details.')
+                }
+            },
+            dataType: "json",
+        })
+    }
+
+    $(document).ready(function () {
+        $('[data-toggle="popover"]').popover();
+    });
+
+    function setManager(member_id, team_id) {
+        const json = {
+            'member_id': member_id,
+            'team_id': team_id,
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/setTeamManager',
+            data: json,
+            success: function (data) {
+                if (data.status) {
+                    alert("Set manager successfully.")
+                    window.location.reload()
+                } else {
+                    console.log('Error when set managers.')
+                }
+            },
+            dataType: "json",
+        })
+    }
+
+    function removeUser(member_id, team_id) {
+        const json = {
+            'member_id': member_id,
+            'team_id': team_id,
+        }
+        $.ajax({
+            type: 'POST',
+            url: '/removeMember',
+            data: json,
+            success: function (data) {
+                if (data.status) {
+                    alert("Delete  successfully.")
+                    window.location.reload()
+                } else {
+                    console.log('Error when delete members.')
+                }
+            },
+            dataType: "json",
+        })
+    }
+
+</script>
 </body>
 </html>

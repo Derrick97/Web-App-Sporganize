@@ -6,86 +6,79 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <title>Chat List</title>
-</head>
-<script >
-    function changeActive(newid){
-        let select_item_id = $("#sidenav").find(".active").attr('id')
-        document.getElementById(select_item_id).className = ''
-        document.getElementById(newid).className = 'active'
-    }
-</script>
-<style>
-    body {
-        font-family: "Lato", sans-serif;
-    }
+    <title>Group Chat</title>
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+        }
 
-    .sidenav {
-        height: 100%;
-        width: 200px;
-        position: fixed;
-        z-index: 1;
-        top: 0;
-        left: 0;
-        background-color: #111;
-        overflow-x: hidden;
-        padding-top: 20px;
-    }
-
-    .sidenav a {
-        padding: 6px 6px 6px 32px;
-        text-decoration: none;
-        font-size: 25px;
-        color: #818181;
-        display: block;
-        word-break: break-all;
-    }
-
-    .sidenav a:hover {
-        color: #f1f1f1;
-    }
-
-    .sidenav a.active {
-        background-color: ghostwhite;
-        color: black;
-    }
-
-    .main {
-        margin-left: 200px; /* Same as the width of the sidenav */
-    }
-
-    @media screen and (max-height: 450px) {
         .sidenav {
-            padding-top: 15px;
+            height: 100%;
+            width: 200px;
+            position: fixed;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            background-color: #111;
+            overflow-x: hidden;
+            padding-top: 20px;
         }
 
         .sidenav a {
-            font-size: 18px;
+            padding: 6px 6px 6px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #818181;
+            display: block;
+            word-break: break-all;
         }
-    }
-</style>
+
+        .sidenav a:hover {
+            color: #f1f1f1;
+        }
+
+        .sidenav a.active {
+            background-color: ghostwhite;
+            color: black;
+        }
+
+        .main {
+            margin-left: 200px; /* Same as the width of the sidenav */
+        }
+
+        @media screen and (max-height: 450px) {
+            .sidenav {
+                padding-top: 15px;
+            }
+
+            .sidenav a {
+                font-size: 18px;
+            }
+        }
+    </style>
+</head>
+
 <body>
+<div class="upnav" style="padding-bottom: 100px">
+    <div class="sidenav" id="sidenav">
+        <% teams.forEach((team) => { %>
+        <% if (team.id == teams[0].id) { %>
+        <a href="#" class="active" onclick="changeActive(<%= team.id %>)" id="<%= team.id %>"><%= team.name %></a>
+        <% } else { %>
+        <a href="#" onclick="changeActive(<%= team.id %>)" id="<%= team.id %>"><%= team.name %></a>
+        <% } %>
+        <% }) %>
+    </div>
 
-<div class="sidenav" id="sidenav">
-    <% teams.forEach((team) => { %>
-    <% if (team.id == teams[0].id) {%>
-    <a href="#" class="active" onclick="changeActive(<%= team.id%>)" id="<%= team.id%>"><%= team.name%></a>
-    <% } else {%>
-    <a href="#" onclick="changeActive(<%= team.id%>)" id="<%= team.id%>"><%= team.name%></a>
-    <% } %>
-    <% }) %>
-</div>
-
-<div class="main">
-<div id="haha">
-    <h1>group chat</h1>
-</div>
+    <div class="main">
+        <h1>group chat</h1>
+    </div>
 </div>
 
 <nav class="navbar navbar-default navbar-fixed-bottom" style="background-color:grey">
     <div class="container-fluid">
         <ul class="nav nav-tabs nav-justified">
-            <li class="active"><a href="" style="color:black"><h1>GroupChat</h1></a></li>
+            <li class="active"><a style="color:black"><h1>GroupChat</h1></a></li>
             <li><a href="/Events/" style="color:black"><h1>Events</h1></a></li>
             <li><a href="/Photos/" style="color:black"><h1>Photos</h1></a></li>
             <li><a href="/Teams/" style="color:black"><h1>My Teams</h1></a></li>
@@ -94,5 +87,12 @@
     </div>
 </nav>
 
+<script>
+    function changeActive(newid) {
+        let select_item_id = $("#sidenav").find(".active").attr('id')
+        document.getElementById(select_item_id).className = ''
+        document.getElementById(newid).className = 'active'
+    }
+</script>
 </body>
 </html>

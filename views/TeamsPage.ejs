@@ -8,146 +8,84 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <title>Teams</title>
+    <style>
+        body {
+            font-family: "Lato", sans-serif;
+        }
+        .topright {
+            position: absolute;
+            top: 18px;
+            right: 16px;
+            font-size: 18px;
+        }
+    </style>
 </head>
-<script>
-    function joinGroup() {
-        const extractval = (id) => {
-            const val = document.getElementById(id).value
-            document.getElementById(id).value = ""
-            return val
-        }
-
-        const json = {
-            'code': extractval('code'),
-        }
-
-        $.ajax({
-            type: 'POST',
-            url: '/joinTeam',
-            data: json,
-            success: window.fresh,
-            dataType: "json",
-        })
-    }
-
-    function generateCode(teamid) {
-        const extractval = (id) => {
-            const val = document.getElementById(id).value
-            document.getElementById(id).value = ""
-            return val
-        }
-
-        const json = {
-            'codeGen': extractval('codeGen'),
-            'teamId': teamid,
-        }
-
-        $.ajax({
-            type: 'POST',
-            url: '/generateCode',
-            data: json,
-            success: alert("Generate success!"),
-            dataType: "json",
-        })
-    }
-
-    function changeIcon(iconid) {
-        const icon = document.getElementById(iconid)
-        if (icon.className == 'fa fa-caret-down') {
-            icon.className = 'fa fa-caret-right'
-        } else {
-            icon.className = 'fa fa-caret-down'
-        }
-    }
-</script>
 <body>
-<div style="padding-bottom:100px">
+<div class="topright">
+    <div class="fa fa-plus-circle btn" style="font-size:24px" data-toggle="modal" data-target="#add_modal">Add</div>
+</div>
+
+<div class="upnav" style="padding-bottom:100px">
     <h1 style="text-align: center">My Teams</h1>
 
     <div id="accordion">
+        <% if (teamsc.length != 0) { %>
         <div class="card">
             <div class="card-header" style="background-color: #818181">
                 <a class="collapsed card-link btn-block" data-toggle="collapse" href="#collapseOne"
                    style="font-size:20px; color:black; padding-left:5px" onclick="changeIcon('icon1')">
-                    <span class="fa fa-caret-right" id="icon1"></span> Groups created
+                    <span class="fa fa-caret-down" id="icon1"></span> Teams managed
                 </a>
             </div>
-            <div id="collapseOne" class="collapse">
+            <div id="collapseOne" class="collapse in">
                 <div class="card-body">
-                    <div>
-                        <% teamsc.forEach((teamc) => { %>
-                        <a href="/TeamDetails/<%= teamc.id %>" class="list-group-item">
-
+                    <% teamsc.forEach((teamc) => { %>
+                    <div style="float: left; margin: 30px" align="center">
+                        <a href="/TeamDetails/<%= teamc.id %>" class="list-group-item btn"
+                           style="background-color: #E6E6E6; height:400px; width:350px; border: 3px solid black;">
                             <h2 class="list-group-item-heading"><%= teamc.icon %>  <%= teamc.name %></h2>
-
-                            <div>
-                                <a class="btn btn-info" data-toggle="modal" data-target="#codeGenerator">Generate code
-                                    for this team
-                                </a>
-                                <div class="modal fade" id="codeGenerator" role="dialog">
-                                    <div class="modal-dialog">
-                                        <!-- Modal content-->
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <button type="button" class="close" data-dismiss="modal">&times;
-                                                </button>
-                                                <h4 class="modal-title" style="text-align: center">Generate code
-                                                    for this team</h4>
-                                            </div>
-                                            <div class="modal-body" align="center">
-                                                <div>
-                                                    <label class="control-label">code:</label><br>
-                                                    <input class="placeholder-no-fix" type="text" maxlength="50"
-                                                           placeholder="Invitation code" id="codeGen" name="codeGen"/>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <div align="center">
-                                                    <button type="button" class="btn btn-default" data-dismiss="modal"
-                                                            onclick="generateCode(<%= teamc.id %>)">Generate
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
                             <h5><%= teamc.type %> team</h5>
                         </a>
-                        <% }) %>
                     </div>
+                    <% }) %>
                 </div>
             </div>
         </div>
-
+        <% } %>
+        <% if (teams.length != 0) { %>
         <div class="card">
             <div class="collapsed card-header" style="background-color: #818181">
                 <a class="collapsed card-link btn-block" data-toggle="collapse" href="#collapseTwo"
                    style="font-size:20px; color:black; padding-left:5px" onclick="changeIcon('icon2')">
-                    <span class="fa fa-caret-right" id="icon2"></span> Groups joined
+                    <span class="fa fa-caret-down" id="icon2"></span> Teams joined
                 </a>
             </div>
-            <div id="collapseTwo" class="collapse">
+            <div id="collapseTwo" class="collapse in">
                 <div class="card-body">
                     <div>
                         <% teams.forEach((team) => { %>
-                        <a href="/TeamDetails/<%= team.id %>" class="list-group-item">
-                            <h2 class="list-group-item-heading"><%= team.icon %>  <%= team.name %></h2>
-                            <h5><%= team.type %> team</h5>
+                        <a href="/TeamDetails/<%= team.id %>" class="list-group-item btn"
+                           style="background-color: #E6E6E6; float: left; height:400px; width:350px; margin: 30px; border: 3px solid black;">
+                            <h1 class="list-group-item-heading"><%= team.icon %>  <%= team.name %></h1>
+                            <h4><%= team.type %> team</h4>
                         </a>
                         <% }) %>
                     </div>
                 </div>
             </div>
         </div>
+        <% } %>
     </div>
 
-
-    <div style="position: fixed; bottom: 100px; width: 100%">
-        <a href="/CreateTeam" class="btn btn-info col-sm-6" style="height: 100px; font-size: 40px">Create a new team</a>
-        <a class="btn btn-info col-sm-6" data-toggle="modal" data-target="#myModal"
-           style="height: 100px; text-align: center; font-size: 40px">Join a team via code</a>
+    <div class="modal fade" id="add_modal" role="dialog" style="top:300px">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <a href="/CreateTeam" class="btn btn-info" style="height: 100px; font-size: 40px; width: 100%">Create a
+                    new team</a><br>
+                <a class="btn btn-info" data-toggle="modal" data-target="#myModal"
+                   style="height: 100px; font-size: 40px; width: 100%">Join a team via code</a>
+            </div>
+        </div>
     </div>
 
     <div class="modal fade" id="myModal" role="dialog">
@@ -167,7 +105,7 @@
                 </div>
                 <div class="modal-footer">
                     <div align="center">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="joinGroup()">Join
+                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="joinTeam()">Join
                         </button>
                     </div>
                 </div>
@@ -175,18 +113,61 @@
         </div>
     </div>
 </div>
+
 <nav class="navbar navbar-default navbar-fixed-bottom" style="background-color:grey">
     <div class="container-fluid">
         <ul class="nav nav-tabs nav-justified">
             <li><a href="/groupchat" style="color:black"><h1>GroupChat</h1></a></li>
             <li><a href="/Events" style="color:black"><h1>Events</h1></a></li>
             <li><a href="/Photos" style="color:black"><h1>Photos</h1></a></li>
-            <li class="active"><a href="#" style="color:black"><h1>My Teams</h1></a></li>
+            <li class="active"><a style="color:black"><h1>My Teams</h1></a></li>
             <li><a href="/Settings" style="color:black"><h1>Settings</h1></a></li>
         </ul>
     </div>
 </nav>
 
+<script>
+    function joinTeam() {
+        const extractval = (id) => {
+            const val = document.getElementById(id).value
+            document.getElementById(id).value = ""
+            return val
+        }
 
+        const json = {
+            'code': extractval('code'),
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/joinTeam',
+            data: json,
+            success: function (data) {
+                if (data.msg) {
+                    if (data.msg == 'Success') {
+                        alert('Join success!')
+                        window.location.href = data.redirect
+                    } else if (data.msg == 'Duplicate') {
+                        alert('You\'ve already in this team!')
+                    } else {
+                        alert('Wrong code!Can\'t find the team!')
+                    }
+                } else {
+                    console.log('error')
+                }
+            },
+            dataType: "json",
+        })
+    }
+
+    function changeIcon(iconid) {
+        const icon = document.getElementById(iconid)
+        if (icon.className == 'fa fa-caret-down') {
+            icon.className = 'fa fa-caret-right'
+        } else {
+            icon.className = 'fa fa-caret-down'
+        }
+    }
+</script>
 </body>
 </html>

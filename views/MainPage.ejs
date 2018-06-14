@@ -6,46 +6,24 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <title>Welcome, <%= forename%></title>
+    <title>Welcome, <%= forename %></title>
 </head>
-<script>
-    function joinGroup() {
-        const extractval = (id) => {
-            const val = document.getElementById(id).value
-            document.getElementById(id).value = ""
-            return val
-        }
-
-        const json = {
-            'code': extractval('code'),
-        }
-
-        $.ajax({
-            type: 'POST',
-            url: '/joinTeam',
-            data: json,
-            success: window.location.href = '/groupchat',
-            dataType: "json",
-        })
-    }
-</script>
 <body>
-
 <div class="jumbotron text-center">
     <h1>It is quiet here...</h1>
     <p> You may want to add a team by unique code or create your own team!</p>
 </div>
+
 <div class="panel-group">
     <div class="panel panel-default">
-        <div class="panel-body" >
-            <a href="/createTeam"> Create a Team. </a>
+        <div class="panel-body">
+            <a href="/createTeam" style="font-size: 40px"> Create a Team </a>
         </div>
     </div>
     <div class="panel panel-default">
-        <div class="panel-body" >
-            <a data-toggle="modal" data-target="#myModal" > Search a team by code. </a>
+        <div class="panel-body">
+            <a href="" data-toggle="modal" data-target="#myModal" style="font-size: 40px"> Search a team by code </a>
         </div>
-
     </div>
 
     <div class="modal fade" id="myModal" role="dialog">
@@ -65,14 +43,46 @@
                 </div>
                 <div class="modal-footer">
                     <div align="center">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="joinGroup()">Join
+                        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="joinTeam()">Join
                         </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 </div>
+
+<script>
+    function joinTeam() {
+        const extractval = (id) => {
+            const val = document.getElementById(id).value
+            document.getElementById(id).value = ""
+            return val
+        }
+
+        const json = {
+            'code': extractval('code'),
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '/joinTeam',
+            data: json,
+            success: function (data) {
+                if (data.msg) {
+                    if (data.msg == 'Success') {
+                        alert('Join success!')
+                        window.location.href = data.redirect
+                    } else {
+                        alert('Wrong code!Can\'t find the team!')
+                    }
+                } else {
+                    console.log('error')
+                }
+            },
+            dataType: "json",
+        })
+    }
+</script>
 </body>
 </html>

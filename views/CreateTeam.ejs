@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <title>Create your own team.</title>
+    <title>Create your own team</title>
     <style>
         .jumbotron {
             background-color: #f45838;
@@ -15,7 +15,6 @@
     </style>
 </head>
 <body>
-
 <div class="jumbotron text-center">
     <h1>Create your own team</h1>
     <p>Wow~ Fantastic!</p>
@@ -43,35 +42,12 @@
     <label for="description">Description:</label>
     <textarea class="form-control" rows="5" id="description"></textarea>
 </div>
-<div class="checkbox">
-    <label><input type="checkbox" value="">Do you want your team to be public?</label>
-</div>
-
-<!--notice-->
-<h1>Notice: Your team has
-    <mark>limited</mark>
-    number of team members (up to 20)!
-</h1>
 
 <!--team icon input-->
 <div>
     <p>upload your team icon:</p>
     <input type="file" onchange="previewFile()"><br>
     <img src="" height="400">
-    <script>
-        function previewFile() {
-            let preview = document.querySelector('img');
-            let file = document.querySelector('input[type=file]').files[0];
-            let reader = new FileReader();
-
-            reader.addEventListener("load", function () {
-                preview.src = reader.result;
-            }, false);
-            if (file) {
-                reader.readAsDataURL(file);
-            }
-        }
-    </script>
 </div>
 <a href='/groupchat'>redirect</a>
 
@@ -105,6 +81,19 @@
 </div>
 
 <script>
+    function previewFile() {
+        let preview = document.querySelector('img');
+        let file = document.querySelector('input[type=file]').files[0];
+        let reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+            preview.src = reader.result;
+        }, false);
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+
     function getTeamName() {
         document.getElementById("teamname_display").innerHTML = document.getElementById("teamname").value;
     }
@@ -127,28 +116,24 @@
             'description': extractval('description')
         }
 
-        $.ajax({
-            type: 'POST',
-            url: '/createTeam',
-            data: json,
-            dataType: "json",
-            success: function(data){
-                if (data.redirect){
-                    window.location.href = data.redirect
-                } else {
-                    console.log("error")
-                }
-            },
-        })
-
+        if (json.name.length < 1) {
+            alert('Please give your team a name!')
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/createTeam',
+                data: json,
+                dataType: "json",
+                success: function (data) {
+                    if (data.redirect) {
+                        window.location.href = data.redirect
+                    } else {
+                        console.log("error")
+                    }
+                },
+            })
+        }
     }
-    // function redirect(url, method) {
-    //     createTeam();
-    //     let form = document.createElement('form');
-    //     form.method = method;
-    //     form.action = url;
-    //     form.submit();
-    // }
 </script>
 </body>
 </html>
