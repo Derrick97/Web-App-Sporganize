@@ -400,6 +400,7 @@ app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
     let creator
     let access_level
     let expire_period
+    let avatars = []
     try {
         team = await db.getTeamForId(req.params.team_id)
         join_code_info = await db.getCurrentJoinCodeForTeamID(req.params.team_id);
@@ -436,6 +437,9 @@ app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
             return a.forename - b.forename
         }
     })
+    for (let i=0; i<all_members.length;i++){
+        avatars[i] = await db.getAvatarIdForUserId(all_members[i].id)
+    }
     res.render('TeamDetails',
         {
             team: team,
@@ -444,6 +448,7 @@ app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
             creator: creator,
             access_level: access_level,
             expire_period: expire_period,
+            avatars: avatars,
         })
 })
 

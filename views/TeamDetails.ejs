@@ -41,6 +41,7 @@
     </div>
     <% } %>
     <h3>Team Members</h3>
+    <%let counter = 0%>
     <% team_members.forEach((member) => { %>
     <div class="dropdown"
             <% if (member.access_level == 'admin'){ %>
@@ -54,7 +55,8 @@
         <div class="btn btn-default dropdown-toggle list-group-item"
              data-toggle="dropdown" style="background-color: white; height:200px; width:150px;">
 
-            <h5 class="list-group-item-heading">Place for avatar</h5>
+            <!--<h5 class="list-group-item-heading">Place for avatar</h5>-->
+            <img src="/Avatars/view/<%= avatars[counter] %>" style="width: 80px; height: 100px">
 
 
             <h4>
@@ -139,6 +141,7 @@
             </div>
         </div>
     </div>
+    <%counter=counter+1%>
     <% }) %>
 
 </div>
