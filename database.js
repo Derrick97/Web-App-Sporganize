@@ -377,6 +377,28 @@ module.exports = {
         await pool.query(query, [event_id, data, mime])
     },
 
+    uploadAvatar: async function(data, mime, user_id) {
+        let query = 'INSERT INTO sporganize.users_avatars (user_id, photo, mime) VALUES ($1, $2, $3)'
+        await pool.query(query, [user_id, data, mime])
+    },
+
+    getAvatarForId: async function(id) {
+        let query = 'SELECT * FROM sporganize.users_avatars WHERE id = $1'
+        const photos = await pool.query(query, [id])
+        if (photos.rows.length > 0) {
+            return photos.rows[0]
+        }
+
+        return false
+    },
+
+    getAvatarIdForUserId: async function(id) {
+        let query = ['SELECT id',
+            'FROM sporganize.users_avatars',
+            'WHERE user_id = $1'].join(' ')
+        const resp = await pool.query(query, [id])
+        return resp.rows.map((r) => r.id)
+    },
 
     /* Messaging */
     onMessageNotification: async function (callback) {
