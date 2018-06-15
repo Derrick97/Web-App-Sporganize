@@ -22,34 +22,35 @@
 
 <!--team name input-->
 <div>
-    <label for="teamname">Now, give your team a name:</label>
+    <label for="teamname"><h2>Now, give your team a name:</h2></label>
     <input type="text" class="form-control" id="teamname" name="teamname">
 </div>
 
 <!--team type input-->
 <div>
-    <label for="teamtype">What's the type of your team?:</label>
+    <label for="teamtype"><h2>What's the type of your team?:</h2></label>
     <select class="form-control" id="teamtype" name="teamtype">
         <option>Basketball</option>
         <option>Football</option>
         <option>Tennis</option>
         <option>Volleyball</option>
+        <option>Rugby</option>
+        <option>Other Sport</option>
     </select>
 </div>
 
 <!--team description input-->
 <div>
-    <label for="description">Description:</label>
+    <label for="description"><h2>Description:</h2></label>
     <textarea class="form-control" rows="5" id="description"></textarea>
 </div>
 
 <!--team icon input-->
 <div>
-    <p>upload your team icon:</p>
+    <h2>upload your team icon:</h2>
     <input type="file" onchange="previewFile()"><br>
     <img src="" height="400">
 </div>
-<a href='/groupchat'>redirect</a>
 
 <div>
     <button type="submit" class="btn btn-default" data-toggle="modal" data-target="#myModal"
