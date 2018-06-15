@@ -77,10 +77,20 @@
             grid-area: chat-display;
             overflow-y: scroll;
             flex-direction: column-reverse;
+            font-size: 15px;
+        }
+
+        .chat-display b {
+            font-size: 20px;
+            padding-bottom: 4px;
         }
 
         .chat-entry {
             grid-area: chat-entry;
+        }
+
+        .chat-prefix {
+            color: grey;
         }
     </style>
 </head>
@@ -99,13 +109,21 @@
 
     <div class="main">
         <div class="grid-container">
-            <div class="chat-display" id="chat-display">
-                Chat Display
+            <% teams.forEach((team) => { %>
+            <% if (team.id == teams[0].id) { %>
+            <div class="chat-display" id="chat-display-<%= team.id %>">
+                <b>Chat Display</b><br/>
             </div>
+            <% } else { %>
+            <div class="chat-display" id="chat-display-<%= team.id %>" hidden>
+                <b>Chat Display</b><br/>
+            </div>
+            <% } %>
+            <% }) %>
 
             <div class="chat-entry">
                 <form action="javascript:void(0);" id="chat-entry-form">
-                    <input type="text" id="chat-text-entry">
+                    <input type="text" size="100" id="chat-text-entry">
                     <button type="submit">Send</button>
                 </form>
             </div>
@@ -126,17 +144,43 @@
 </nav>
 
 <script>
+    let activeTeam = <%= teams[0].id %>
+
     function changeActive(newid) {
+        document.getElementById("chat-display-" + activeTeam).hidden = true
+        document.getElementById("chat-display-" + newid).hidden = false
+
+        activeTeam = newid
         let select_item_id = $("#sidenav").find(".active").attr('id')
         document.getElementById(select_item_id).className = ''
         document.getElementById(newid).className = 'active'
     }
 
     const chatDisplay = document.getElementById("chat-display")
-    document.getElementById("chat-entry-form").onsubmit = () => {
+    const chatTextEntry = document.getElementById("chat-text-entry")
+
+    const ws = new WebSocket("ws://" + location.host + "/")
+    ws.onmessage = (ev) => {
+        const msg = JSON.parse(ev.data)
+
+        const t = new Date(msg.timestamp)
         const wrapper = document.createElement('div')
-        wrapper.innerHTML = "user1: hello"
-        chatDisplay.appendChild(wrapper)
+        wrapper.innerHTML = "<span class='chat-prefix'>" + t.toLocaleString() + "</span>"
+                            + "<span class='chat-message'>" 
+                            + " - " + msg.display_name + ": "
+                            + msg.message
+                            + "</span>"
+
+        document.getElementById("chat-display-" + msg.team_id).appendChild(wrapper)
+    }
+
+    document.getElementById("chat-entry-form").onsubmit = () => {
+        ws.send(JSON.stringify({
+            "team_id": activeTeam,
+            "message": chatTextEntry.value
+        }))
+
+        chatTextEntry.value = ""
     }
 </script>
 </body>

@@ -44,7 +44,10 @@ const removeSocketForTeamId = (id, ws, socketsForTeamId) => {
     }
 }
 
-db.onMessageNotification((msg) => {
+db.onMessageNotification(async (msg) => {
+    const user = await db.getUserForId(msg.user_id)
+    msg["display_name"] = user.forename + " " + user.surname
+
     const socks = getSocketsForTeamId(msg.team_id, socketsForTeamId)
     for (let i = 0; i < socks.length; i++) {
         socks[i].send(JSON.stringify(msg))
