@@ -156,22 +156,28 @@
         document.getElementById(newid).className = 'active'
     }
 
-    const chatDisplay = document.getElementById("chat-display")
     const chatTextEntry = document.getElementById("chat-text-entry")
 
     const ws = new WebSocket("ws://" + location.host + "/")
     ws.onmessage = (ev) => {
         const msg = JSON.parse(ev.data)
 
+        const chatDisplay = document.getElementById("chat-display-" + msg.team_id)
+        const isScrolledToBottom = chatDisplay.scrollHeight - chatDisplay.clientHeight <= chatDisplay.scrollTop + 1;
+
         const t = new Date(msg.timestamp)
         const wrapper = document.createElement('div')
         wrapper.innerHTML = "<span class='chat-prefix'>" + t.toLocaleString() + "</span>"
-                            + "<span class='chat-message'>" 
+                            + "<span class='chat-message'>"
                             + " - " + msg.display_name + ": "
                             + msg.message
                             + "</span>"
 
-        document.getElementById("chat-display-" + msg.team_id).appendChild(wrapper)
+        chatDisplay.appendChild(wrapper)
+
+        if(isScrolledToBottom) {
+            chatDisplay.scrollTop = chatDisplay.scrollHeight - chatDisplay.clientHeight;
+        }
     }
 
     document.getElementById("chat-entry-form").onsubmit = () => {
