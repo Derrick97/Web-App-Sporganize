@@ -410,12 +410,24 @@ app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
     let accepted_list
     let declined_list
     let noreply_list
+    let accepted_list_avatars = []
+    let declined_list_avatars = []
+    let noreply_list_avatars  = []
     try {
         event = await db.getEventForEventIDWithStatus(req.params.event_id, req.user.id)
         access_level = await db.getAccessLevelForUserIDAndTeamID(req.user.id, event.team_id)
         accepted_list = await db.getAllUsersFromEventsWithStatus(event.id, 'confirmed')
         declined_list = await db.getAllUsersFromEventsWithStatus(event.id, 'rejected')
         noreply_list = await db.getAllUsersFromEventsWithStatus(event.id, 'noreply')
+        for (let i = 0; i < accepted_list.length; i++) {
+            accepted_list_avatars[i] = await db.getAvatarIdForUserId(accepted_list[i].id)
+        }
+        for (let i = 0; i < declined_list.length; i++) {
+            declined_list_avatars[i] = await db.getAvatarIdForUserId(declined_list[i].id)
+        }
+        for (let i = 0; i < noreply_list.length; i++) {
+            noreply_list_avatars[i] = await db.getAvatarIdForUserId(noreply_list[i].id)
+        }
     } catch (e) {
         res.status(500).send(e.stack)
         return
@@ -428,6 +440,9 @@ app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
             acceptedList: accepted_list,
             rejectList: declined_list,
             noreplyList: noreply_list,
+            accepted_list_avatars: accepted_list_avatars,
+            declined_list_avatars: declined_list_avatars,
+            noreply_list_avatars: noreply_list_avatars
         })
 })
 
