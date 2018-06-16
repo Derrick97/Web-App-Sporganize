@@ -71,6 +71,10 @@ passport.deserializeUser(async (id, done) => {
     }
 })
 
+function chop_date(date) {
+    return date.toString().substring(0, date.toString().length-15)
+}
+
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
@@ -225,7 +229,26 @@ app.get('/Photos', ensureAuthenticated, async (req, res) => {
         res.status(500).send(e.stack)
         return
     }
-    res.render('PhotosPage', {events: allEvents, teams: teams, photos: photos})
+
+    res.render('PhotosPage', {chop_date: chop_date, events: allEvents, teams: teams, photos: photos, active_id: 0})
+})
+
+app.get('/Photos/:teamid', ensureAuthenticated, async (req, res) => {
+    let allEvents
+    let teams
+    let photos
+    try {
+        allEvents = await db.getEventsForTeamId(req.params.teamid)
+        teams = await db.getTeamsForUserId(req.user.id)
+        photos = []
+        for (let i = 0; i < allEvents.length; i++) {
+            photos[i] = await db.getPhotoIdsForEventId(allEvents[i].id)
+        }
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+    res.render('PhotosPage', {chop_date: chop_date, events: allEvents, teams: teams, photos: photos, active_id: req.params.teamid})
 })
 
 app.post('/Photos/Upload/:eventid', ensureAuthenticated, async (req, res) => {
@@ -247,6 +270,25 @@ app.post('/Photos/Upload/:eventid', ensureAuthenticated, async (req, res) => {
     return res.redirect("/Photos")
 })
 
+app.post('/ViewAll/Upload/:eventid', ensureAuthenticated, async (req, res) => {
+    if (!req.files.photo) {
+        return res.redirect("/ViewAll/" + req.params.eventid)
+    }
+
+    if (!(['image/jpeg', 'image/png', 'image/webp'].includes(req.files.photo.mimetype))) {
+        return res.redirect("/ViewAll/" + req.params.eventid)
+    }
+
+    const events = await db.getAllEventsForUserId(req.user.id)
+    const event_ids = events.map((e) => e.id.toString())
+
+    if (event_ids.includes(req.params.eventid)) {
+        await db.createPhoto(req.files.photo.data, req.files.photo.mimetype, req.params.eventid)
+    }
+
+    return res.redirect("/ViewAll/" + req.params.eventid)
+})
+
 app.get('/Photos/view/:id', ensureAuthenticated, async (req, res) => {
     const photo = await db.getPhotoForId(req.params.id)
 
@@ -263,6 +305,12 @@ app.get('/Photos/view/:id', ensureAuthenticated, async (req, res) => {
     } else {
         res.status(404).send("Photo not found")
     }
+})
+
+app.get('/ViewAll/:eventid', ensureAuthenticated, async (req, res) => {
+    let event = await db.getEventForEventId(req.params.eventid)
+    let photos = await db.getPhotoIdsForEventId(req.params.eventid)
+    res.render('ViewAllPhotos', {photos: photos, event: event});
 })
 
 app.get('/Events', ensureAuthenticated, async (req, res) => {
