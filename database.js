@@ -263,7 +263,7 @@ module.exports = {
             'WHERE',
             'NOT EXISTS (',
             'SELECT * FROM sporganize.users WHERE sporganize.users.email = $4 )'].join(' ')
-        return await pool.query(query, [forename, surname, gender, email, mobile, password_hash])
+        await pool.query(query, [forename, surname, gender, email, mobile, password_hash])
     },
 
     // Returns id of new team on successful insertion
@@ -378,7 +378,11 @@ module.exports = {
     },
 
     uploadAvatar: async function(data, mime, user_id) {
-        let query = 'INSERT INTO sporganize.users_avatars (user_id, photo, mime) VALUES ($1, $2, $3)'
+        let avatar = await this.getAvatarIdForUserId(user_id)
+        let query
+        if (avatar.length)
+        query = 'UPDATE sporganize.users_avatars SET photo = $2, mime = $3 WHERE user_id = $1'
+        else query = 'INSERT INTO sporganize.users_avatars (user_id, photo, mime) VALUES ($1, $2, $3)'
         await pool.query(query, [user_id, data, mime])
     },
 

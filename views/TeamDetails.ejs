@@ -72,9 +72,14 @@
         <% } else { %>
         <% } %>  ">
 
-            <!--<h5 class="list-group-item-heading">Place for avatar</h5>-->
+            <% if (avatars[counter].length) { %>
             <img src="/Avatars/view/<%= avatars[counter] %>" style="width: 80px; height: 100px">
-            <p style="font-size: 20px"><%= member.forename %> <br><%= member.surname %><br><br><%=member.access_level%></p>
+            <% } else { %>
+            <img src="https://image.freepik.com/free-icon/user-image-with-black-background_318-34564.jpg" style="width: 80px; height: 100px">
+            <% } %>
+
+            <p style="font-size: 20px"><%= member.forename %><br><%= member.surname %></p>
+            <p style="font-size: 20px"><%=member.access_level%></p>
 
         </div>
         <% if ((!(access_level == 'manager' && member.access_level == 'manager')) && (access_level != 'user' && member.access_level != 'admin')){ %>

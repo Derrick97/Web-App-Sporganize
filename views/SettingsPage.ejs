@@ -19,15 +19,19 @@
 
     <div class="container" align= 'center'>
         <h1>Settings</h1>
-        <a class="jumbotron btn btn-default" style="width: 1000px; text-align: left" data-toggle="modal"
+        <a class="jumbotron btn btn-default" style="width: 1000px; text-align: center; overflow: hidden" data-toggle="modal"
            data-target="#details-modal">
-            <% if (avatar) { %>
-            <img src="/Avatars/view/<%= avatar %>">
+            <% if (avatar.length) { %>
+            <img src="/Avatars/view/<%= avatar %>" width="200px" height="200px" style="float: left">
+            <% } else { %>
+            <img src="https://image.freepik.com/free-icon/user-image-with-black-background_318-34564.jpg" width="200px" height="200px" style="float: left">
             <% } %>
+            <div>
             <h2><%= user.forename %> <%= user.surname %></h2>
-            <p><%= user.gender %></p>
-            <p><%= user.email %></p>
-            <p><%= user.mobile %></p>
+            <p><b><%= user.gender %></b></p>
+            <p><b><%= user.email %></b></p>
+            <p><b><%= user.mobile %></b></p>
+            </div>
         </a>
     </div>
 
