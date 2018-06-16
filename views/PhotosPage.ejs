@@ -60,23 +60,43 @@
 <body>
 <div class="upnav" style="padding-bottom: 100px">
     <div class="sidenav" id="sidenav">
-        <a class="active" href="/Photos" id="allteams">All Teams</a>
+        <% if (active_id == 0) { %>
+        <a class="active" href="/Photos" id="allphotos">All Photos</a>
         <% teams.forEach((team) => { %>
-        <a href="#" onclick="changeActive(<%= team.id %>)" id="<%= team.id %>"><%= team.name %></a>
+        <a href="/Photos/<%= team.id %>" id="<%= team.id %>"><%= team.name %></a>
         <% }) %>
+        <% } else { %>
+        <a href="/Photos" id="allphotos">All Photos</a>
+        <% teams.forEach((team) => { %>
+        <% if (active_id == team.id) { %>
+        <a class="active" href="/Photos/<%= team.id %>" id="<%= team.id %>"><%= team.name %></a>
+        <% }  else { %>
+        <a href="/Photos/<%= team.id %>" id="<%= team.id %>"><%= team.name %></a>
+        <% } %>
+        <% }) %>
+        <% } %>
     </div>
 
     <div class="main" align="center">
         <h1 style="text-align: center">Photos</h1>
+        <% if (events.length == 0) { %>
+        <div style="height:700px; display: flex; align-items: center; justify-content: center">
+        <p style="font-size: 200px; opacity: 0.2">No Event Yet...</p>
+        </div>
+        <% } else { %>
         <% let c = 0 %>
         <% events.forEach((event) => { %>
-        <div class="jumbotron" style="height: 270px; width: 1250px; overflow: hidden; padding-top: 20px">
-            <div style="width: 275px; height: 200px; word-break: break-all; float: left;">
-                <h3><%= event.name %></h3>
-                <p><%= event.timestamp %></p>
-                <p><%= event.location %></p>
+        <% let a = event.timestamp %>
+        <% let s = chop_date(a) %>
+        <div class="jumbotron" style="height: 270px; width: 1170px; overflow: hidden; padding-top: 10px; padding-left: 20px">
+            <div style="width: 280px; height: 200px; word-break: break-all; float: left;">
+                <h3 style="margin-bottom: 20px"><%= event.name %></h3>
+                <p style="margin-bottom: 20px"><%= s %></p>
+                <p style="margin-bottom: 20px"><%= event.location %></p><br>
                 <button data-toggle="modal" data-target="#uploadModal<%= event.id %>">Upload</button>
-                <input type="button" value="View All">
+                <% if (photos[c].length) { %>
+                <input type="button" value="View All" onclick="window.location.href = '/ViewAll/<%= event.id %>'">
+                <% } %>
             </div>
             <div class="modal fade" id="uploadModal<%= event.id %>" role="dialog">
                 <div class="modal-dialog">
@@ -104,21 +124,23 @@
                     </div>
                 </div>
             </div>
-
-            <% if (photos[c].length < 3) { %>
+            <% if (photos[c].length == 0) { %>
+            <div style="width: 700px; height: 200px; float:left; padding-top: 20px; display: flex; align-items: center; justify-content: center;"><p style="font-size: 100px; opacity: 0.2"><b>More to add...</b></p></div>
+            <% } else if (photos[c].length < 3) { %>
             <% photos[c].forEach((photo) => { %>
-            <img src="/Photos/view/<%= photo %>" style="width: 275px; height: 210px; float:left; padding-top: 20px">
+            <img src="/Photos/view/<%= photo %>" style="width: 275px; height: 230px; float:left; padding-top: 20px;">
             <% }) %>
             <% } else { %>
             <% for (let i = 0; i < 3; i++) { %>
-            <img src="/Photos/view/<%= photos[c][i] %>" style="width: 275px; height: 210px; float:left; padding-top: 20px">
+            <img src="/Photos/view/<%= photos[c][i] %>"
+                 style="width: 275px; height: 230px; float:left; padding-top: 20px; margin-left: 10px">
             <% } %>
             <% } %>
         </div>
 
         <% c = c + 1 %>
         <% }) %>
-
+        <% } %>
     </div>
 </div>
 
@@ -139,12 +161,6 @@
         $(".modal-body").find('input:file').prop('value', "");
         $(".modal-body").find('img').prop('src', "");
     })
-
-    function changeActive(newid) {
-        let select_item_id = $("#sidenav").find(".active").attr('id')
-        document.getElementById(select_item_id).className = ''
-        document.getElementById(newid).className = 'active'
-    }
 
     function previewFile(id) {
         let preview = document.getElementById('preview' + id);
