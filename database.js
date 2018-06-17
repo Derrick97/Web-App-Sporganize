@@ -97,14 +97,17 @@ module.exports = {
             'WHERE teams.id = $1'].join(' ')
 
         const events = await pool.query(query, [id])
+
         return events.rows
     },
 
     getAllEventsForUserId: async function (id) {
         const teams = await this.getTeamsForUserId(id)
         events = []
+
         for (let i = 0; i < teams.length; i++) {
             let team_events = await this.getEventsForTeamId(teams[i].id)
+            console.log("team_events: %j", team_events)
             events.push(...team_events)
         }
 
@@ -275,8 +278,8 @@ module.exports = {
 
     createEvent: async function (creator_user_id, team_id, name, timestamp, duration, location, finalDecisionDate) {
         const query = ['INSERT INTO sporganize.events (team_id, name, timestamp, duration, location, "final_decision_date")',
-            'VALUES ($1, $2, $3, $4, $5, $6)'].join(' ')
-        await pool.query(query, [team_id, name, timestamp, duration, location, finalDecisionDate])
+            'VALUES ($1, $2, $3, $4, $5, $6) RETURNING *'].join(' ')
+        const resp = await pool.query(query, [team_id, name, timestamp, duration, location, finalDecisionDate])
         const allEvents = await this.getAllEventsForUserId(creator_user_id)
         let temp = allEvents[0].id
         for (let j = 0; j < allEvents.length; j++) {
@@ -289,6 +292,8 @@ module.exports = {
         for (let i = 0; i < all_users_for_current_event.length; i++) {
             await this.addUserToEventWithStatus(all_users_for_current_event[i].user_id, current_event_id, 'noreply')
         }
+
+        return resp.rows[0]
     },
 
     addUserToEventWithStatus: async function (user_id, event_id, status) {
@@ -402,6 +407,11 @@ module.exports = {
             'WHERE user_id = $1'].join(' ')
         const resp = await pool.query(query, [id])
         return resp.rows.map((r) => r.id)
+    },
+
+    deletePhotoForPhotoID: async function (photo_id) {
+        const query = 'DELETE FROM sporganize.photos WHERE photos.id = $1'
+        await pool.query(query, [photo_id])
     },
 
     /* Messaging */

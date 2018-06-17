@@ -11,6 +11,9 @@ const bcrypt = require('bcrypt')
 const saltRounds = 10
 
 const db = require('./database.js')
+const mail = require('./mail.js')
+
+const schedule = require('node-schedule')
 
 const app = express()
 
@@ -89,6 +92,9 @@ function ensureAuthenticated(req, res, next) {
 //     return copy
 // }
 
+function sendReminderEmails() {
+
+}
 
 app.get('/', (req, res) => {
     return res.redirect('/login')
@@ -260,12 +266,8 @@ app.post('/Photos/Upload/:eventid', ensureAuthenticated, async (req, res) => {
         return res.redirect("/Photos")
     }
 
-    const events = await db.getAllEventsForUserId(req.user.id)
-    const event_ids = events.map((e) => e.id.toString())
 
-    if (event_ids.includes(req.params.eventid)) {
-        await db.createPhoto(req.files.photo.data, req.files.photo.mimetype, req.params.eventid)
-    }
+    await db.createPhoto(req.files.photo.data, req.files.photo.mimetype, req.params.eventid)
 
     return res.redirect("/Photos")
 })
@@ -279,12 +281,7 @@ app.post('/ViewAll/Upload/:eventid', ensureAuthenticated, async (req, res) => {
         return res.redirect("/ViewAll/" + req.params.eventid)
     }
 
-    const events = await db.getAllEventsForUserId(req.user.id)
-    const event_ids = events.map((e) => e.id.toString())
-
-    if (event_ids.includes(req.params.eventid)) {
-        await db.createPhoto(req.files.photo.data, req.files.photo.mimetype, req.params.eventid)
-    }
+    await db.createPhoto(req.files.photo.data, req.files.photo.mimetype, req.params.eventid)
 
     return res.redirect("/ViewAll/" + req.params.eventid)
 })
@@ -292,19 +289,12 @@ app.post('/ViewAll/Upload/:eventid', ensureAuthenticated, async (req, res) => {
 app.get('/Photos/view/:id', ensureAuthenticated, async (req, res) => {
     const photo = await db.getPhotoForId(req.params.id)
 
-    const events = await db.getAllEventsForUserId(req.user.id)
-    const event_ids = events.map((e) => e.id)
+    res.writeHead(200, {
+        'Content-Type': photo.mime,
+        'Content-Length': photo.photo.length
+    });
 
-    if (event_ids.includes(photo.event_id)) {
-        res.writeHead(200, {
-            'Content-Type': photo.mime,
-            'Content-Length': photo.photo.length
-        });
-
-        res.end(photo.photo)
-    } else {
-        res.status(404).send("Photo not found")
-    }
+    res.end(photo.photo)
 })
 
 app.get('/ViewAll/:eventid', ensureAuthenticated, async (req, res) => {
@@ -395,7 +385,9 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
 
 app.post('/addEvent', ensureAuthenticated, async (req, res) => {
     try {
-        await db.createEvent(req.user.id, req.body.teamid, req.body.eventname, req.body.starttime, req.body.duration, req.body.location, req.body.finalDecisionDate)
+        const event = await db.createEvent(req.user.id, req.body.teamid, req.body.eventname,
+            req.body.starttime, req.body.duration, req.body.location)
+        mail.sendNewEventEmail(event)
         return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
@@ -517,7 +509,12 @@ app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
 app.post('/updateDetails', ensureAuthenticated, async (req, res) => {
     try {
         //  console.log(req.body.duration)
-        await db.changeEventDetailsForUserID(req.body.event_id, req.body.name, req.body.location, req.body.date, req.body.duration, req.body.finalDecisionDate)
+        await db.changeEventDetailsForUserID(req.body.event_id, req.body.name,
+            req.body.location, req.body.date, req.body.duration)
+
+        const event = await db.getEventForEventId(req.body.event_id)
+        mail.sendEventUpdatedEmail(event)
+
         return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
@@ -637,6 +634,16 @@ app.get('/Avatars/view/:id', ensureAuthenticated, async (req, res) => {
     });
 
     res.end(avatar.photo)
+})
+
+app.post('/deletePhoto', ensureAuthenticated, async (req, res) => {
+    try {
+        await db.deletePhotoForPhotoID(req.body.photo_id)
+        return res.send({status: 'success'})
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
 })
 
 module.exports = {

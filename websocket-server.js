@@ -50,7 +50,7 @@ db.onMessageNotification(async (msg) => {
 
     const socks = getSocketsForTeamId(msg.team_id, socketsForTeamId)
     for (let i = 0; i < socks.length; i++) {
-        socks[i].send(JSON.stringify(msg))
+        socks[i].send(JSON.stringify({ "messages": [msg] }))
     }
 })
 
@@ -80,6 +80,26 @@ module.exports = (server, sessionParser) => {
 
         for (let i = 0; i < teams.length; i++) {
             addSocketForTeamId(teams[i].id, ws, socketsForTeamId)
+            messages = await db.getMessagesForTeamId(teams[i].id, 100)
+
+            let user_ids = []
+            for (let j = 0; j < messages.length; j++) {
+                if (!user_ids.includes(messages[j].user_id)) {
+                    user_ids.push(messages[j].user_id)
+                }
+            }
+
+            let ids_to_names = {}
+            for (let j = 0; j < user_ids.length; j++) {
+                const user = await db.getUserForId(user_ids[j])
+                ids_to_names[user_ids[j]] = user.forename + " " + user.surname
+            }
+
+            for (let j = 0; j < messages.length; j++) {
+                messages[j]["display_name"] = ids_to_names[messages[j].user_id]
+            }
+
+            ws.send(JSON.stringify({ "messages": messages }))
         }
 
         ws.on('close', (code, reason) => {
