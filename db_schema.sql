@@ -41,7 +41,8 @@ CREATE TABLE sporganize.events (
     name      text CHECK (length(name) < 256)                        NOT NULL,
     timestamp timestamp                                              NOT NULL,
     duration  interval                                               NOT NULL,
-    location  text CHECK(length(location) < 256)                     NOT NULL
+    location  text CHECK(length(location) < 256)                     NOT NULL,
+    finalDecisionDate timestamp                                      NOT NULL,
 );
 
 CREATE TABLE sporganize.users_events (

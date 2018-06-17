@@ -124,8 +124,30 @@
                         <script type="text/javascript">
                             $(function () {
                                 let date = new Date(new Date().getTime())
-                                date.setDate(date.getDate() + 2)
+                                date.setDate(date.getDate())
                                 $('#datetimepicker').datetimepicker({
+                                    format: 'YYYY-MM-DD HH:mm:ss',
+                                    minDate: date,
+                                })
+                            });
+                        </script>
+
+                        Final Decision Date: <br/>
+
+                        <div class="form-group">
+                            <div class='input-group date' id='datetimepicker3'>
+                                <input id="finalTextbox" type='text' class="form-control"/>
+                                <span class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </span>
+                            </div>
+                        </div>
+
+                        <script type="text/javascript">
+                            $(function () {
+                                let date = new Date(new Date().getTime())
+                                date.setDate(date.getDate())
+                                $('#datetimepicker3').datetimepicker({
                                     format: 'YYYY-MM-DD HH:mm:ss',
                                     minDate: date,
                                 })
@@ -198,9 +220,10 @@
                                 <%= event.duration.minutes %> minutes
                                 <% } %>
                             </h4>
+                            <h4>Final Decision Date: <%=event.finalDecisionDate%></h4>
                             <h4 class="list-group-item-text"><%= event.location %></h4>
                             <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
-                            <% if (new Date() <= finalDecisionDate(event.date, 1)){ %>
+                            <% if (new Date() <= event.finalDecisionDate){ %>
                             <% if (event.status == 'noreply') { %>
                             <a href="" class="btn btn-info"
                                onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
@@ -214,7 +237,7 @@
                             <% if (event.status == 'rejected') { %>
                             <a class="btn btn-info" onclick="changeStatus('confirmed', <%= event.id %>)">Accept</a>
                             <a class="btn btn-info disabled">Decline</a>
-                            <% } %>
+                            <% }} %>
                             <a href="/ViewDetails/<%= event.id %>" class="btn btn-info">View Details</a>
                             <% if (event.access_level != 'user') { %>
                             <a data-toggle="modal" data-target="#delete_modal<%= event.id %>" class="btn btn-info">Delete</a>
@@ -241,10 +264,9 @@
                                     </div>
                                 </div>
                             </div>
-
                             <% } %>
                         </div>
-                        <% }}) %>
+                        <% }) %>
                         <% } %>
                     </div>
                 </div>
@@ -318,6 +340,7 @@
             'starttime': extractval('dateTextbox'),
             'duration': extractval('durationTextbox'),
             'location': extractval('location'),
+            'finalDecisionDate': extractval('finalTextbox'),
             'teamid': teamid
         }
 

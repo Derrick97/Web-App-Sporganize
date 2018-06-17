@@ -83,11 +83,11 @@ function ensureAuthenticated(req, res, next) {
 }
 
 
-function finalDecisionDate(date, days) {
-    let copy = new Date(date.getTime())
-    copy.setDate(date.getDate() - days)
-    return copy
-}
+// function finalDecisionDate(date, days) {
+//     let copy = new Date(date.getTime())
+//     copy.setDate(date.getDate() - days)
+//     return copy
+// }
 
 
 app.get('/', (req, res) => {
@@ -329,6 +329,7 @@ app.get('/Events', ensureAuthenticated, async (req, res) => {
                 'location': ev.location,
                 'status': ev.status,
                 'access_level': ev.access_level,
+                'finalDecisionDate': ev.final_decision_date,
             }
         })
         const now = new Date()
@@ -341,7 +342,6 @@ app.get('/Events', ensureAuthenticated, async (req, res) => {
     }
 
     res.render('EventsPage', {
-        finalDecisionDate: finalDecisionDate,
         eventsprevious: eventsprevious,
         eventsupcoming: eventsupcoming,
         teams: teams,
@@ -370,6 +370,7 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
                 'location': ev.location,
                 'status': ev.status,
                 'access_level': ev.access_level,
+                'finalDecisionDate': ev.final_decision_date,
             }
         })
         const now = new Date()
@@ -383,7 +384,6 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
         return
     }
     res.render('EventsPage', {
-        finalDecisionDate: finalDecisionDate,
         eventsprevious: eventsprevious,
         eventsupcoming: eventsupcoming,
         teams: teams,
@@ -395,7 +395,7 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
 
 app.post('/addEvent', ensureAuthenticated, async (req, res) => {
     try {
-        await db.createEvent(req.user.id, req.body.teamid, req.body.eventname, req.body.starttime, req.body.duration, req.body.location)
+        await db.createEvent(req.user.id, req.body.teamid, req.body.eventname, req.body.starttime, req.body.duration, req.body.location, req.body.finalDecisionDate)
         return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
@@ -434,7 +434,6 @@ app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
     }
     res.render('ViewDetails',
         {
-            finalDecisionDate: finalDecisionDate,
             event: event,
             access_level: access_level,
             acceptedList: accepted_list,
@@ -518,7 +517,7 @@ app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
 app.post('/updateDetails', ensureAuthenticated, async (req, res) => {
     try {
         //  console.log(req.body.duration)
-        await db.changeEventDetailsForUserID(req.body.event_id, req.body.name, req.body.location, req.body.date, req.body.duration)
+        await db.changeEventDetailsForUserID(req.body.event_id, req.body.name, req.body.location, req.body.date, req.body.duration, req.body.finalDecisionDate)
         return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
