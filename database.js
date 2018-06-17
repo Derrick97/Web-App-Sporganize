@@ -97,14 +97,17 @@ module.exports = {
             'WHERE teams.id = $1'].join(' ')
 
         const events = await pool.query(query, [id])
+
         return events.rows
     },
 
     getAllEventsForUserId: async function (id) {
         const teams = await this.getTeamsForUserId(id)
         events = []
+
         for (let i = 0; i < teams.length; i++) {
             let team_events = await this.getEventsForTeamId(teams[i].id)
+            console.log("team_events: %j", team_events)
             events.push(...team_events)
         }
 
@@ -404,6 +407,11 @@ module.exports = {
             'WHERE user_id = $1'].join(' ')
         const resp = await pool.query(query, [id])
         return resp.rows.map((r) => r.id)
+    },
+
+    deletePhotoForPhotoID: async function (photo_id) {
+        const query = 'DELETE FROM sporganize.photos WHERE photos.id = $1'
+        await pool.query(query, [photo_id])
     },
 
     /* Messaging */
