@@ -401,7 +401,7 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
 
 app.post('/addEvent', ensureAuthenticated, async (req, res) => {
     try {
-        cont event = await db.createEvent(req.user.id, req.body.teamid, req.body.eventname,
+        const event = await db.createEvent(req.user.id, req.body.teamid, req.body.eventname,
             req.body.starttime, req.body.duration, req.body.location)
         mail.sendnewEventEmail(event)
         return res.send({status: 'success'})
