@@ -4,83 +4,175 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <meta charset="UTF-8">
     <title>View All Photos</title>
+    <style>
+        .topleft {
+            position: absolute;
+            top: 18px;
+            left: 16px;
+            font-size: 18px;
+        }
+
+        .topright_cross {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            font-size: 18px;
+        }
+    </style>
 </head>
 <body>
-<div class="jumbotron" style="text-align: center; margin-bottom: 0">
-    <h1><%= event.name %></h1>
-    <h2><%= event.timestamp %></h2>
-    <h2>
-        <% if (!event.duration.hours) { %>
-        <% } else if (event.duration.hours == 1) { %>
-        1 hour
-        <% } else { %>
-        <%= event.duration.hours %> hours
-        <% } %>
+    <div class="topleft">
+        <button class="btn btn-danger" onclick="window.location.href = '/Photos'">Go Back</button>
+    </div>
+    <div class="jumbotron" style="text-align: center; margin-bottom: 0">
 
-        <% if (!event.duration.minutes) { %>
-        <% } else if (event.duration.minutes == 1) { %>
-        1 minute
-        <% } else { %>
-        <%= event.duration.minutes %> minutes
-        <% } %>
-    </h2>
-    <h2><%= event.location %></h2>
-</div>
-<button class="btn btn-info col-sm-6" data-toggle="modal" data-target="#uploadModal" style="height: 200px; font-size: 100px">Upload</button>
-<button class="btn btn-danger col-sm-6" style="height: 200px; font-size: 100px" onclick="window.location.href = '/Photos'">Go Back</button>
-<div class="modal fade" id="uploadModal" role="dialog">
-    <div class="modal-dialog">
-        <!-- Modal content-->
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal">&times;</button>
-                <h4 class="modal-title" style="text-align: center">Upload photos</h4>
+        <h1><%= event.name %></h1>
+        <h2><%= event.timestamp %></h2>
+        <h2>
+            <% if (!event.duration.hours) { %>
+            <% } else if (event.duration.hours == 1) { %>
+            1 hour
+            <% } else { %>
+            <%= event.duration.hours %> hours
+            <% } %>
+
+            <% if (!event.duration.minutes) { %>
+            <% } else if (event.duration.minutes == 1) { %>
+            1 minute
+            <% } else { %>
+            <%= event.duration.minutes %> minutes
+            <% } %>
+        </h2>
+        <h2><%= event.location %></h2>
+    </div>
+    <button class="btn btn-info col-sm-6" data-toggle="modal" data-target="#uploadModal"
+            style="height: 200px; font-size: 100px">Upload
+    </button>
+    <button class="btn btn-danger col-sm-6" style="height: 200px; font-size: 100px" onclick="deleteCrossAppears()"
+            id="delete_btn">Delete
+    </button>
+    <div class="modal fade" id="uploadModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="text-align: center">Upload photos</h4>
+                </div>
+                <form action="/ViewAll/Upload/<%= event.id %>" method="post"
+                      encType="multipart/form-data">
+                    <div class="modal-body" align="center">
+                        <div>
+                            <input type="file" name="photo" onchange="previewFile()"
+                                   id="file"/>
+                            <img src="" height="200" id="preview">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div align="center">
+                            <input type='submit' value='Upload'/>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <form action="/ViewAll/Upload/<%= event.id %>" method="post"
-                  encType="multipart/form-data">
-                <div class="modal-body" align="center">
-                    <div>
-                        <input type="file" name="photo" onchange="previewFile()"
-                               id="file"/>
-                        <img src="" height="200" id="preview">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <div align="center">
-                        <input type='submit' value='Upload'/>
-                    </div>
-                </div>
-            </form>
         </div>
     </div>
-</div>
-<% photos.forEach((photo) => { %>
-<img src="/Photos/view/<%= photo %>"
-style="width: 400px; height: 350px; padding-top: 20px;">
-<% }) %>
+    <% photos.forEach((photo) => { %>
+    <div style="position: relative; float: left; padding-right: 20px; padding-top: 20px;">
+        <a href="/Photos/view/<%= photo %>">
+            <img src="/Photos/view/<%= photo %>"
+                 style="width: 400px; height: 350px;"></a>
+        <i class="fa fa-times-circle topright_cross btn"
+           style="font-size:24px; color:red; visibility: hidden" id="delete_cross<%= photo %>"
+           data-toggle="modal" data-target="#delete_modal<%= photo %>">
+        </i>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="delete_modal<%= photo %>" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="text-align: center">Delete Photo</h4>
+                </div>
+                <div class="modal-body">
+                    Are you sure to delete this photo? <br>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                            style="float:left"
+                            onclick="deletePhoto(<%= photo %>)"
+                    >yes
+                    </button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                            style="float:right">no
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% }) %>
 
-<script>
-    $(".modal").on('hidden.bs.modal', function (e) {
-        $(".modal-body").find('input:file').prop('value', "");
-        $(".modal-body").find('img').prop('src', "");
-    })
 
-    function previewFile() {
-        let preview = document.getElementById('preview');
-        let file = document.getElementById('file').files[0];
-        let reader = new FileReader();
+    <script>
+        $(".modal").on('hidden.bs.modal', function (e) {
+            $(".modal-body").find('input:file').prop('value', "");
+            $(".modal-body").find('img').prop('src', "");
+        })
 
-        reader.addEventListener("load", function () {
-            preview.src = reader.result;
-        }, false);
-        if (file) {
-            reader.readAsDataURL(file);
+        function previewFile() {
+            let preview = document.getElementById('preview');
+            let file = document.getElementById('file').files[0];
+            let reader = new FileReader();
+
+            reader.addEventListener("load", function () {
+                preview.src = reader.result;
+            }, false);
+            if (file) {
+                reader.readAsDataURL(file);
+            }
         }
-    }
-</script>
-</body>
+
+        function deleteCrossAppears() {
+            let cross
+            const btn = document.getElementById('delete_btn')
+            <% photos.forEach((photo) => { %>
+            cross = document.getElementById('delete_cross<%= photo %>')
+            if (cross.style.visibility == "visible") {
+                cross.style.visibility = "hidden"
+                btn.innerText = "Delete"
+            }
+            else {
+                cross.style.visibility = "visible"
+                btn.innerText = "Cancel"
+            }
+            <% }) %>
+        }
+
+        function deletePhoto(id) {
+            json = {photo_id: id}
+
+            $.ajax({
+                type: 'POST',
+                url: '/deletePhoto',
+                data: json,
+                dataType: "json",
+                success: function (data) {
+                    if (data.status) {
+                        alert('This photo has been deleted successfully!')
+                        window.location.reload()
+                    } else {
+                        console.log('error')
+                    }
+                },
+            })
+        }
+    </script>
+    </body>
 </html>
