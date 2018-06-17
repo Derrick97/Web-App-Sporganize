@@ -41,7 +41,8 @@ CREATE TABLE sporganize.events (
     name      text CHECK (length(name) < 256)                        NOT NULL,
     timestamp timestamp                                              NOT NULL,
     duration  interval                                               NOT NULL,
-    location  text CHECK(length(location) < 256)                     NOT NULL
+    location  text CHECK(length(location) < 256)                     NOT NULL,
+    finalDecisionDate timestamp                                      NOT NULL,
 );
 
 CREATE TABLE sporganize.users_events (
@@ -68,7 +69,7 @@ CREATE TABLE sporganize.join_codes (
 CREATE TABLE sporganize.messages (
     id        serial PRIMARY KEY,
     team_id   int REFERENCES sporganize.teams (id) ON DELETE CASCADE NOT NULL,
-    user_id   int REFERENCES sporganize.users (id)                   NOT NULL,
+    user_id   int REFERENCES sporganize.users (id) ON DELETE CASCADE NOT NULL,
     message   text CHECK(length(message) < 1000)                     NOT NULL,
     timestamp timestamp DEFAULT now()                                NOT NULL
 );

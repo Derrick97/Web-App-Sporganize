@@ -15,21 +15,26 @@
     <div class="jumbotron btn btn-default" data-toggle="modal" data-target="#details-modal" style="width: 1200px;">
         <h1><%= team.name %></h1>
         <div>
-            <%if (team.type=="Basketball"){%>
-            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/4ib0j4od7/basketball-2-512.png" style="width:120px; height:120px"> </h2>
-            <%}%>
-            <%if (team.type=="Volleyball"){%>
-            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/pmuvkh54b/volleyball-2-512.png" style="width:120px; height:120px"> </h2>
-            <%}%>
-            <%if (team.type=="Tennis"){%>
-            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/xonpg4sp7/tennis-icon-18.png" style="width:120px; height:120px"> </h2>
-            <%}%>
-            <%if (team.type=="Football"){%>
-            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/61b026kez/football.png" style="width:120px; height:120px"> </h2>
-            <%}%>
-            <%if (team.type=="Rugby"){%>
-            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/4q38tlm7f/rugby.png" style="width:120px; height:120px"> </h2>
-            <%}%>
+            <% if (team.type == "Basketball"){ %>
+            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/4ib0j4od7/basketball-2-512.png"
+                                                     style="width:120px; height:120px"></h2>
+            <%} else if (team.type == "Volleyball"){ %>
+            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/pmuvkh54b/volleyball-2-512.png"
+                                                     style="width:120px; height:120px"></h2>
+
+            <%} else if (team.type == "Tennis"){ %>
+            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/xonpg4sp7/tennis-icon-18.png"
+                                                     style="width:120px; height:120px"></h2>
+
+            <%} else if (team.type == "Football"){ %>
+            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/61b026kez/football.png" style="width:120px; height:120px"></h2>
+
+            <%} else if (team.type == "Rugby"){ %>
+            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/4q38tlm7f/rugby.png"
+                                                     style="width:120px; height:120px"></h2>
+            <% } else {%>
+                <h2 class="list-group-item-heading"><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/57788-200.png" style="width:120px; height:120px"></h2>
+                <%}%>
         </div>
         <p>Creator: <%= creator.forename %> <%= creator.surname %></p>
         <% if (expire_period != 'No code generated yet.') { %>
@@ -51,35 +56,59 @@
     <% } else { %>
     <div class="jumbotron" style="width: 1200px; text-align: center">
         <h1><%= team.name %></h1>
+        <div>
+            <% if (team.type == "Basketball"){ %>
+            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/4ib0j4od7/basketball-2-512.png"
+                                                     style="width:120px; height:120px"></h2>
+            <%} else if (team.type == "Volleyball"){ %>
+            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/pmuvkh54b/volleyball-2-512.png"
+                                                     style="width:120px; height:120px"></h2>
+
+            <%} else if (team.type == "Tennis"){ %>
+            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/xonpg4sp7/tennis-icon-18.png"
+                                                     style="width:120px; height:120px"></h2>
+
+            <%} else if (team.type == "Football"){ %>
+            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/61b026kez/football.png" style="width:120px; height:120px"></h2>
+
+            <%} else if (team.type == "Rugby"){ %>
+            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/4q38tlm7f/rugby.png"
+                                                     style="width:120px; height:120px"></h2>
+            <% } else {%>
+            <h2 class="list-group-item-heading"><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/57788-200.png" style="width:120px; height:120px"></h2>
+            <%}%>
+        </div>
         <p>Creator: <%= creator.forename %> <%= creator.surname %></p>
         <p><%= team.type %> team</p>
         <p>Description: <%= team.description %></p>
     </div>
     <% } %>
     <h3>Team Members</h3>
-    <%let counter = 0%>
+    <% let counter = 0 %>
     <% team_members.forEach((member) => { %>
     <div class="dropdown"
 
          style="float: left;"
     >
         <div class="btn btn-default dropdown-toggle list-group-item"
-             data-toggle="dropdown" style="background-color: white; height:230px; width:150px;margin-right: 10px; margin-bottom: 10px;
-        <% if (member.access_level == 'admin'){ %>
-           border:5px solid gold;
-        <% } else if (member.access_level == 'manager') { %>
-         border:5px solid silver;
-        <% } else { %>
-        <% } %>  ">
+             data-toggle="dropdown"
+             style="background-color: white; height:230px; width:150px;margin-right: 10px; margin-bottom: 10px;
+             <% if (member.access_level == 'admin'){ %>
+                     border:5px solid gold;
+             <% } else if (member.access_level == 'manager') { %>
+                     border:5px solid silver;
+             <% } else { %>
+             <% } %>  ">
 
             <% if (avatars[counter].length) { %>
             <img src="/Avatars/view/<%= avatars[counter] %>" style="width: 80px; height: 100px">
             <% } else { %>
-            <img src="https://image.freepik.com/free-icon/user-image-with-black-background_318-34564.jpg" style="width: 80px; height: 100px">
+            <img src="https://image.freepik.com/free-icon/user-image-with-black-background_318-34564.jpg"
+                 style="width: 80px; height: 100px">
             <% } %>
 
             <p style="font-size: 20px"><%= member.forename %><br><%= member.surname %></p>
-            <p style="font-size: 20px"><%=member.access_level%></p>
+            <p style="font-size: 20px"><%= member.access_level %></p>
 
         </div>
         <% if ((!(access_level == 'manager' && member.access_level == 'manager')) && (access_level != 'user' && member.access_level != 'admin')){ %>
@@ -161,7 +190,7 @@
             </div>
         </div>
     </div>
-    <%counter=counter+1%>
+    <% counter = counter + 1 %>
     <% }) %>
 
 </div>
@@ -208,7 +237,7 @@
         <!-- Modal content-->
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal ">&times;
+                <button type="button" class="close" data-dismiss="modal">&times;
                 </button>
                 <h4 class="modal-title" style="text-align: center">Generate code for this team</h4>
             </div>
@@ -222,7 +251,7 @@
             </div>
             <div class="modal-footer">
                 <div align="center">
-                    <button type="button" class="btn btn-default" data-dismiss="modal"
+                    <button type="button" class="btn btn-default"
                             onclick="generateCode(<%= team.id %>)">Generate
                     </button>
                 </div>
@@ -252,21 +281,24 @@
             'codeGen': extractval('codeGen'),
             'teamId': teamid,
         }
-
-        $.ajax({
-            type: 'POST',
-            url: '/generateCode',
-            data: json,
-            success: function (data) {
-                if (data.status) {
-                    alert('Generate success!')
-                    window.location.reload()
-                } else {
-                    console.log('error')
-                }
-            },
-            dataType: "json",
-        })
+        if (json.codeGen.length == 0) {
+            alert("Invitation code cannot be null.")
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/generateCode',
+                data: json,
+                success: function (data) {
+                    if (data.status) {
+                        alert('Generate success!')
+                        window.location.reload()
+                    } else {
+                        console.log('error')
+                    }
+                },
+                dataType: "json",
+            })
+        }
     }
 
     function enableTextbox(checkbox_id, textbox_id) {
@@ -311,21 +343,24 @@
             'description': newDescription,
             'team_id': team_id,
         }
-
-        $.ajax({
-            type: 'POST',
-            url: '/updateTeamDetails',
-            data: json,
-            success: function (data) {
-                if (data.status == 'success') {
-                    alert("Update event details successfully.")
-                    window.location.reload()
-                } else {
-                    console.log('Error when updating event details.')
-                }
-            },
-            dataType: "json",
-        })
+        if (json.name.length == 0) {
+            alert("Team name cannot be empty.")
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/updateTeamDetails',
+                data: json,
+                success: function (data) {
+                    if (data.status == 'success') {
+                        alert("Update event details successfully.")
+                        window.location.reload()
+                    } else {
+                        console.log('Error when updating event details.')
+                    }
+                },
+                dataType: "json",
+            })
+        }
     }
 
     $(document).ready(function () {

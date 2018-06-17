@@ -59,7 +59,7 @@
             <div id="collapseOne" class="collapse in">
                 <div class="card-body">
                     <% teamsc.forEach((teamc) => { %>
-                    <div style="float: left; margin: 30px; position: relative">
+                    <div style="float: left; margin: 15px; position: relative">
                         <a href="/TeamDetails/<%= teamc.id %>" class="list-group-item btn"
                            style="background-color: #E6E6E6; height:350px; width:350px; ">
                             <br>
@@ -78,6 +78,9 @@
                             <%}%>
                             <%if (teamc.type=="Rugby"){%>
                             <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/4q38tlm7f/rugby.png" style="width:120px; height:120px"> </h2>
+                            <%}%>
+                            <%if (teamc.type=="Other Sport"){%>
+                            <h2 class="list-group-item-heading"><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/57788-200.png" style="width:120px; height:120px"> </h2>
                             <%}%>
                             <h1 style="color: #111111"><%= teamc.name %></h1>
                             <h4 style="color: #111111"><%= teamc.type %> team</h4>
@@ -137,11 +140,31 @@
             <div id="collapseTwo" class="collapse">
                 <div class="card-body">
                     <% teams.forEach((team) => { %>
-                    <div style="float: left; margin: 30px; position: relative">
+                    <div style="float: left; margin: 15px; position: relative">
                         <a href="/TeamDetails/<%= team.id %>" class="list-group-item btn"
-                           style="background-color: #E6E6E6; height:400px; width:350px; border: 3px solid black;">
-                            <h1 class="list-group-item-heading"><%= team.icon %>  <%= team.name %></h1>
-                            <h4><%= team.type %> team</h4>
+                           style="background-color: #E6E6E6; height:350px; width:350px;">
+                            <br>
+                            <br>
+                            <%if (team.type=="Basketball"){%>
+                            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/4ib0j4od7/basketball-2-512.png" style="width:120px; height:120px"> </h2>
+                            <%}%>
+                            <%if (team.type=="Volleyball"){%>
+                            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/pmuvkh54b/volleyball-2-512.png" style="width:120px; height:120px"> </h2>
+                            <%}%>
+                            <%if (team.type=="Tennis"){%>
+                            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/xonpg4sp7/tennis-icon-18.png" style="width:120px; height:120px"> </h2>
+                            <%}%>
+                            <%if (team.type=="Football"){%>
+                            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/61b026kez/football.png" style="width:120px; height:120px"> </h2>
+                            <%}%>
+                            <%if (team.type=="Rugby"){%>
+                            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/4q38tlm7f/rugby.png" style="width:120px; height:120px"> </h2>
+                            <%}%>
+                            <%if (team.type=="Other Sport"){%>
+                            <h2 class="list-group-item-heading"><img src="https://d30y9cdsu7xlg0.cloudfront.net/png/57788-200.png" style="width:120px; height:120px"> </h2>
+                            <%}%>
+                            <h1 style="color: #111111"><%= team.name %></h1>
+                            <h4 style="color: #111111"><%= team.type %> team</h4>
                         </a>
                         <i class="fa fa-times-circle topright_cross btn"
                            style="font-size:24px; color:red; visibility: hidden" id="leave_cross<%= team.id %>"
@@ -183,7 +206,7 @@
 
 <div class="modal fade" id="add_modal" role="dialog" style="top:300px">
     <div class="modal-dialog">
-        <div class="modal-content">
+        <div>
             <a href="/CreateTeam" class="btn btn-info" style="height: 100px; font-size: 40px; width: 100%">Create a
                 new team</a><br>
             <a class="btn btn-info" data-toggle="modal" data-target="#myModal"

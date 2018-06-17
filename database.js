@@ -276,10 +276,10 @@ module.exports = {
         return resp.rows[0].id
     },
 
-    createEvent: async function (creator_user_id, team_id, name, timestamp, duration, location) {
-        const query = ['INSERT INTO sporganize.events (team_id, name, timestamp, duration, location)',
-                       'VALUES ($1, $2, $3, $4, $5) RETURNING *'].join(' ')
-        const resp = await pool.query(query, [team_id, name, timestamp, duration, location])
+    createEvent: async function (creator_user_id, team_id, name, timestamp, duration, location, finalDecisionDate) {
+        const query = ['INSERT INTO sporganize.events (team_id, name, timestamp, duration, location, "final_decision_date")',
+            'VALUES ($1, $2, $3, $4, $5, $6) RETURNING *'].join(' ')
+        const resp = await pool.query(query, [team_id, name, timestamp, duration, location, finalDecisionDate])
         const allEvents = await this.getAllEventsForUserId(creator_user_id)
         let temp = allEvents[0].id
         for (let j = 0; j < allEvents.length; j++) {
@@ -308,12 +308,12 @@ module.exports = {
         await pool.query(query, [user_id, event_id, status])
     },
 
-    changeEventDetailsForUserID: async function (event_id, new_name, new_location, new_date, new_duration) {
+    changeEventDetailsForUserID: async function (event_id, new_name, new_location, new_date, new_duration, finalDecisionDate) {
         const query = ['UPDATE sporganize.events',
-            'SET name = $2, location = $3, timestamp = $4, duration = $5',
+            'SET name = $2, location = $3, timestamp = $4, duration = $5, final_decision_date = $6',
             'WHERE events.id = $1'
         ].join(' ')
-        await pool.query(query, [event_id, new_name, new_location, new_date, new_duration])
+        await pool.query(query, [event_id, new_name, new_location, new_date, new_duration, finalDecisionDate])
     },
 
     deleteEventForEventID: async function (event_id) {
