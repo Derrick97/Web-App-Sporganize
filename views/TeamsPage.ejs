@@ -61,9 +61,26 @@
                     <% teamsc.forEach((teamc) => { %>
                     <div style="float: left; margin: 30px; position: relative">
                         <a href="/TeamDetails/<%= teamc.id %>" class="list-group-item btn"
-                           style="background-color: #E6E6E6; height:400px; width:350px; border: 3px solid black;">
-                            <h2 class="list-group-item-heading"><%= teamc.icon %>  <%= teamc.name %></h2>
-                            <h5><%= teamc.type %> team</h5>
+                           style="background-color: #E6E6E6; height:350px; width:350px; ">
+                            <br>
+                            <br>
+                            <%if (teamc.type=="Basketball"){%>
+                            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/4ib0j4od7/basketball-2-512.png" style="width:120px; height:120px"> </h2>
+                            <%}%>
+                            <%if (teamc.type=="Volleyball"){%>
+                            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/pmuvkh54b/volleyball-2-512.png" style="width:120px; height:120px"> </h2>
+                            <%}%>
+                            <%if (teamc.type=="Tennis"){%>
+                            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/xonpg4sp7/tennis-icon-18.png" style="width:120px; height:120px"> </h2>
+                            <%}%>
+                            <%if (teamc.type=="Football"){%>
+                            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/61b026kez/football.png" style="width:120px; height:120px"> </h2>
+                            <%}%>
+                            <%if (teamc.type=="Rugby"){%>
+                            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/4q38tlm7f/rugby.png" style="width:120px; height:120px"> </h2>
+                            <%}%>
+                            <h1 style="color: #111111"><%= teamc.name %></h1>
+                            <h4 style="color: #111111"><%= teamc.type %> team</h4>
                         </a>
                         <i class="fa fa-times-circle topright_cross btn"
                            style="font-size:24px; color:red; visibility: hidden" id="leave_cross<%= teamc.id %>"

@@ -21,6 +21,13 @@ CREATE TABLE sporganize.users (
     password_hash text                                NOT NULL
 );
 
+CREATE TABLE sporganize.users_avatars (
+    id       serial PRIMARY KEY,
+    user_id  int REFERENCES sporganize.users (id) ON DELETE CASCADE NOT NULL,
+    photo    bytea                                                  NOT NULL,
+    mime     text                                                   NOT NULL
+);
+
 CREATE TABLE sporganize.users_teams (
     user_id      int REFERENCES sporganize.users (id) ON DELETE CASCADE NOT NULL,
     team_id      int REFERENCES sporganize.teams (id) ON DELETE CASCADE NOT NULL,

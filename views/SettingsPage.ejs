@@ -15,15 +15,23 @@
 </head>
 <body>
 <div class="upnav" style="padding-bottom: 100px">
-    <h1 style="text-align: center">Settings</h1>
 
-    <div class="container">
-        <a class="jumbotron btn btn-default" style="width: 1000px; text-align: left" data-toggle="modal"
+
+    <div class="container" align= 'center'>
+        <h1>Settings</h1>
+        <a class="jumbotron btn btn-default" style="width: 1000px; text-align: center; overflow: hidden" data-toggle="modal"
            data-target="#details-modal">
+            <% if (avatar.length) { %>
+            <img src="/Avatars/view/<%= avatar %>" width="200px" height="200px" style="float: left">
+            <% } else { %>
+            <img src="https://image.freepik.com/free-icon/user-image-with-black-background_318-34564.jpg" width="200px" height="200px" style="float: left">
+            <% } %>
+            <div>
             <h2><%= user.forename %> <%= user.surname %></h2>
-            <p><%= user.gender %></p>
-            <p><%= user.email %></p>
-            <p><%= user.mobile %></p>
+            <p><b><%= user.gender %></b></p>
+            <p><b><%= user.email %></b></p>
+            <p><b><%= user.mobile %></b></p>
+            </div>
         </a>
     </div>
 
@@ -54,8 +62,39 @@
         </div>
     </div>
 
-    <div class="container">
-        <button class="btn btn-danger" data-toggle="modal" data-target="#logoutModal" style="width: 1000px; height: 300px; font-size: 100px">Log out</button>
+    <div class="container" align="center">
+        <button class="btn btn-info" data-toggle="modal" data-target="#uploadModal" style="width: 1000px; height: 200px; font-size: 100px">Upload Avatar</button>
+    </div>
+
+    <div class="modal fade" id="uploadModal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" style="text-align: center">Upload avatar</h4>
+                </div>
+                <form action="/uploadAvatar" method="post"
+                      encType="multipart/form-data">
+                    <div class="modal-body" align="center">
+                        <div>
+                            <input type="file" name="avatar" onchange="previewFile()"
+                                   id="file"/>
+                            <img src="" height="200" id="preview">
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div align="center">
+                            <input type='submit' value='Upload'/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container" align="center">
+        <button class="btn btn-danger" data-toggle="modal" data-target="#logoutModal" style="width: 1000px; height: 200px; font-size: 100px">Log out</button>
     </div>
 
     <!-- Modal -->
@@ -98,6 +137,11 @@
     $(".modal").on('hidden.bs.modal', function(e) {
         $("#details-modal .modal-body").find('input:radio, input:checkbox').prop('checked', false);
         $("#details-modal .modal-body").find('input:text').prop('disabled', true);
+    })
+
+    $(".modal").on('hidden.bs.modal', function (e) {
+        $(".modal-body").find('input:file').prop('value', "");
+        $(".modal-body").find('img').prop('src', "");
     })
 
     function logOut() {
@@ -150,6 +194,19 @@
             },
             dataType: "json",
         })
+    }
+
+    function previewFile() {
+        let preview = document.getElementById('preview');
+        let file = document.getElementById('file').files[0];
+        let reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+            preview.src = reader.result;
+        }, false);
+        if (file) {
+            reader.readAsDataURL(file);
+        }
     }
 </script>
 

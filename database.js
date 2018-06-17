@@ -263,7 +263,7 @@ module.exports = {
             'WHERE',
             'NOT EXISTS (',
             'SELECT * FROM sporganize.users WHERE sporganize.users.email = $4 )'].join(' ')
-        return await pool.query(query, [forename, surname, gender, email, mobile, password_hash])
+        await pool.query(query, [forename, surname, gender, email, mobile, password_hash])
     },
 
     // Returns id of new team on successful insertion
@@ -377,6 +377,32 @@ module.exports = {
         await pool.query(query, [event_id, data, mime])
     },
 
+    uploadAvatar: async function(data, mime, user_id) {
+        let avatar = await this.getAvatarIdForUserId(user_id)
+        let query
+        if (avatar.length)
+        query = 'UPDATE sporganize.users_avatars SET photo = $2, mime = $3 WHERE user_id = $1'
+        else query = 'INSERT INTO sporganize.users_avatars (user_id, photo, mime) VALUES ($1, $2, $3)'
+        await pool.query(query, [user_id, data, mime])
+    },
+
+    getAvatarForId: async function(id) {
+        let query = 'SELECT * FROM sporganize.users_avatars WHERE id = $1'
+        const photos = await pool.query(query, [id])
+        if (photos.rows.length > 0) {
+            return photos.rows[0]
+        }
+
+        return false
+    },
+
+    getAvatarIdForUserId: async function(id) {
+        let query = ['SELECT id',
+            'FROM sporganize.users_avatars',
+            'WHERE user_id = $1'].join(' ')
+        const resp = await pool.query(query, [id])
+        return resp.rows.map((r) => r.id)
+    },
 
     /* Messaging */
     onMessageNotification: async function (callback) {

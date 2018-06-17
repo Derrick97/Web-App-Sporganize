@@ -71,6 +71,10 @@ passport.deserializeUser(async (id, done) => {
     }
 })
 
+function chop_date(date) {
+    return date.toString().substring(0, date.toString().length-15)
+}
+
 function ensureAuthenticated(req, res, next) {
     if (req.isAuthenticated()) {
         return next();
@@ -81,7 +85,7 @@ function ensureAuthenticated(req, res, next) {
 
 function finalDecisionDate(date, days) {
     let copy = new Date(date.getTime())
-    copy.setDate(date.getDate()-days)
+    copy.setDate(date.getDate() - days)
     return copy
 }
 
@@ -225,7 +229,26 @@ app.get('/Photos', ensureAuthenticated, async (req, res) => {
         res.status(500).send(e.stack)
         return
     }
-    res.render('PhotosPage', {events: allEvents, teams: teams, photos: photos})
+
+    res.render('PhotosPage', {chop_date: chop_date, events: allEvents, teams: teams, photos: photos, active_id: 0})
+})
+
+app.get('/Photos/:teamid', ensureAuthenticated, async (req, res) => {
+    let allEvents
+    let teams
+    let photos
+    try {
+        allEvents = await db.getEventsForTeamId(req.params.teamid)
+        teams = await db.getTeamsForUserId(req.user.id)
+        photos = []
+        for (let i = 0; i < allEvents.length; i++) {
+            photos[i] = await db.getPhotoIdsForEventId(allEvents[i].id)
+        }
+    } catch (e) {
+        res.status(500).send(e.stack)
+        return
+    }
+    res.render('PhotosPage', {chop_date: chop_date, events: allEvents, teams: teams, photos: photos, active_id: req.params.teamid})
 })
 
 app.post('/Photos/Upload/:eventid', ensureAuthenticated, async (req, res) => {
@@ -247,15 +270,30 @@ app.post('/Photos/Upload/:eventid', ensureAuthenticated, async (req, res) => {
     return res.redirect("/Photos")
 })
 
+app.post('/ViewAll/Upload/:eventid', ensureAuthenticated, async (req, res) => {
+    if (!req.files.photo) {
+        return res.redirect("/ViewAll/" + req.params.eventid)
+    }
+
+    if (!(['image/jpeg', 'image/png', 'image/webp'].includes(req.files.photo.mimetype))) {
+        return res.redirect("/ViewAll/" + req.params.eventid)
+    }
+
+    const events = await db.getAllEventsForUserId(req.user.id)
+    const event_ids = events.map((e) => e.id.toString())
+
+    if (event_ids.includes(req.params.eventid)) {
+        await db.createPhoto(req.files.photo.data, req.files.photo.mimetype, req.params.eventid)
+    }
+
+    return res.redirect("/ViewAll/" + req.params.eventid)
+})
+
 app.get('/Photos/view/:id', ensureAuthenticated, async (req, res) => {
     const photo = await db.getPhotoForId(req.params.id)
 
-   // console.log("Got photo (event_id = " + photo.event_id + ")")
-
     const events = await db.getAllEventsForUserId(req.user.id)
     const event_ids = events.map((e) => e.id)
-
-   // console.log("Got event_ids = " + event_ids)
 
     if (event_ids.includes(photo.event_id)) {
         res.writeHead(200, {
@@ -267,6 +305,12 @@ app.get('/Photos/view/:id', ensureAuthenticated, async (req, res) => {
     } else {
         res.status(404).send("Photo not found")
     }
+})
+
+app.get('/ViewAll/:eventid', ensureAuthenticated, async (req, res) => {
+    let event = await db.getEventForEventId(req.params.eventid)
+    let photos = await db.getPhotoIdsForEventId(req.params.eventid)
+    res.render('ViewAllPhotos', {photos: photos, event: event});
 })
 
 app.get('/Events', ensureAuthenticated, async (req, res) => {
@@ -366,12 +410,24 @@ app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
     let accepted_list
     let declined_list
     let noreply_list
+    let accepted_list_avatars = []
+    let declined_list_avatars = []
+    let noreply_list_avatars  = []
     try {
         event = await db.getEventForEventIDWithStatus(req.params.event_id, req.user.id)
         access_level = await db.getAccessLevelForUserIDAndTeamID(req.user.id, event.team_id)
         accepted_list = await db.getAllUsersFromEventsWithStatus(event.id, 'confirmed')
         declined_list = await db.getAllUsersFromEventsWithStatus(event.id, 'rejected')
         noreply_list = await db.getAllUsersFromEventsWithStatus(event.id, 'noreply')
+        for (let i = 0; i < accepted_list.length; i++) {
+            accepted_list_avatars[i] = await db.getAvatarIdForUserId(accepted_list[i].id)
+        }
+        for (let i = 0; i < declined_list.length; i++) {
+            declined_list_avatars[i] = await db.getAvatarIdForUserId(declined_list[i].id)
+        }
+        for (let i = 0; i < noreply_list.length; i++) {
+            noreply_list_avatars[i] = await db.getAvatarIdForUserId(noreply_list[i].id)
+        }
     } catch (e) {
         res.status(500).send(e.stack)
         return
@@ -384,6 +440,9 @@ app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
             acceptedList: accepted_list,
             rejectList: declined_list,
             noreplyList: noreply_list,
+            accepted_list_avatars: accepted_list_avatars,
+            declined_list_avatars: declined_list_avatars,
+            noreply_list_avatars: noreply_list_avatars
         })
 })
 
@@ -404,16 +463,17 @@ app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
     let creator
     let access_level
     let expire_period
+    let avatars = []
     try {
         team = await db.getTeamForId(req.params.team_id)
         join_code_info = await db.getCurrentJoinCodeForTeamID(req.params.team_id);
         all_members = await db.getAllUsersInfoForTeam(req.params.team_id)
         creator = await db.getCreatorForTeamID(req.params.team_id)
         access_level = await db.getAccessLevelForUserIDAndTeamID(req.user.id, req.params.team_id)
-        if(access_level === undefined){
+        if (access_level === undefined) {
             return res.send("You have been kicked out of this team.")
         }
-        if(join_code_info === undefined) {
+        if (join_code_info === undefined) {
 
             expire_period = 'No code generated yet.'
         } else {
@@ -423,23 +483,26 @@ app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
         res.status(500).send(e.stack)
         return
     }
-    all_members.sort(function (a,b) {
+    all_members.sort(function (a, b) {
         if (a.access_level == 'admin') return -1
-        if (a.access_level == 'manager'){
-            if (b.access_level == 'manager'){
+        if (a.access_level == 'manager') {
+            if (b.access_level == 'manager') {
                 return a.forename - b.forename
-            } else if (b.access_level == 'admin'){
+            } else if (b.access_level == 'admin') {
                 return 1
             } else {
                 return -1
             }
         }
-        if (b.access_level != 'user'){
+        if (b.access_level != 'user') {
             return 1
         } else {
             return a.forename - b.forename
         }
     })
+    for (let i=0; i<all_members.length;i++){
+        avatars[i] = await db.getAvatarIdForUserId(all_members[i].id)
+    }
     res.render('TeamDetails',
         {
             team: team,
@@ -448,12 +511,13 @@ app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
             creator: creator,
             access_level: access_level,
             expire_period: expire_period,
+            avatars: avatars,
         })
 })
 
 app.post('/updateDetails', ensureAuthenticated, async (req, res) => {
     try {
-      //  console.log(req.body.duration)
+        //  console.log(req.body.duration)
         await db.changeEventDetailsForUserID(req.body.event_id, req.body.name, req.body.location, req.body.date, req.body.duration)
         return res.send({status: 'success'})
     } catch (e) {
@@ -472,11 +536,12 @@ app.post('/deleteEvent', ensureAuthenticated, async (req, res) => {
     }
 })
 
-
-app.get('/Settings', ensureAuthenticated, (req, res) => {
+app.get('/Settings', ensureAuthenticated, async(req, res) => {
+    let avatar = await db.getAvatarIdForUserId(req.user.id)
     res.render('SettingsPage',
         {
             user: req.user,
+            avatar: avatar,
         })
 });
 
@@ -500,7 +565,7 @@ app.post('/updateTeamDetails', ensureAuthenticated, async (req, res) => {
     }
 })
 
-app.post('/setTeamManager', ensureAuthenticated, async (req, res) =>{
+app.post('/setTeamManager', ensureAuthenticated, async (req, res) => {
     try {
         await db.changeAccessLevelForUserID(req.body.member_id, req.body.team_id, 'manager')
         return res.send({status: 'success'})
@@ -510,7 +575,7 @@ app.post('/setTeamManager', ensureAuthenticated, async (req, res) =>{
     }
 })
 
-app.post('/unsetTeamManager', ensureAuthenticated, async (req, res) =>{
+app.post('/unsetTeamManager', ensureAuthenticated, async (req, res) => {
     try {
         await db.changeAccessLevelForUserID(req.body.member_id, req.body.team_id, 'user')
         return res.send({status: 'success'})
@@ -548,6 +613,31 @@ app.post('/dismissTeam', ensureAuthenticated, async (req, res) => {
         res.status(500).send(e.stack)
         return
     }
+})
+
+app.post('/uploadAvatar', ensureAuthenticated, async (req, res) => {
+    if (!req.files.avatar) {
+        return res.redirect("/Settings")
+    }
+
+    if (!(['image/jpeg', 'image/png', 'image/webp'].includes(req.files.avatar.mimetype))) {
+        return res.redirect("/Settings")
+    }
+
+    await db.uploadAvatar(req.files.avatar.data, req.files.avatar.mimetype, req.user.id)
+
+    return res.redirect("/Settings")
+})
+
+app.get('/Avatars/view/:id', ensureAuthenticated, async (req, res) => {
+    const avatar = await db.getAvatarForId(req.params.id)
+
+    res.writeHead(200, {
+        'Content-Type': avatar.mime,
+        'Content-Length': avatar.photo.length
+    });
+
+    res.end(avatar.photo)
 })
 
 module.exports = {

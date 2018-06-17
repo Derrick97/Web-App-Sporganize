@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <meta charset="UTF-8">
+    <title>View All Photos</title>
+</head>
+<body>
+<div class="jumbotron" style="text-align: center; margin-bottom: 0">
+    <h1><%= event.name %></h1>
+    <h2><%= event.timestamp %></h2>
+    <h2>
+        <% if (!event.duration.hours) { %>
+        <% } else if (event.duration.hours == 1) { %>
+        1 hour
+        <% } else { %>
+        <%= event.duration.hours %> hours
+        <% } %>
+
+        <% if (!event.duration.minutes) { %>
+        <% } else if (event.duration.minutes == 1) { %>
+        1 minute
+        <% } else { %>
+        <%= event.duration.minutes %> minutes
+        <% } %>
+    </h2>
+    <h2><%= event.location %></h2>
+</div>
+<button class="btn btn-info col-sm-6" data-toggle="modal" data-target="#uploadModal" style="height: 200px; font-size: 100px">Upload</button>
+<button class="btn btn-danger col-sm-6" style="height: 200px; font-size: 100px" onclick="window.location.href = '/Photos'">Go Back</button>
+<div class="modal fade" id="uploadModal" role="dialog">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" style="text-align: center">Upload photos</h4>
+            </div>
+            <form action="/ViewAll/Upload/<%= event.id %>" method="post"
+                  encType="multipart/form-data">
+                <div class="modal-body" align="center">
+                    <div>
+                        <input type="file" name="photo" onchange="previewFile()"
+                               id="file"/>
+                        <img src="" height="200" id="preview">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <div align="center">
+                        <input type='submit' value='Upload'/>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<% photos.forEach((photo) => { %>
+<img src="/Photos/view/<%= photo %>"
+style="width: 400px; height: 350px; padding-top: 20px;">
+<% }) %>
+
+<script>
+    $(".modal").on('hidden.bs.modal', function (e) {
+        $(".modal-body").find('input:file').prop('value', "");
+        $(".modal-body").find('img').prop('src', "");
+    })
+
+    function previewFile() {
+        let preview = document.getElementById('preview');
+        let file = document.getElementById('file').files[0];
+        let reader = new FileReader();
+
+        reader.addEventListener("load", function () {
+            preview.src = reader.result;
+        }, false);
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+</body>
+</html>

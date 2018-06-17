@@ -204,24 +204,45 @@
         <div class="col-sm-4">
             <div class="jumbotron">
                 <h3>Accepted List</h3>
+                <% let c = 0 %>
                 <% acceptedList.forEach((person) =>{ %>
+                <% if (accepted_list_avatars[c].length) { %>
+                <img src="/Avatars/view/<%= accepted_list_avatars[c] %>" style="width: 80px; height: 100px">
+                <% } else { %>
+                <img src="https://image.freepik.com/free-icon/user-image-with-black-background_318-34564.jpg" style="width: 80px; height: 100px">
+                <% } %>
                 <p><%= person.forename %> <%= person.surname %></p>
+                <% c = c + 1 %>
                 <% }) %>
             </div>
         </div>
         <div class="col-sm-4">
             <div class="jumbotron">
                 <h3>Rejected List</h3>
+                <% c = 0 %>
                 <% rejectList.forEach((person) =>{ %>
+                <% if (declined_list_avatars[c].length) { %>
+                <img src="/Avatars/view/<%= declined_list_avatars[c] %>" style="width: 80px; height: 100px">
+                <% } else { %>
+                <img src="https://image.freepik.com/free-icon/user-image-with-black-background_318-34564.jpg" style="width: 80px; height: 100px">
+                <% } %>
                 <p><%= person.forename %> <%= person.surname %></p>
+                <% c = c + 1 %>
                 <% }) %>
             </div>
         </div>
         <div class="col-sm-4">
             <div class="jumbotron">
                 <h3>Nonreply</h3>
+                <% c = 0 %>
                 <% noreplyList.forEach((person) =>{ %>
+                <% if (noreply_list_avatars[c].length) { %>
+                <img src="/Avatars/view/<%= noreply_list_avatars[c] %>" style="width: 80px; height: 100px">
+                <% } else { %>
+                <img src="https://image.freepik.com/free-icon/user-image-with-black-background_318-34564.jpg" style="width: 80px; height: 100px">
+                <% } %>
                 <p><%= person.forename %> <%= person.surname %></p>
+                <% c = c + 1 %>
                 <% }) %>
             </div>
         </div>

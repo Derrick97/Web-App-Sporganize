@@ -9,12 +9,28 @@
     <title>Team Details</title>
 </head>
 <body>
-<h1 style="text-align: center">Team Details</h1>
 
-<div class="container">
+<div class="container" style="padding-top: 10px; padding-bottom: 20px">
     <% if (access_level != 'user') { %>
     <div class="jumbotron btn btn-default" data-toggle="modal" data-target="#details-modal" style="width: 1200px;">
         <h1><%= team.name %></h1>
+        <div>
+            <%if (team.type=="Basketball"){%>
+            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/4ib0j4od7/basketball-2-512.png" style="width:120px; height:120px"> </h2>
+            <%}%>
+            <%if (team.type=="Volleyball"){%>
+            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/pmuvkh54b/volleyball-2-512.png" style="width:120px; height:120px"> </h2>
+            <%}%>
+            <%if (team.type=="Tennis"){%>
+            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/xonpg4sp7/tennis-icon-18.png" style="width:120px; height:120px"> </h2>
+            <%}%>
+            <%if (team.type=="Football"){%>
+            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/61b026kez/football.png" style="width:120px; height:120px"> </h2>
+            <%}%>
+            <%if (team.type=="Rugby"){%>
+            <h2 class="list-group-item-heading"><img src="https://s15.postimg.cc/4q38tlm7f/rugby.png" style="width:120px; height:120px"> </h2>
+            <%}%>
+        </div>
         <p>Creator: <%= creator.forename %> <%= creator.surname %></p>
         <% if (expire_period != 'No code generated yet.') { %>
         <p>Team Code: <%= join_code_info.code %></p>
@@ -41,24 +57,30 @@
     </div>
     <% } %>
     <h3>Team Members</h3>
+    <%let counter = 0%>
     <% team_members.forEach((member) => { %>
     <div class="dropdown"
-            <% if (member.access_level == 'admin'){ %>
-         style="float: left; margin-right: 10px; border:5px solid gold"
-            <% } else if (member.access_level == 'manager') { %>
-         style="float: left; margin-right: 10px; border:5px solid silver"
-            <% } else { %>
-         style="float: left; margin-right: 10px;"
-            <% } %>
+
+         style="float: left;"
     >
         <div class="btn btn-default dropdown-toggle list-group-item"
-             data-toggle="dropdown" style="background-color: white; height:200px; width:150px;">
+             data-toggle="dropdown" style="background-color: white; height:230px; width:150px;margin-right: 10px; margin-bottom: 10px;
+        <% if (member.access_level == 'admin'){ %>
+           border:5px solid gold;
+        <% } else if (member.access_level == 'manager') { %>
+         border:5px solid silver;
+        <% } else { %>
+        <% } %>  ">
 
-            <h5 class="list-group-item-heading">Place for avatar</h5>
+            <% if (avatars[counter].length) { %>
+            <img src="/Avatars/view/<%= avatars[counter] %>" style="width: 80px; height: 100px">
+            <% } else { %>
+            <img src="https://image.freepik.com/free-icon/user-image-with-black-background_318-34564.jpg" style="width: 80px; height: 100px">
+            <% } %>
 
+            <p style="font-size: 20px"><%= member.forename %><br><%= member.surname %></p>
+            <p style="font-size: 20px"><%=member.access_level%></p>
 
-            <h4>
-                <%= member.forename %> <br><%= member.surname %></h4>
         </div>
         <% if ((!(access_level == 'manager' && member.access_level == 'manager')) && (access_level != 'user' && member.access_level != 'admin')){ %>
         <ul class="dropdown-menu">
@@ -139,6 +161,7 @@
             </div>
         </div>
     </div>
+    <%counter=counter+1%>
     <% }) %>
 
 </div>
@@ -207,12 +230,10 @@
         </div>
     </div>
 </div>
-
-<div class="container">
-    <br>
-    <br>
+<div class="container" style="padding-bottom: 20px">
     <a href="/Teams" class="btn btn-info" role="button">Go back</a>
 </div>
+
 
 <script>
     $(".modal").on('hidden.bs.modal', function (e) {
