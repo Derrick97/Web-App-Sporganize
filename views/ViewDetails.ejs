@@ -145,7 +145,7 @@
 
                         <div class="form-group">
                             <div class='input-group date' id='datetimepicker'>
-                                <input id="dateTextbox" type='text' class="form-control" disabled/>
+                                <input id="dateTextbox" type='text' class="form-control" placeholder="<%=event.timestamp%>" disabled/>
                                 <span class="input-group-addon">
                         <span class="glyphicon glyphicon-calendar"></span>
                     </span>
@@ -160,6 +160,7 @@
                                     format: 'YYYY-MM-DD HH:mm:ss',
                                     minDate: date,
                                 })
+                                document.getElementById('dateTextbox').placeholder = '<%= event.timestamp%>'
                             });
                         </script>
                     </div>
@@ -167,7 +168,8 @@
                     <div>
                         <label class="control-label">
                             <input type=checkbox id="finalBox"
-                                   onclick="enableTextbox('finalBox', 'finalTextbox')">Last date for making final decisions:
+                                   onclick="enableTextbox('finalBox', 'finalTextbox')">Last date for making final
+                            decisions:
                         </label><br>
 
                         <div class="form-group">
@@ -224,8 +226,8 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default"
-                            onclick="updateDetails('<%= event.id %>', '<%= event.name %>', '<%= event.location %>','<%= event.timestamp %>', '<%= event.duration.hours %>', '<%= event.duration.minutes %>', '<%= event.final_decision_date%>')"
-                            data-dismiss="modal" style="float: left">Change
+                            onclick="updateDetails('<%= event.id %>', '<%= event.name %>', '<%= event.location %>','<%= event.timestamp %>', '<%= event.duration.hours %>', '<%= event.duration.minutes %>', '<%= event.final_decision_date %>')"
+                             style="float: left">Change
                     </button>
                 </div>
             </div>
@@ -369,7 +371,7 @@
         if (finalBox.checked) {
             new_final_date = extractval('finalTextbox')
         } else {
-            new_final_date = parseDate(final_decision_date)
+            new_final_date = parseDate(new Date(final_decision_date))
         }
 
         const json = {
@@ -380,22 +382,35 @@
             'event_id': event_id,
             'finalDecisionDate': new_final_date,
         }
+        if (json.finalDecisionDate > json.date) {
+            alert("The last date of makeing final decisions cannot be later than start time.")
+        } else if (json.date.length ==0 ){
+            alert("Event date cannot be null.")
+        } else if (json.name.length == 0) {
+            alert("Event name cannot be null.")
+        } else if (json.location.length == 0) {
+            alert("Event location cannot be null.")
+        } else if (json.finalDecisionDate.length == 0) {
+            alert("he last date of makeing final decisions cannot be null.")
+        } else if (json.duration.length == 0 || json.duration == '00:00:00') {
+            alert("Event duration cannot be null or zero.")
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/updateDetails',
+                data: json,
+                success: function (data) {
+                    if (data.status) {
+                        alert("Update event details successfully.")
+                        window.location.reload()
+                    }
+                    else
+                        console.log('Error')
 
-        $.ajax({
-            type: 'POST',
-            url: '/updateDetails',
-            data: json,
-            success: function (data) {
-                if (data.status) {
-                    alert("Update event details successfully.")
-                    window.location.reload()
-                }
-                else
-                    console.log('Error')
-
-            },
-            dataType: "json",
-        })
+                },
+                dataType: "json",
+            })
+        }
     }
 
     function parseDate(date) {

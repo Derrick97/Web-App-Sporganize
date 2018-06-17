@@ -17,20 +17,22 @@
 <div class="upnav" style="padding-bottom: 100px">
 
 
-    <div class="container" align= 'center'>
+    <div class="container" align='center'>
         <h1>Settings</h1>
-        <a class="jumbotron btn btn-default" style="width: 1000px; text-align: center; overflow: hidden" data-toggle="modal"
+        <a class="jumbotron btn btn-default" style="width: 1000px; text-align: center; overflow: hidden"
+           data-toggle="modal"
            data-target="#details-modal">
             <% if (avatar.length) { %>
             <img src="/Avatars/view/<%= avatar %>" width="200px" height="200px" style="float: left">
             <% } else { %>
-            <img src="https://image.freepik.com/free-icon/user-image-with-black-background_318-34564.jpg" width="200px" height="200px" style="float: left">
+            <img src="https://image.freepik.com/free-icon/user-image-with-black-background_318-34564.jpg" width="200px"
+                 height="200px" style="float: left">
             <% } %>
             <div>
-            <h2><%= user.forename %> <%= user.surname %></h2>
-            <p><b><%= user.gender %></b></p>
-            <p><b><%= user.email %></b></p>
-            <p><b><%= user.mobile %></b></p>
+                <h2><%= user.forename %> <%= user.surname %></h2>
+                <p><b><%= user.gender %></b></p>
+                <p><b><%= user.email %></b></p>
+                <p><b><%= user.mobile %></b></p>
             </div>
         </a>
     </div>
@@ -49,12 +51,13 @@
                             <input type=checkbox id='mobileBox' onclick="enableTextbox('mobileBox', 'mobileTextbox')">Mobile
                             Number
                         </label><br>
-                        <input class="placeholder-no-fix"  onkeyup="value=value.replace(/[^\d]/g,'')" id='mobileTextbox' type="text" maxlength="16"
-                               placeholder="<%= user.mobile %>" disabled='disabled' />
+                        <input class="placeholder-no-fix" onkeyup="value=value.replace(/[^\d]/g,'')" id='mobileTextbox'
+                               type="text" maxlength="16"
+                               placeholder="<%= user.mobile %>" disabled='disabled'/>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-default" onclick="updateDetails('<%= user.mobile %>')"
-                                data-dismiss="modal" style="float: left">Change
+                                 style="float: left">Change
                         </button>
                     </div>
                 </div>
@@ -63,7 +66,9 @@
     </div>
 
     <div class="container" align="center">
-        <button class="btn btn-info" data-toggle="modal" data-target="#uploadModal" style="width: 1000px; height: 200px; font-size: 100px">Upload Avatar</button>
+        <button class="btn btn-info" data-toggle="modal" data-target="#uploadModal"
+                style="width: 1000px; height: 200px; font-size: 100px">Upload Avatar
+        </button>
     </div>
 
     <div class="modal fade" id="uploadModal" role="dialog">
@@ -94,7 +99,9 @@
     </div>
 
     <div class="container" align="center">
-        <button class="btn btn-danger" data-toggle="modal" data-target="#logoutModal" style="width: 1000px; height: 200px; font-size: 100px">Log out</button>
+        <button class="btn btn-danger" data-toggle="modal" data-target="#logoutModal"
+                style="width: 1000px; height: 200px; font-size: 100px">Log out
+        </button>
     </div>
 
     <!-- Modal -->
@@ -134,7 +141,7 @@
 </nav>
 
 <script>
-    $(".modal").on('hidden.bs.modal', function(e) {
+    $(".modal").on('hidden.bs.modal', function (e) {
         $("#details-modal .modal-body").find('input:radio, input:checkbox').prop('checked', false);
         $("#details-modal .modal-body").find('input:text').prop('disabled', true);
     })
@@ -179,21 +186,25 @@
         const json = {
             'mobile': new_mobile,
         }
+        if (json.mobile.length == 0) {
+            alert("Mobile cannot be null.")
+        } else {
 
-        $.ajax({
-            type: 'POST',
-            url: '/updatePersonalDetails',
-            data: json,
-            success: function (data) {
-                if (data.status == 'success') {
-                    alert("Update personal details successfully.")
-                    window.location.reload()
-                } else {
-                    console.log('Error when updating personal details.')
-                }
-            },
-            dataType: "json",
-        })
+            $.ajax({
+                type: 'POST',
+                url: '/updatePersonalDetails',
+                data: json,
+                success: function (data) {
+                    if (data.status == 'success') {
+                        alert("Update personal details successfully.")
+                        window.location.reload()
+                    } else {
+                        console.log('Error when updating personal details.')
+                    }
+                },
+                dataType: "json",
+            })
+        }
     }
 
     function previewFile() {

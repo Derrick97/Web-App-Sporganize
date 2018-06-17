@@ -177,7 +177,7 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-default" data-dismiss="modal" style="float: left"
+                        <button type="button" class="btn btn-default" style="float: left"
                                 onclick="addEvent(<%= active_id %>)">Add event
                         </button>
                     </div>
@@ -220,7 +220,7 @@
                                 <%= event.duration.minutes %> minutes
                                 <% } %>
                             </h4>
-                            <h4>Final Decision Date: <%=event.finalDecisionDate%></h4>
+                            <h4>Final Decision Date: <%= event.finalDecisionDate %></h4>
                             <h4 class="list-group-item-text"><%= event.location %></h4>
                             <h3 class="list-group-item-text"><b><%= event.status %></b></h3>
                             <% if (new Date() <= event.finalDecisionDate){ %>
@@ -344,19 +344,33 @@
             'teamid': teamid
         }
 
-        $.ajax({
-            type: 'POST',
-            url: '/addEvent',
-            data: json,
-            success: function (data) {
-                if (data.status) {
-                    alert('Add success!')
-                    window.location.reload()
-                } else
-                    console.log('error')
-            },
-            dataType: "json",
-        })
+        if (json.finalDecisionDate > json.starttime) {
+            alert("The last date of makeing final decisions cannot be later than start time.")
+        } else if (json.eventname.length == 0) {
+            alert("Event name cannot be null.")
+        } else if (json.date.length == 0) {
+            alert("Event date cannot be null.")
+        } else if (json.location.length == 0) {
+            alert("Event location cannot be null.")
+        } else if (json.finalDecisionDate.length == 0) {
+            alert("he last date of makeing final decisions cannot be null.")
+        } else if (json.duration.length == 0 || json.duration == '00:00:00') {
+            alert("Event duration cannot be null or zero.")
+        } else {
+            $.ajax({
+                type: 'POST',
+                url: '/addEvent',
+                data: json,
+                success: function (data) {
+                    if (data.status) {
+                        alert('Add success!')
+                        window.location.reload()
+                    } else
+                        console.log('error')
+                },
+                dataType: "json",
+            })
+        }
     }
 
     function changeIcon(iconid) {
