@@ -206,8 +206,11 @@
                             <%if (event.event_status == "new"){%>
                             <img src="http://www.iconsplace.com/icons/preview/red/new-256.png" width="150" height="150" style="position: absolute; left: 20px; top:30px">
                             <%} else if (event.event_status == "changed"){%>
-                            <img src="http://www.incountryvalueoman.net/getattachment/df1e8ca7-196b-4d7c-b27c-afdcdea3297b/Test-Announcement" width="150" height="150" style="position: absolute; left: 20px; top:30px">
-                            <%}%>
+                            <div style="position: absolute; left: 20px; top:30px">
+                            <img src="http://www.incountryvalueoman.net/getattachment/df1e8ca7-196b-4d7c-b27c-afdcdea3297b/Test-Announcement" width="150" height="150">
+                            <p style="font-size: 50px; color: indianred">Changed</p>
+                            </div>
+                                <%}%>
                             <h2 class="list-group-item-heading"><%=event.name %></h2>
                             <h4 class="list-group-item-text"><%= event.date %></h4>
                             <h4 class="list-group-item-text">
@@ -325,7 +328,7 @@
         <ul class="nav nav-tabs nav-justified">
             <li><a href="/groupchat" style="color:black"><h1>GroupChat</h1></a></li>
             <%if (update){%>
-            <li style="position: relative"><a href="/Events/" style="color:black"><h1>Events</h1></a>
+            <li class="active" style="position: relative"><a href="/Events/" style="color:black"><h1>Events</h1></a>
                 <img src="http://opusspark.com/images/notification_icon.png" width="50px"; height="50px" style="position: absolute; top:-20px; right:-20px; z-index: 99"></li>
             <%} else {%>
             <li class="active"><a style="color:black"><h1>Events</h1></a></li>
