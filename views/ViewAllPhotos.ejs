@@ -27,7 +27,9 @@
 </head>
 <body>
     <div class="topleft">
-        <button class="btn btn-danger" onclick="window.location.href = '/Photos'">Go Back</button>
+        <a class="btn" onclick="window.location.href = '/Photos'">
+        <img src="https://image.flaticon.com/icons/svg/54/54517.svg" width="40px" height="40px"><p style="color: #111111">Go Back</p>
+        </a>
     </div>
     <div class="jumbotron" style="text-align: center; margin-bottom: 0">
 
@@ -86,7 +88,7 @@
     <div style="position: relative; float: left; padding-right: 20px; padding-top: 20px;">
         <a href="/Photos/view/<%= photo %>">
             <img src="/Photos/view/<%= photo %>"
-                 style="width: 400px; height: 350px;"></a>
+                 style="width: 360px; height: 350px;"></a>
         <i class="fa fa-times-circle topright_cross btn"
            style="font-size:24px; color:red; visibility: hidden" id="delete_cross<%= photo %>"
            data-toggle="modal" data-target="#delete_modal<%= photo %>">

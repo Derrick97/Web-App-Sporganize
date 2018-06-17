@@ -386,7 +386,7 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
 app.post('/addEvent', ensureAuthenticated, async (req, res) => {
     try {
         const event = await db.createEvent(req.user.id, req.body.teamid, req.body.eventname,
-            req.body.starttime, req.body.duration, req.body.location)
+            req.body.starttime, req.body.duration, req.body.location, req.body.finalDecisionDate)
         mail.sendNewEventEmail(event)
         return res.send({status: 'success'})
     } catch (e) {
@@ -510,7 +510,7 @@ app.post('/updateDetails', ensureAuthenticated, async (req, res) => {
     try {
         //  console.log(req.body.duration)
         await db.changeEventDetailsForUserID(req.body.event_id, req.body.name,
-            req.body.location, req.body.date, req.body.duration)
+            req.body.location, req.body.date, req.body.duration, req.finalDecisionDate)
 
         const event = await db.getEventForEventId(req.body.event_id)
         mail.sendEventUpdatedEmail(event)
@@ -523,8 +523,11 @@ app.post('/updateDetails', ensureAuthenticated, async (req, res) => {
 })
 
 app.post('/deleteEvent', ensureAuthenticated, async (req, res) => {
+    let event
     try {
+        event = await db.getEventForEventId(req.body.event_id)
         await db.deleteEventForEventID(req.body.event_id)
+        mail.sendEventDeletedEmail(event)
         return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)

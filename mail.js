@@ -56,7 +56,7 @@ module.exports = {
             const email_addr = user.email
             const subject = 'New Event: ' + event.name
 
-            console.log("event.duration: %j", event.duration)
+        //    console.log("event.duration: %j", event.duration)
 
             const body = [
                 'Dear ' + user.forename,
@@ -64,6 +64,7 @@ module.exports = {
                 'You have a new event for ' + team.name + ':',
                 'Event: ' + event.name,
                 'Start time: ' + event.timestamp,
+                'Last date for making decisions:' + event.final_decision_date,
                 'Duration: ' + durationToString(event.duration),
                 'Location: ' + event.location
             ].join('\n')
@@ -85,9 +86,35 @@ module.exports = {
             const body = [
                 'Dear ' + user.forename,
                 '',
-                'An event for team ' + team.name + ' has changed. The new details are:',
+                'An event for ' + team.name + ' team has changed. The new details are:',
                 'Event name: ' + event.name,
                 'Start time: ' + event.timestamp,
+                'Last date for making decisions:' + event.final_decision_date,
+                'Duration: ' + durationToString(event.duration),
+                'Location: ' + event.location
+            ].join('\n')
+
+            this.sendMailToEmail(email_addr, subject, body)
+        }
+    },
+
+    sendEventDeletedEmail: async function(event) {
+        const users = await db.getAllUsersInfoForTeam(event.team_id)
+        const team = await db.getTeamForId(event.team_id)
+
+        for (let i = 0; i < users.length; i++) {
+            const user = users[i]
+
+            const email_addr = user.email
+            const subject = 'Event Update: ' + event.name
+
+            const body = [
+                'Dear ' + user.forename,
+                '',
+                'The following event for ' + team.name + ' team has been deleted.',
+                'Event name: ' + event.name,
+                'Start time: ' + event.timestamp,
+                'Last date for making decisions:' + event.final_decision_date,
                 'Duration: ' + durationToString(event.duration),
                 'Location: ' + event.location
             ].join('\n')

@@ -107,7 +107,7 @@ module.exports = {
 
         for (let i = 0; i < teams.length; i++) {
             let team_events = await this.getEventsForTeamId(teams[i].id)
-            console.log("team_events: %j", team_events)
+           // console.log("team_events: %j", team_events)
             events.push(...team_events)
         }
 
@@ -277,7 +277,7 @@ module.exports = {
     },
 
     createEvent: async function (creator_user_id, team_id, name, timestamp, duration, location, finalDecisionDate) {
-        const query = ['INSERT INTO sporganize.events (team_id, name, timestamp, duration, location, "final_decision_date")',
+        const query = ['INSERT INTO sporganize.events (team_id, name, timestamp, duration, location, final_decision_date)',
             'VALUES ($1, $2, $3, $4, $5, $6) RETURNING *'].join(' ')
         const resp = await pool.query(query, [team_id, name, timestamp, duration, location, finalDecisionDate])
         const allEvents = await this.getAllEventsForUserId(creator_user_id)
