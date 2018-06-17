@@ -132,7 +132,11 @@
     <div class="container-fluid">
         <ul class="nav nav-tabs nav-justified">
             <li><a href="/groupchat" style="color:black"><h1>GroupChat</h1></a></li>
-            <li><a href="/Events" style="color:black"><h1>Events</h1></a></li>
+            <%if (update == true){%>
+            <li><a href="/Events/" style="color:black"><h1>New Events!</h1></a></li>
+            <%} else {%>
+            <li><a href="/Events/" style="color:black"><h1>Events</h1></a></li>
+            <%}%>
             <li><a href="/Photos" style="color:black"><h1>Photos</h1></a></li>
             <li><a href="/Teams" style="color:black"><h1>My Teams</h1></a></li>
             <li class="active"><a style="color:black"><h1>Settings</h1></a></li>

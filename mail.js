@@ -56,8 +56,6 @@ module.exports = {
             const email_addr = user.email
             const subject = 'New Event: ' + event.name
 
-        //    console.log("event.duration: %j", event.duration)
-
             const body = [
                 'Dear ' + user.forename,
                 '',

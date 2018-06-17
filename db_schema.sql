@@ -3,6 +3,7 @@ CREATE SCHEMA IF NOT EXISTS sporganize;
 CREATE TYPE sporganize.gender AS ENUM ('male', 'female', 'other');
 CREATE TYPE sporganize.access_level AS ENUM ('admin', 'manager', 'user');
 CREATE TYPE sporganize.attendance_status AS ENUM ('confirmed', 'rejected', 'noreply');
+CREATE TYPE sporganize.status AS ENUM ('stable', 'changed', 'new');
 
 CREATE TABLE sporganize.teams (
     id          serial PRIMARY KEY,
@@ -49,6 +50,7 @@ CREATE TABLE sporganize.users_events (
     user_id  int REFERENCES sporganize.users (id) ON DELETE CASCADE  NOT NULL,
     event_id int REFERENCES sporganize.events (id) ON DELETE CASCADE NOT NULL,
     status   sporganize.attendance_status                            NOT NULL,
+    eventstatus sporganize.status                                    NOT NULL,
     PRIMARY KEY (user_id, event_id)
 );
 

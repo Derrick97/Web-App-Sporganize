@@ -107,7 +107,6 @@ module.exports = {
 
         for (let i = 0; i < teams.length; i++) {
             let team_events = await this.getEventsForTeamId(teams[i].id)
-           // console.log("team_events: %j", team_events)
             events.push(...team_events)
         }
 
@@ -231,7 +230,7 @@ module.exports = {
         }
         const all_events_for_team = await this.getEventsForTeamId(team)
         for (let i = 0; i < all_events_for_team.length; i++) {
-            await this.addUserToEventWithStatus(id, all_events_for_team[i].id, 'noreply')
+            await this.addUserToEventWithStatus(id, all_events_for_team[i].id, 'noreply', 'new')
         }
         return true
     },
@@ -290,19 +289,38 @@ module.exports = {
         const current_event_id = temp
         const all_users_for_current_event = await this.getAllUsersInfoForTeam(team_id)
         for (let i = 0; i < all_users_for_current_event.length; i++) {
-            await this.addUserToEventWithStatus(all_users_for_current_event[i].user_id, current_event_id, 'noreply')
+            await this.addUserToEventWithStatus(all_users_for_current_event[i].user_id, current_event_id, 'noreply', 'new')
         }
 
         return resp.rows[0]
     },
-
-    addUserToEventWithStatus: async function (user_id, event_id, status) {
-        const query = ['INSERT INTO sporganize.users_events (user_id, event_id, status)',
-            'VALUES ($1, $2, $3)'].join(' ')
-        await pool.query(query, [user_id, event_id, status])
+    changeEventStatusForAllTeamMembers: async function(event_id, event_status){
+        const query = 'UPDATE sporganize.users_events SET event_status = $2 WHERE event_id = $1'
+        await pool.query(query, [event_id, event_status])
     },
 
-    changeEventStatusForUserID: async function (user_id, event_id, status) {
+    changeEventStatusForUserID: async function(user_id, event_id, event_status){
+        const query = 'UPDATE sporganize.users_events SET event_status = $3 WHERE user_id = $1 AND event_id = $2'
+        await pool.query(query, [user_id, event_id, event_status])
+    },
+
+    addUserToEventWithStatus: async function (user_id, event_id, status, eventstatus) {
+        const query = ['INSERT INTO sporganize.users_events (user_id, event_id, status, event_status)',
+            'VALUES ($1, $2, $3, $4)'].join(' ')
+        await pool.query(query, [user_id, event_id, status, eventstatus])
+    },
+    getUpdateInfoForUserID: async function(user_id){
+        const query = 'SELECT * FROM sporganize.users_events WHERE user_id = $1'
+        let allEvents = await pool.query(query, [user_id])
+        for(let i = 0; i<allEvents.rows.length; i++){
+            if(allEvents.rows[i].event_status != 'stable'){
+                return true
+            }
+        }
+        return false
+    },
+
+    changeStatusForUserID: async function (user_id, event_id, status) {
         const query = ['UPDATE sporganize.users_events',
             'SET status = $3 WHERE users_events.user_id = $1 AND users_events.event_id = $2'].join(' ')
         await pool.query(query, [user_id, event_id, status])

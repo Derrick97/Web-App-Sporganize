@@ -202,8 +202,13 @@
                         <h2 style="text-align: center">You don't have any upcoming event!</h2>
                         <% } else { %>
                         <% eventsupcoming.forEach((event) => { %>
-                        <div class="list-group-item" style="text-align: center;">
-                            <h2 class="list-group-item-heading"><%= event.name %></h2>
+                        <div class="list-group-item" style="text-align: center;position: relative">
+                            <%if (event.event_status == "new"){%>
+                            <img src="http://www.iconsplace.com/icons/preview/red/new-256.png" width="150" height="150" style="position: absolute; left: 20px; top:30px">
+                            <%} else if (event.event_status == "changed"){%>
+                            <img src="http://www.incountryvalueoman.net/getattachment/df1e8ca7-196b-4d7c-b27c-afdcdea3297b/Test-Announcement" width="150" height="150" style="position: absolute; left: 20px; top:30px">
+                            <%}%>
+                            <h2 class="list-group-item-heading"><%=event.name %></h2>
                             <h4 class="list-group-item-text"><%= event.date %></h4>
                             <h4 class="list-group-item-text">
                                 <% if (!event.duration.hours) { %>
@@ -319,7 +324,11 @@
     <div class="container-fluid">
         <ul class="nav nav-tabs nav-justified">
             <li><a href="/groupchat" style="color:black"><h1>GroupChat</h1></a></li>
+            <%if (update){%>
+            <li class="active"><a style="color:black"><h1>New Events</h1></a></li>
+            <%} else {%>
             <li class="active"><a style="color:black"><h1>Events</h1></a></li>
+            <%}%>
             <li><a href="/Photos" style="color:black"><h1>Photos</h1></a></li>
             <li><a href="/Teams" style="color:black"><h1>My Teams</h1></a></li>
             <li><a href="/Settings" style="color:black"><h1>Settings</h1></a></li>

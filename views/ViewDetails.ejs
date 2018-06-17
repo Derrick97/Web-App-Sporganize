@@ -12,9 +12,22 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.37/js/bootstrap-datetimepicker.min.js"></script>
     <title>View Event's Details</title>
+    <style>
+        .topleft {
+            position: absolute;
+            top: 25px;
+            left: 18px;
+            font-size: 18px;
+        }
+    </style>
 </head>
 <body>
-<div class="container">
+<div class="container" style="position: relative">
+    <div class="topleft">
+        <a class="btn" onclick="window.location.href = '/Events'">
+            <img src="https://image.flaticon.com/icons/svg/54/54517.svg" width="40px" height="40px"><p style="color: #111111">Go Back</p>
+        </a>
+    </div>
     <br>
     <% if (new Date() <= event.final_decision_date){ %>
     <% if (access_level != 'user') { %>
@@ -289,10 +302,6 @@
     </div>
 </div>
 
-<div class="container">
-    <a href="/Events" class="btn btn-info" role="button">Go back</a>
-</div>
-
 <script>
     $(".modal").on('hidden.bs.modal', function (e) {
         $("#details-modal .modal-body").find('input:radio, input:checkbox').prop('checked', false);
@@ -391,7 +400,7 @@
         } else if (json.location.length == 0) {
             alert("Event location cannot be null.")
         } else if (json.finalDecisionDate.length == 0) {
-            alert("he last date of makeing final decisions cannot be null.")
+            alert("The last date of makeing final decisions cannot be null.")
         } else if (json.duration.length == 0 || json.duration == '00:00:00') {
             alert("Event duration cannot be null or zero.")
         } else {
@@ -416,10 +425,25 @@
     function parseDate(date) {
         let year = date.getFullYear()
         let month = date.getMonth() + 1
+        if(month<10){
+            month='0'+month
+        }
         let days = date.getDate()
+        if(days<10){
+            days='0'+days
+        }
         let hours = date.getHours()
+        if(hours<10){
+            hours='0'+hours
+        }
         let minutes = date.getMinutes()
+        if(minutes<10){
+            minutes='0'+minutes
+        }
         let seconds = date.getSeconds()
+        if(seconds<10){
+            seconds='0'+seconds
+        }
         return year + '-' + month + '-' + days + ' ' + hours + ':' + minutes + ':' + seconds
     }
 
@@ -427,16 +451,16 @@
         formatted_duration = ''
         if (!duration_hours) {
         } else if (duration_hours == 1) {
-            formatted_duration = formatted_duration + '1 hour'
+            formatted_duration = formatted_duration + ' 1 hour'
         } else {
-            formatted_duration = formatted_duration + duration_hours + ' hours'
+            formatted_duration = formatted_duration + ' ' +duration_hours + ' hours'
         }
 
         if (!duration_minutes) {
         } else if (duration_minutes == 1) {
-            formatted_duration = formatted_duration + '1 minute'
+            formatted_duration = formatted_duration + ' 1 minute'
         } else {
-            formatted_duration = formatted_duration + duration_minutes + ' minutes'
+            formatted_duration = formatted_duration + ' ' + duration_minutes + ' minutes'
         }
         return formatted_duration;
     }

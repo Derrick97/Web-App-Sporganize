@@ -142,8 +142,10 @@ app.get('/currentuser', ensureAuthenticated, (req, res) => {
 
 app.get('/groupchat', ensureAuthenticated, async (req, res) => {
     let teams
+    let update_info
     try {
         teams = await db.getTeamsForUserId(req.user.id)
+        update_info = await db.getUpdateInfoForUserID(req.user.id)
         teams.reverse()
     } catch (e) {
         res.status(500).send(e.stack)
@@ -152,7 +154,7 @@ app.get('/groupchat', ensureAuthenticated, async (req, res) => {
     if (teams.length == 0) {
         res.redirect('/main');
     } else {
-        res.render('GroupChatPage', {teams: teams});
+        res.render('GroupChatPage', {teams: teams, update:update_info,});
     }
 })
 
@@ -180,7 +182,9 @@ app.get('/Teams', ensureAuthenticated, async (req, res) => {
 
     let teamsc
     let teams
+    let update_info
     try {
+        update_info = await db.getUpdateInfoForUserID(req.user.id)
         const allteams = await db.getTeamsForUserIDWithAccessLevel(req.user.id)
         teamsc = allteams.filter((team) => team.access_level != 'user')
         teams = allteams.filter((team) => team.access_level == 'user')
@@ -188,13 +192,14 @@ app.get('/Teams', ensureAuthenticated, async (req, res) => {
         res.status(500).send(e.stack)
         return
     }
-    res.render('TeamsPage', {teamsc: teamsc, teams: teams})
+    res.render('TeamsPage', {teamsc: teamsc, teams: teams, update: update_info})
 
 });
 
 app.post('/joinTeam', ensureAuthenticated, async (req, res) => {
     try {
         let success = await db.joinTeamWithJoinCodeForUserId(req.body.code, req.user.id)
+
         if (success) {
             if (success.code == '23505') {
                 res.json({msg: 'Duplicate'})
@@ -224,7 +229,9 @@ app.get('/Photos', ensureAuthenticated, async (req, res) => {
     let allEvents
     let teams
     let photos
+    let update_info
     try {
+        update_info = await db.getUpdateInfoForUserID(req.user.id)
         allEvents = await db.getAllEventsForUserId(req.user.id)
         teams = await db.getTeamsForUserId(req.user.id)
         photos = []
@@ -236,14 +243,16 @@ app.get('/Photos', ensureAuthenticated, async (req, res) => {
         return
     }
 
-    res.render('PhotosPage', {chop_date: chop_date, events: allEvents, teams: teams, photos: photos, active_id: 0})
+    res.render('PhotosPage', {chop_date: chop_date, events: allEvents, teams: teams, photos: photos, active_id: 0, update:update_info})
 })
 
 app.get('/Photos/:teamid', ensureAuthenticated, async (req, res) => {
     let allEvents
     let teams
     let photos
+    let update_info
     try {
+        update_info = await db.getUpdateInfoForUserID(req.user.id)
         allEvents = await db.getEventsForTeamId(req.params.teamid)
         teams = await db.getTeamsForUserId(req.user.id)
         photos = []
@@ -254,7 +263,7 @@ app.get('/Photos/:teamid', ensureAuthenticated, async (req, res) => {
         res.status(500).send(e.stack)
         return
     }
-    res.render('PhotosPage', {chop_date: chop_date, events: allEvents, teams: teams, photos: photos, active_id: req.params.teamid})
+    res.render('PhotosPage', {chop_date: chop_date, events: allEvents, teams: teams, photos: photos, active_id: req.params.teamid, update:update_info})
 })
 
 app.post('/Photos/Upload/:eventid', ensureAuthenticated, async (req, res) => {
@@ -266,7 +275,7 @@ app.post('/Photos/Upload/:eventid', ensureAuthenticated, async (req, res) => {
         return res.redirect("/Photos")
     }
 
-
+    let update_info
     await db.createPhoto(req.files.photo.data, req.files.photo.mimetype, req.params.eventid)
 
     return res.redirect("/Photos")
@@ -308,8 +317,10 @@ app.get('/Events', ensureAuthenticated, async (req, res) => {
     let eventsprevious
     let eventsupcoming
     let teams
+    let update_info
     try {
         const events = await db.getAllEventsForUserIdWithAccessLevelAndStatus(req.user.id)
+        update_info = await db.getUpdateInfoForUserID(req.user.id)
         render_events = events.map(ev => {
             return {
                 'id': ev.id,
@@ -320,6 +331,7 @@ app.get('/Events', ensureAuthenticated, async (req, res) => {
                 'status': ev.status,
                 'access_level': ev.access_level,
                 'finalDecisionDate': ev.final_decision_date,
+                'event_status': ev.event_status,
             }
         })
         const now = new Date()
@@ -337,6 +349,7 @@ app.get('/Events', ensureAuthenticated, async (req, res) => {
         teams: teams,
         access_level: 'user',
         active_id: 0,
+        update: update_info,
         current_team_name: null
     });
 });
@@ -349,7 +362,9 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
     let access_level
     let render_events
     let current_team
+    let update_info
     try {
+        update_info = await db.getUpdateInfoForUserID(req.user.id)
         const events = await db.getAllEventsForTeamIdWithAccessLevelAndStatus(req.params.teamid, req.user.id)
         render_events = events.map(ev => {
             return {
@@ -361,6 +376,7 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
                 'status': ev.status,
                 'access_level': ev.access_level,
                 'finalDecisionDate': ev.final_decision_date,
+                'event_status': ev.event_status,
             }
         })
         const now = new Date()
@@ -379,7 +395,8 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
         teams: teams,
         access_level: access_level,
         active_id: req.params.teamid,
-        current_team_name: current_team.name
+        current_team_name: current_team.name,
+        update: update_info,
     })
 });
 
@@ -407,12 +424,14 @@ app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
     let noreply_list_avatars  = []
     try {
         event = await db.getEventForEventIDWithStatus(req.params.event_id, req.user.id)
+        await db.changeEventStatusForUserID(req.user.id, req.params.event_id, 'stable')
         access_level = await db.getAccessLevelForUserIDAndTeamID(req.user.id, event.team_id)
         accepted_list = await db.getAllUsersFromEventsWithStatus(event.id, 'confirmed')
         declined_list = await db.getAllUsersFromEventsWithStatus(event.id, 'rejected')
         noreply_list = await db.getAllUsersFromEventsWithStatus(event.id, 'noreply')
         for (let i = 0; i < accepted_list.length; i++) {
             accepted_list_avatars[i] = await db.getAvatarIdForUserId(accepted_list[i].id)
+
         }
         for (let i = 0; i < declined_list.length; i++) {
             declined_list_avatars[i] = await db.getAvatarIdForUserId(declined_list[i].id)
@@ -439,7 +458,8 @@ app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
 
 app.post('/changeStatus', ensureAuthenticated, async (req, res) => {
     try {
-        await db.changeEventStatusForUserID(req.user.id, req.body.event_id, req.body.status)
+        await db.changeStatusForUserID(req.user.id, req.body.event_id, req.body.status)
+        await db.changeEventStatusForUserID(req.user.id, req.body.event_id, 'stable')
         res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
@@ -508,9 +528,9 @@ app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
 
 app.post('/updateDetails', ensureAuthenticated, async (req, res) => {
     try {
-        //  console.log(req.body.duration)
+        await db.changeEventStatusForAllTeamMembers(req.body.event_id, 'changed')
         await db.changeEventDetailsForUserID(req.body.event_id, req.body.name,
-            req.body.location, req.body.date, req.body.duration, req.finalDecisionDate)
+            req.body.location, req.body.date, req.body.duration, req.body.finalDecisionDate)
 
         const event = await db.getEventForEventId(req.body.event_id)
         mail.sendEventUpdatedEmail(event)
@@ -537,10 +557,12 @@ app.post('/deleteEvent', ensureAuthenticated, async (req, res) => {
 
 app.get('/Settings', ensureAuthenticated, async(req, res) => {
     let avatar = await db.getAvatarIdForUserId(req.user.id)
+    let update_info = await db.getUpdateInfoForUserID(req.user.id)
     res.render('SettingsPage',
         {
             user: req.user,
             avatar: avatar,
+            update: update_info,
         })
 });
 
