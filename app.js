@@ -403,7 +403,7 @@ app.post('/addEvent', ensureAuthenticated, async (req, res) => {
     try {
         const event = await db.createEvent(req.user.id, req.body.teamid, req.body.eventname,
             req.body.starttime, req.body.duration, req.body.location)
-        mail.sendnewEventEmail(event)
+        mail.sendNewEventEmail(event)
         return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)

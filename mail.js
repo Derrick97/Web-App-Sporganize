@@ -54,7 +54,7 @@ module.exports = {
             const user = users[i]
 
             const email_addr = user.email
-            const subject = 'Reminder: ' + event.name
+            const subject = 'New Event: ' + event.name
 
             console.log("event.duration: %j", event.duration)
 
@@ -80,12 +80,13 @@ module.exports = {
             const user = users[i]
 
             const email_addr = user.email
-            const subject = 'Reminder: ' + event.name
+            const subject = 'Event Update: ' + event.name
 
             const body = [
                 'Dear ' + user.forename,
                 '',
-                'Event ' + event.name + ' for team ' + team.name + ' has changed. The new details are:',
+                'An event for team ' + team.name + ' has changed. The new details are:',
+                'Event name: ' + event.name,
                 'Start time: ' + event.timestamp,
                 'Duration: ' + durationToString(event.duration),
                 'Location: ' + event.location
