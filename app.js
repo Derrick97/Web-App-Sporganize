@@ -451,8 +451,7 @@ app.get('/ViewDetails/:event_id', ensureAuthenticated, async (req, res) => {
 
 app.post('/changeStatus', ensureAuthenticated, async (req, res) => {
     try {
-        await db.changeStatusForUserID(req.user.id, req.body.event_id, req.body.status)
-        await db.changeEventStatusForUserID(req.user.id, req.body.event_id, 'stable')
+        await db.changeStatusForUserID(req.user.id, req.body.event_id, req.body.status, 'stable')
         res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)

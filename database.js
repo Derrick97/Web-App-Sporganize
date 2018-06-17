@@ -320,10 +320,10 @@ module.exports = {
         return false
     },
 
-    changeStatusForUserID: async function (user_id, event_id, status) {
+    changeStatusForUserID: async function (user_id, event_id, status, event_status) {
         const query = ['UPDATE sporganize.users_events',
-            'SET status = $3 WHERE users_events.user_id = $1 AND users_events.event_id = $2'].join(' ')
-        await pool.query(query, [user_id, event_id, status])
+            'SET status = $3, event_status = $4 WHERE users_events.user_id = $1 AND users_events.event_id = $2'].join(' ')
+        await pool.query(query, [user_id, event_id, status, event_status])
     },
 
     changeEventDetailsForUserID: async function (event_id, new_name, new_location, new_date, new_duration, finalDecisionDate) {

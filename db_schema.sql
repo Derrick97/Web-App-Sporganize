@@ -50,7 +50,7 @@ CREATE TABLE sporganize.users_events (
     user_id  int REFERENCES sporganize.users (id) ON DELETE CASCADE  NOT NULL,
     event_id int REFERENCES sporganize.events (id) ON DELETE CASCADE NOT NULL,
     status   sporganize.attendance_status                            NOT NULL,
-    eventstatus sporganize.status                                    NOT NULL,
+    event_status sporganize.status                                   NOT NULL,
     PRIMARY KEY (user_id, event_id)
 );
 
