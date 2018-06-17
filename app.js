@@ -11,6 +11,9 @@ const bcrypt = require('bcrypt')
 const saltRounds = 10
 
 const db = require('./database.js')
+const mail = require('./mail.js')
+
+const schedule = require('node-schedule')
 
 const app = express()
 
@@ -89,6 +92,9 @@ function finalDecisionDate(date, days) {
     return copy
 }
 
+function sendReminderEmails() {
+
+}
 
 app.get('/', (req, res) => {
     return res.redirect('/login')
@@ -395,7 +401,9 @@ app.get('/Events/:teamid', ensureAuthenticated, async (req, res) => {
 
 app.post('/addEvent', ensureAuthenticated, async (req, res) => {
     try {
-        await db.createEvent(req.user.id, req.body.teamid, req.body.eventname, req.body.starttime, req.body.duration, req.body.location)
+        cont event = await db.createEvent(req.user.id, req.body.teamid, req.body.eventname,
+            req.body.starttime, req.body.duration, req.body.location)
+        mail.sendnewEventEmail(event)
         return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
@@ -518,7 +526,12 @@ app.get('/TeamDetails/:team_id', ensureAuthenticated, async (req, res) => {
 app.post('/updateDetails', ensureAuthenticated, async (req, res) => {
     try {
         //  console.log(req.body.duration)
-        await db.changeEventDetailsForUserID(req.body.event_id, req.body.name, req.body.location, req.body.date, req.body.duration)
+        await db.changeEventDetailsForUserID(req.body.event_id, req.body.name,
+            req.body.location, req.body.date, req.body.duration)
+
+        const event = await db.getEventForEventId(req.body.event_id)
+        mail.sendEventUpdatedEmail(event)
+
         return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)

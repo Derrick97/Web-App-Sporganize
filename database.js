@@ -275,8 +275,8 @@ module.exports = {
 
     createEvent: async function (creator_user_id, team_id, name, timestamp, duration, location) {
         const query = ['INSERT INTO sporganize.events (team_id, name, timestamp, duration, location)',
-            'VALUES ($1, $2, $3, $4, $5)'].join(' ')
-        await pool.query(query, [team_id, name, timestamp, duration, location])
+                       'VALUES ($1, $2, $3, $4, $5) RETURNING *'].join(' ')
+        const resp = await pool.query(query, [team_id, name, timestamp, duration, location])
         const allEvents = await this.getAllEventsForUserId(creator_user_id)
         let temp = allEvents[0].id
         for (let j = 0; j < allEvents.length; j++) {
@@ -289,6 +289,8 @@ module.exports = {
         for (let i = 0; i < all_users_for_current_event.length; i++) {
             await this.addUserToEventWithStatus(all_users_for_current_event[i].user_id, current_event_id, 'noreply')
         }
+
+        return resp.rows[0]
     },
 
     addUserToEventWithStatus: async function (user_id, event_id, status) {
