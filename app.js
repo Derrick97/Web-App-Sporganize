@@ -86,12 +86,6 @@ function ensureAuthenticated(req, res, next) {
 }
 
 
-// function finalDecisionDate(date, days) {
-//     let copy = new Date(date.getTime())
-//     copy.setDate(date.getDate() - days)
-//     return copy
-// }
-
 function sendReminderEmails() {
 
 }
@@ -274,8 +268,7 @@ app.post('/Photos/Upload/:eventid', ensureAuthenticated, async (req, res) => {
     if (!(['image/jpeg', 'image/png', 'image/webp'].includes(req.files.photo.mimetype))) {
         return res.redirect("/Photos")
     }
-
-    let update_info
+    
     await db.createPhoto(req.files.photo.data, req.files.photo.mimetype, req.params.eventid)
 
     return res.redirect("/Photos")
@@ -609,6 +602,7 @@ app.post('/unsetTeamManager', ensureAuthenticated, async (req, res) => {
 app.post('/removeMember', ensureAuthenticated, async (req, res) => {
     try {
         await db.removeMemberForUserIDAndTeamID(req.body.member_id, req.body.team_id)
+        mail.sendRemoveMemberEmail(req.body.member_id, req.body.team_id)
         return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
@@ -619,6 +613,7 @@ app.post('/removeMember', ensureAuthenticated, async (req, res) => {
 app.post('/leaveTeam', ensureAuthenticated, async (req, res) => {
     try {
         await db.removeMemberForUserIDAndTeamID(req.user.id, req.body.team_id)
+        mail.sendLeaveTeamEmail(req.user.id, req.body.team_id)
         return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)
@@ -628,7 +623,10 @@ app.post('/leaveTeam', ensureAuthenticated, async (req, res) => {
 
 app.post('/dismissTeam', ensureAuthenticated, async (req, res) => {
     try {
+        let users = await db.getAllUsersInfoForTeam(req.body.team_id)
+        let team = await db.getTeamForId(req.body.team_id)
         await db.dismissTeamForTeamID(req.body.team_id)
+        mail.sendDismissTeamEmail(users, team)
         return res.send({status: 'success'})
     } catch (e) {
         res.status(500).send(e.stack)

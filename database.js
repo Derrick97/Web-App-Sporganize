@@ -210,7 +210,7 @@ module.exports = {
         const join_code_info = await pool.query(query, [team_id])
         let temp = join_code_info.rows[0]
         for (let i = 0; i < join_code_info.rows.length; i++) {
-            if(temp.id < join_code_info.rows[i].id){
+            if (temp.id < join_code_info.rows[i].id) {
                 temp = join_code_info.rows[i]
             }
         }
@@ -339,7 +339,7 @@ module.exports = {
         await pool.query(query, [event_id])
     },
 
-    changeMobileForUserID: async function (user_id, mobile){
+    changeMobileForUserID: async function (user_id, mobile) {
         const query = ['UPDATE sporganize.users',
             'SET mobile = $2',
             'WHERE id = $1'].join(' ')
@@ -355,16 +355,16 @@ module.exports = {
 
     changeAccessLevelForUserID: async function (user_id, team_id, access_level) {
         const query = ['UPDATE sporganize.users_teams',
-        'SET access_level = $3',
-        'WHERE user_id = $1 AND team_id = $2'].join(' ')
+            'SET access_level = $3',
+            'WHERE user_id = $1 AND team_id = $2'].join(' ')
         await pool.query(query, [user_id, team_id, access_level])
     },
 
-    removeMemberForUserIDAndTeamID: async function (user_id, team_id){
+    removeMemberForUserIDAndTeamID: async function (user_id, team_id) {
         let query = 'DELETE FROM sporganize.users_teams WHERE user_id = $1 AND team_id = $2'
         await pool.query(query, [user_id, team_id])
         const allEvent = await this.getEventsForTeamId(team_id)
-        for(let i = 0; i<allEvent.length;i++){
+        for (let i = 0; i < allEvent.length; i++) {
             let query2 = 'DELETE FROM sporganize.users_events WHERE user_id = $1 AND event_id = $2'
             await pool.query(query2, [user_id, allEvent[i].id])
         }
@@ -376,16 +376,16 @@ module.exports = {
     },
 
     /* Photos */
-    getPhotoIdsForEventId: async function(id) {
+    getPhotoIdsForEventId: async function (id) {
         let query = ['SELECT photos.id',
-                     'FROM sporganize.events',
-                     'JOIN sporganize.photos ON events.id = photos.event_id',
-                     'WHERE events.id = $1'].join(' ')
+            'FROM sporganize.events',
+            'JOIN sporganize.photos ON events.id = photos.event_id',
+            'WHERE events.id = $1'].join(' ')
         const resp = await pool.query(query, [id])
         return resp.rows.map((r) => r.id)
     },
 
-    getPhotoForId: async function(id) {
+    getPhotoForId: async function (id) {
         let query = 'SELECT * FROM sporganize.photos WHERE id = $1'
         const photos = await pool.query(query, [id])
         if (photos.rows.length > 0) {
@@ -395,21 +395,21 @@ module.exports = {
         return false
     },
 
-    createPhoto: async function(data, mime, event_id) {
+    createPhoto: async function (data, mime, event_id) {
         let query = 'INSERT INTO sporganize.photos (event_id, photo, mime) VALUES ($1, $2, $3)'
         await pool.query(query, [event_id, data, mime])
     },
 
-    uploadAvatar: async function(data, mime, user_id) {
+    uploadAvatar: async function (data, mime, user_id) {
         let avatar = await this.getAvatarIdForUserId(user_id)
         let query
         if (avatar.length)
-        query = 'UPDATE sporganize.users_avatars SET photo = $2, mime = $3 WHERE user_id = $1'
+            query = 'UPDATE sporganize.users_avatars SET photo = $2, mime = $3 WHERE user_id = $1'
         else query = 'INSERT INTO sporganize.users_avatars (user_id, photo, mime) VALUES ($1, $2, $3)'
         await pool.query(query, [user_id, data, mime])
     },
 
-    getAvatarForId: async function(id) {
+    getAvatarForId: async function (id) {
         let query = 'SELECT * FROM sporganize.users_avatars WHERE id = $1'
         const photos = await pool.query(query, [id])
         if (photos.rows.length > 0) {
@@ -419,7 +419,7 @@ module.exports = {
         return false
     },
 
-    getAvatarIdForUserId: async function(id) {
+    getAvatarIdForUserId: async function (id) {
         let query = ['SELECT id',
             'FROM sporganize.users_avatars',
             'WHERE user_id = $1'].join(' ')
@@ -432,32 +432,40 @@ module.exports = {
         await pool.query(query, [photo_id])
     },
 
+    getAllManagersForTeamId: async function (team_id) {
+        const query = 'SELECT user_id FROM sporganize.users_teams WHERE team_id = $1 AND access_level <> $2'
+        const managers = await pool.query(query, [team_id, "user"])
+        return managers.rows
+    },
+
     /* Messaging */
     onMessageNotification: async function (callback) {
         const client = new Client()
         await client.connect()
 
         await client.query('LISTEN sporganize_messages')
-        client.on('notification', (msg) => { callback(JSON.parse(msg.payload)) })
+        client.on('notification', (msg) => {
+            callback(JSON.parse(msg.payload))
+        })
     },
 
-    addMessage: async function(message, user_id, team_id) {
+    addMessage: async function (message, user_id, team_id) {
         let query = ['INSERT INTO sporganize.messages (team_id, user_id, message)',
-                     'VALUES ($1, $2, $3)',
-                     'RETURNING *'].join(' ')
+            'VALUES ($1, $2, $3)',
+            'RETURNING *'].join(' ')
 
         const resp = await pool.query(query, [team_id, user_id, message])
         await pool.query("SELECT pg_notify('sporganize_messages', $1)",
-                         [JSON.stringify(resp.rows[0])])
+            [JSON.stringify(resp.rows[0])])
 
         return resp.rows[0]
     },
 
-    getMessagesForTeamId: async function(id, n) {
+    getMessagesForTeamId: async function (id, n) {
         let query = ['SELECT * FROM sporganize.messages',
-                     'WHERE team_id = $1',
-                     'ORDER BY timestamp DESC',
-                     'LIMIT $2'].join(' ')
+            'WHERE team_id = $1',
+            'ORDER BY timestamp DESC',
+            'LIMIT $2'].join(' ')
         const resp = await pool.query(query, [id, n])
         return resp.rows
     }
